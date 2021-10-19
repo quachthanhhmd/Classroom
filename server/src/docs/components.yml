@@ -1,0 +1,326 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: number
+        username:
+          type: string
+        profile:
+          type: object
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            displayName:
+              type: string
+            birthDay:
+              type: date
+            gender:
+              type: string
+              enum: ["male", "female", "other"]
+      example:
+        id: 1
+        username: quachthanhhmd
+        profile:
+          - firstName: Thanh
+            lastName: Hai
+            displayName: Thanh Hai
+            gender: male
+            birthDay: 11/06/2000
+
+    Post: 
+      type: object 
+      properties:
+        id: 
+          type: number
+        content:
+          type: string
+        isHidden:
+          type: boolean
+        isChange: 
+          type: boolean
+        userId:
+          type: number
+        createdAt:
+          type: date
+        updateAt:
+          type: date
+      example:
+        id: 1
+        content: Hello, my name is thanh
+        isHidden: false
+        isChange: false
+        userId: 1 
+        createdAt: 2021-09-15T08:11:22.838Z
+        updateAt: 2021-09-15T08:11:22.838Z
+    Token:
+      type: object
+      properties:
+        access:
+          type: object
+          properties:
+            token:
+              type: string
+            expire: 
+              type: date
+        refresh:
+          type: object
+          properties:
+            token: 
+              type: string
+            expire: 
+              type: date
+      example:
+        access:
+          - token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImlhdCI6MTYzMTY5MzQ4MiwiZXhwIjoxNjMxNjkzNDgyLCJ0eXBlIjoiYWNjZXNzIn0.jLGSfGePNJgvIFvPKLpVQID6y2mZpaFKqleLdw-MiYg
+            expire: 2021-09-15T08:11:22.838Z
+        refesh:
+          - token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+            expire: 2021-09-15T08:11:22.838Z
+    Background:
+      type: object
+      properties:
+        id: 
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+          enum: ["current", "past"]
+        type: 
+          type: string 
+          enum: ["college","highschool", "work"]
+        description:
+          type: string
+        link:
+          type: string
+        userId: 
+          type: number
+      example: 
+        id: 1 
+        name: University of Sciences
+        status: college
+        type: current
+        description: At HCMC
+        userId: 1
+    BackgroundList:
+      type: array 
+      items:
+        type: object
+        properties:
+          id: 
+            type: string
+          name:
+            type: string
+          status:
+            type: string
+            enum: ["current", "past"]
+          type: 
+            type: string 
+            enum: ["college","highschool", "work"]
+          description:
+            type: string
+          link:
+            type: string
+          userId: 
+            type: number 
+      example:
+        - id: 1 
+          name: University of Sciences
+          status: college
+          type: current
+          description: At HCMC
+          userId: 1
+        - id: 2 
+          name: University of Sciences
+          status: college
+          type: current
+          description: At HCMC
+          userId: 1       
+    Comment: 
+      type: object
+      properties:
+        id:
+          type: number 
+        content:
+          type: string 
+        isChange: 
+          type: boolean 
+        updatedAt: 
+          type: date
+        createdAt:
+          type: date
+      example:
+        id: 1
+        content: Hello, my name is Thanh 
+        isChange: false
+        updatedAt: 2021-09-15T08:11:22.838Z
+        createdAt: 2021-09-15T08:11:22.838Z
+    CommentList:
+      type: object
+      properties:
+        postId: 
+          type: number
+        result:
+          type: array
+          items:
+            id: 
+              type: number
+            profile:
+              type: object 
+              properties:
+                firstName:
+                  type: string 
+                lastName:
+                  type: string
+                avtImage:
+                  type: string
+            Comments:
+              type: object
+              properties:
+                id:
+                  type: number 
+                content:
+                  type: string 
+                isChange: 
+                  type: boolean 
+                updatedAt: 
+                  type: date
+        totalRecord:
+          type: number
+        totalPage:
+          type: number
+        limit: 
+          type: number
+        page:
+          type: number
+      example:
+        postId: 1
+        result:
+          - id: 1
+            profile:
+              firstName: Thanh
+              lastName: Hai
+              avtImage: null
+            Comments:
+              id: 1
+              isChange: false 
+              content: You are very beautiful
+              updatedAt: 2021-09-15T08:11:22.838Z
+          - id: 1
+            profile:
+              firstName: Thanh
+              lastName: Hai
+              avtImage: null
+            Comments:
+              id: 2
+              isChange: false 
+              content: You are very beautiful
+              updatedAt: 2021-09-15T08:11:22.838Z
+        totalRecord: 10
+        totalPage: 5
+        limit: 2  
+        page: 1
+    Messages: 
+      type: object
+      properties:
+        items:
+          type: object  
+          properties:
+            id:
+              type: number
+            content:
+              type: string
+            link:
+              type: string
+            type:
+              type: string
+              enum: ["text", "file", "video", "image"]
+            status:
+              type: string
+              enum: ["waiting", "sent", "seen"]
+        totalResult:
+          type: number
+        totalPage:
+          type: number
+        limit:
+          type: number 
+        page:
+          type: number
+      example:
+        result:
+          - id: 1
+            content: Hello, my name is Thanh.
+            link: null
+            type: text
+            status: sent
+          - id: 2
+            content: I'll show u my picture.
+            link: https://cine.megamind.vn/wp-content/uploads/2020/12/tran-duc-bo-mew-mew-300x300.jpg
+            type: image
+            status: waiting
+        totalResult: 4
+        totalPage: 2
+        limit: 2
+        page: 1
+    Error:
+      type: object
+      properties:
+        code:
+          type: number
+        message:
+          type: string
+  responses:
+    DuplicateUsername:
+      description: Username already taken
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 400
+            message: Username already taken
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 401
+            message: Please authenticate
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 403
+            message: Forbidden
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 404
+            message: Not found
+    InternalError:
+      description: Server cannot create resource
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+          example:
+            code: 500
+            examle: Server cannot create resource
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
