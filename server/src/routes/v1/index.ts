@@ -13,11 +13,7 @@ class IndexRoutes  {
 
     private InitializeRoutes() {
 
-        this.router.use("/user", userRoutes);
-        
-        if (env.TYPE === 'development'){
-            this.router.use("/docs", )
-        }
+       
     }
 }
 

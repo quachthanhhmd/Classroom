@@ -1,3 +1,4 @@
+import { GENDER } from './../constants/gender.constant';
 import {Optional } from "sequelize";
 import {
     Table, 
@@ -26,6 +27,10 @@ interface IUser {
     id?: number,
     email: string,
     password: string,
+    firstName: string,
+    lastName: string,
+    gender: string,
+    birthday: string,
     isVerified: Boolean,
     isBlocked: Boolean,
 }
@@ -49,6 +54,23 @@ class User extends Model<IUser, UserCreationAttibutes> {
     @Column(DataType.STRING(30))
     email!: string;
 
+
+    @AllowNull(false)
+    @Column(DataType.STRING(50))
+    firstName!: string;
+
+    @AllowNull(false)
+    @Column(DataType.STRING(50))
+    lastName!: string;
+
+    @AllowNull(false)
+    @Column(DataType.DATEONLY)
+    birthDay!: Date;
+
+    @AllowNull(false)
+    @Column(DataType.ENUM(GENDER.FEMALE, GENDER.MALE, GENDER.OTHER))
+    gender!: string;
+
     @AllowNull(false)
     @Default(false)
     @Column(DataType.BOOLEAN)
@@ -58,6 +80,8 @@ class User extends Model<IUser, UserCreationAttibutes> {
     @Default(false) 
     @Column(DataType.BOOLEAN)
     isBlocked!: boolean;
+
+
 
     @Is(function passwordValidate(value: string): void {
         if (!regexPassword.test(value)) {
