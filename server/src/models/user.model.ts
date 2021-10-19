@@ -18,6 +18,7 @@ import {
 import {initPasswordHash} from "../config/bcrypt";
 
 import Token from "./token.model";
+import Member from "./member.model";
 
 const regexPassword = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/;
 
@@ -74,6 +75,9 @@ class User extends Model<IUser, UserCreationAttibutes> {
 
     @HasMany(() => Token)
     tokenList?: Token[];
+
+    @HasMany(() => Member)
+    memberList?: Member[];
 };  
 
 export default User;
