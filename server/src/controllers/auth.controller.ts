@@ -1,44 +1,70 @@
 import "reflect-metadata"
 
-import httpStatus from "http-status";
-
-import { ICreateUser } from './../interfaces/user.interface';
-import { IRequest, IResponse, INextFunction } from './../interfaces/api.interface';
 import { inject, injectable } from "inversify";
 
-import UserService from "../services/user.service";
-
-import { HttpResponse } from "../exceptions/http-response.exception";
+import { UserService, AuthService, TokenService } from "../services";
+import { IRequest, IResponse, INextFunction } from './../interfaces';
+import { INCORRECT_LOGIN, USER_EXIST } from "../constants";
+import { ICreateUser } from './../interfaces';
 
 
 @injectable()
-class AuthController {
+export class AuthController {
 
     constructor(
-        @inject("UserService") private readonly userService: UserService) { }
+        @inject("UserService") private readonly _userService: UserService,
+        @inject("AuthService") private readonly _authService: AuthService,
+        @inject("TokenService") private readonly _tokenService: TokenService,
+    ) { }
 
     public signUp = async (
         req: IRequest,
         res: IResponse,
         next: INextFunction
     ): Promise<void> => {
-        try{
-            
+        try {
+
             const userBody: ICreateUser = req.body;
-        
-            console.log(userBody);
-            const newUser = await this.userService.createUser(userBody);
 
-            //res.status(httpStatus.CREATED).send({});
+            const existUser = await this._userService.findUserbyEmail(userBody.email);
+            if (!existUser) {
+                return res.composer.badRequest(USER_EXIST);
+            }
 
-            res.status(httpStatus.OK).send({
-                user: newUser,
-            })
-        }catch(err){
-            next(err);
+            const newUser = await this._userService.createUser(userBody);
+            if (newUser) {
+                return res.composer.badRequest();
+            }
+
+            return res.composer.success({ user: newUser });
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    };
+
+    public signIn = async (
+        req: IRequest,
+        res: IResponse,
+        next: INextFunction
+    ): Promise<void> => {
+        try {
+            const { username, password } = req.body;
+            const user = await this._authService.loginWithEmailAndPassword(username, password);
+
+            if (!user) {
+                return res.composer.badRequest(INCORRECT_LOGIN);
+            }
+
+            const tokenCreate = await this._tokenService.generateTokenAuth(user!.id);
+
+            return res.composer.success(
+                {
+                    user: user,
+                    token: tokenCreate,
+                }
+            );
+        } catch (err) {
+            return res.composer.otherException(err);
         }
     };
 }
-
-
-export default AuthController;

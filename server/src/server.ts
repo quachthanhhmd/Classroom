@@ -1,7 +1,7 @@
 import { createServer } from 'http';
 
 import App from './app'
-import logger from "./config/logger";
+import { logger } from "./config";
 import { applyHttpResponseCompose } from './exceptions/http-response.exception';
 import IndexRoutes from "./routes/v1/index";
 
@@ -28,7 +28,7 @@ const exitHandler = () => {
     }
 };
 
-const unexpectedErrorHandler = (error : any) => {
+const unexpectedErrorHandler = (error: any) => {
     logger.error(error);
     exitHandler();
 };

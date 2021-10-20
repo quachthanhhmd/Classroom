@@ -14,8 +14,7 @@ import {
     HasMany
 } from "sequelize-typescript";
 
-
-import Member from "./member.model";
+import {Member} from "./";
 
 interface ICourse {
     id?: number,
@@ -33,7 +32,7 @@ interface CourseCreationAttributes extends Optional<ICourse, "id"> {}
     paranoid: true,
     timestamps: true,
 })
-class Course extends Model<ICourse, CourseCreationAttributes> {
+export class Course extends Model<ICourse, CourseCreationAttributes> {
 
     @AllowNull(false)
     @AutoIncrement
@@ -66,5 +65,3 @@ class Course extends Model<ICourse, CourseCreationAttributes> {
 
 
 }
-
-export default Course;

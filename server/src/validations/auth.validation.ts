@@ -1,12 +1,12 @@
 import 'reflect-metadata';
 
+import Joi from "joi";
 import { injectable } from 'inversify';
 
-import { GENDER } from './../constants/gender.constant';
-import Joi from "joi";
+import { GENDER } from './../constants';
 
 @injectable()
-class UserValidation {
+export class AuthValidation {
 
     private passwordValidation = (value: string, helper: any) => {
         if (value.length < 8) {
@@ -30,6 +30,13 @@ class UserValidation {
             })
         }
     }
-}
 
-export default UserValidation;
+    public SignInValidation() {
+        return {
+            body: Joi.object().keys({
+                email: Joi.string().email().required(),
+                password: Joi.string().required(),
+            })
+        }
+    }
+}

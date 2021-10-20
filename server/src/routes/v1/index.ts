@@ -1,11 +1,10 @@
 import { Router } from "express";
 
-import env from "../../config/env";
+import {container} from "../../config/inversify";
+import {env} from "../../config";
 
 import DocsRoutes from "./docs.route";
 import UserRoutes from "./user.route";
-
-import container from "../../config/inversify";
 import AuthRoutes from "./auth.route";
 
 

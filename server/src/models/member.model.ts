@@ -1,4 +1,4 @@
-import {Optional} from "sequelize";
+import { Optional } from "sequelize";
 
 import {
     Table,
@@ -14,10 +14,8 @@ import {
 } from "sequelize-typescript";
 
 
-import User from "./user.model";
-import Course from "./course.model";
-
-import { TYPEROLE } from './../constants/role.constant';
+import { User, Course } from "./";
+import { TYPEROLE } from './../constants';
 
 interface IMember {
     id?: number;
@@ -27,13 +25,13 @@ interface IMember {
     isBlocked: Boolean;
 }
 
-interface MemberCreationAttributes extends Optional<IMember, "id"> {}
+interface MemberCreationAttributes extends Optional<IMember, "id"> { }
 
 @Table({
     paranoid: true,
     timestamps: true,
 })
-class Member extends Model<IMember, MemberCreationAttributes> {
+export class Member extends Model<IMember, MemberCreationAttributes> {
 
     @AllowNull(false)
     @AutoIncrement
@@ -66,6 +64,3 @@ class Member extends Model<IMember, MemberCreationAttributes> {
     @Column(DataType.BOOLEAN)
     isBlocked!: Boolean;
 }
-
-
-export default Member;

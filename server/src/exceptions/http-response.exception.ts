@@ -1,4 +1,4 @@
-import { IResponse, INextFunction, IRequest } from './../interfaces/api.interface';
+import { IResponse, INextFunction, IRequest } from './../interfaces';
 import { Response } from 'express';
 import httpStatus from 'http-status';
 
@@ -18,7 +18,7 @@ export class HttpResponse {
         this.res = res;
     }
 
-    private json(code: number, message: string, payload: string) {
+    private json(code: number, message: string, payload?: any) {
         this.res.status(code).send({
             code,
             message,
@@ -26,7 +26,7 @@ export class HttpResponse {
         });
     }
 
-    public success(payload: any, message = ``): void {
+    public success(payload?: any, message = ``,): void {
         return this.json(
             HttpResponseStatusCodeEnum.SUCCESS,
             message,
@@ -34,7 +34,7 @@ export class HttpResponse {
         );
     }
 
-    public badRequest(payload: any, message = `Bad Request`): void {
+    public badRequest(message = `Bad Request`, payload?: any): void {
         return this.json(
             HttpResponseStatusCodeEnum.BAD_REQUEST,
             message,
@@ -42,7 +42,7 @@ export class HttpResponse {
         );
     }
 
-    public unauthorized(payload: any, message = `Authorization Failed`): void {
+    public unauthorized(message = `Authorization Failed`, payload?: any): void {
         return this.json(
             HttpResponseStatusCodeEnum.UNAUTHORIZED,
             message,
@@ -50,7 +50,7 @@ export class HttpResponse {
         )
     }
 
-    public fobidden(payload: any, message = `Forbidden`): void {
+    public fobidden(message = `Forbidden`, payload?: any): void {
         return this.json(
             HttpResponseStatusCodeEnum.FORBIDDEN,
             message,
@@ -58,13 +58,31 @@ export class HttpResponse {
         )
     }
 
-    public notFound(payload: any, message = `Not Found`): void {
+    public notFound(message = `Not Found`, payload?: any): void {
 
         return this.json(
             HttpResponseStatusCodeEnum.NOT_FOUND,
             message,
             payload,
         )
+    }
+
+    public otherException(error: any) {
+        if (typeof error === "object") {
+            const errorCode = +error.code || 404;
+            return this.json(errorCode, error.message);
+        }
+
+        if (Array.isArray(error)) {
+            const errors = error.map(err => {
+                return {
+                    code: +err.code,
+                    message: err.message
+                }
+            });
+
+            return this.json(HttpResponseStatusCodeEnum.BAD_REQUEST, "", errors);
+        }
     }
 }
 

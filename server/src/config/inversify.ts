@@ -2,18 +2,30 @@ import "reflect-metadata";
 
 import { Container } from "inversify";
 
-import UserService from "../services/user.service";
-import UserController from "../controllers/user.controller";
+import {
+    UserService,
+    TokenService,
+    AuthService
+} from "../services";
 
-import AuthController from "../controllers/auth.controller";
-import AuthValidation from "../validations/auth.validation";
-const container = new Container({defaultScope: "Singleton"});
-
-container.bind<AuthController>("AuthController").to(AuthController);
-container.bind<AuthValidation>("AuthValidation").to(AuthValidation);
-
-container.bind<UserService>("UserService").to(UserService);
-container.bind<UserController>("UserController").to(UserController);
+import {
+    UserController,
+    AuthController,
+} from "../controllers";
 
 
-export default container;
+import { AuthValidation } from "../validations";
+
+const existContainer = new Container({ defaultScope: "Singleton" });
+
+existContainer.bind<AuthController>("AuthController").to(AuthController);
+existContainer.bind<AuthValidation>("AuthValidation").to(AuthValidation);
+existContainer.bind<AuthService>("AuthService").to(AuthService);
+
+existContainer.bind<UserService>("UserService").to(UserService);
+existContainer.bind<UserController>("UserController").to(UserController);
+
+existContainer.bind<TokenService>("TokenService").to(TokenService);
+
+
+export const container = existContainer;

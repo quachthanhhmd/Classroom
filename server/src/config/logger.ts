@@ -1,6 +1,6 @@
 import winston from "winston";
 
-import env from "./env";
+import { env} from "./";
 
 const enumerateErrorFormat = winston.format((info): winston.Logform.TransformableInfo => {
     if (info instanceof Error) {
@@ -9,7 +9,7 @@ const enumerateErrorFormat = winston.format((info): winston.Logform.Transformabl
     return info;
 });
 
-const logger: any = winston.createLogger({
+export const logger: any = winston.createLogger({
     level: env.TYPE === 'development' ? 'debug' : 'info',
     format: winston.format.combine(
         enumerateErrorFormat(),
@@ -23,5 +23,3 @@ const logger: any = winston.createLogger({
         }),
     ],
 });
-
-export default logger;

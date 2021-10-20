@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import User from '../models/user.model'
+import { HttpResponse } from '../exceptions/http-response.exception';
 
 //export interface IUserRequest e Request & User;
 export interface IRequest extends Request {};
 export interface INextFunction extends NextFunction {};
 
-export interface IResponse extends Response {
-    
-    composer?: any;
-}
+
+export interface IResponse extends Response {};

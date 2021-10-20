@@ -1,8 +1,8 @@
-import {Optional } from "sequelize";
+import { Optional } from "sequelize";
 import {
-    Table, 
-    Column, 
-    Model, 
+    Table,
+    Column,
+    Model,
     DataType,
     AutoIncrement,
     PrimaryKey,
@@ -15,9 +15,10 @@ import {
     BelongsTo,
     ForeignKey
 } from "sequelize-typescript";
-import User from "./user.model";
 
-import {TYPETOKEN} from "../constants/token.constant";
+
+import { User } from "./";
+import { TYPETOKEN } from "../constants";
 
 
 
@@ -36,7 +37,7 @@ interface TokenCreationAttribute extends Optional<IToken, "id"> { };
     timestamps: true,
     paranoid: false,
 })
-class Token extends Model<IToken, TokenCreationAttribute> {
+export class Token extends Model<IToken, TokenCreationAttribute> {
 
     @AllowNull(false)
     @PrimaryKey
@@ -47,7 +48,7 @@ class Token extends Model<IToken, TokenCreationAttribute> {
     @AllowNull(false)
     @Index("token-index")
     @Column(DataType.STRING)
-    token!:string;
+    token!: string;
 
     @AllowNull(false)
     @Column(DataType.ENUM(TYPETOKEN.VERIFY_EMAIL, TYPETOKEN.REFRESH, TYPETOKEN.RESET_PASSWORD))
@@ -65,6 +66,3 @@ class Token extends Model<IToken, TokenCreationAttribute> {
     @BelongsTo(() => User)
     user!: User
 }
-
-
-export default Token;

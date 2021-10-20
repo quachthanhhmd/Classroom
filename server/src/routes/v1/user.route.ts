@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { IRoute } from './../../interfaces/route.interface';
 import { injectable, inject } from 'inversify';
 
-import UserController from '../../controllers/user.controller';
+import { IRoute } from './../../interfaces';
+import { UserController } from '../../controllers';
 
 
 

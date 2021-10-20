@@ -1,11 +1,11 @@
 import { Sequelize } from 'sequelize-typescript'
 import path from "path";
 
-import env from "./env";
+import { env } from "./";
 
-console.log(path.join(__dirname, "../models"));
+console.log(env);
 
-const sequelize = new Sequelize({
+export const sequelize = new Sequelize({
   database: env.DB.DB_DATABASE_NAME,
   dialect: env.DB.DB_DIALECT,
   username: env.DB.DB_USERNAME,
@@ -13,5 +13,3 @@ const sequelize = new Sequelize({
   storage: ':memory:',
   models: [path.join(__dirname, "../models")]
 })
-
-export default sequelize;

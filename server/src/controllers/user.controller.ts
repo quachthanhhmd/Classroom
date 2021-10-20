@@ -1,17 +1,15 @@
 import "reflect-metadata"
 
-import httpStatus from "http-status";
-
-import { ICreateUser } from './../interfaces/user.interface';
-import { IRequest, IResponse } from './../interfaces/api.interface';
 import { inject, injectable } from "inversify";
 
-import UserService from "../services/user.service";
+import { ICreateUser } from './../interfaces/user.interface';
+import { IRequest, IResponse } from './../interfaces';
+import { UserService } from "../services";
 
 
 
 @injectable()
-class UserController {
+export class UserController {
 
     constructor(
         @inject("UserService") private readonly userService: UserService) { }
@@ -20,4 +18,4 @@ class UserController {
 }
 
 
-export default UserController;
+ 

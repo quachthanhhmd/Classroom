@@ -41,7 +41,7 @@ interface UserCreationAttibutes extends Optional<IUser, "id"> {}
     timestamps: true,
     paranoid: true,
 })
-class User extends Model<IUser, UserCreationAttibutes> {
+export class User extends Model<IUser, UserCreationAttibutes> {
 
     @PrimaryKey
     @AutoIncrement
@@ -104,5 +104,3 @@ class User extends Model<IUser, UserCreationAttibutes> {
     @HasMany(() => Member)
     memberList?: Member[];
 };  
-
-export default User;
