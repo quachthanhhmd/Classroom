@@ -1,13 +1,13 @@
 import { createServer } from 'http';
 
-import app from './app'
-
+import App from './app'
 import logger from "./config/logger";
-
-
+import { applyHttpResponseCompose } from './exceptions/http-response.exception';
+import IndexRoutes from "./routes/v1/index";
 
 const port = parseInt(process.env.PORT || '3000')
 
+const app: App = new App(IndexRoutes, [applyHttpResponseCompose])
 
 const server = createServer(app.httpServer);
 

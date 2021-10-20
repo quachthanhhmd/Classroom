@@ -30,9 +30,9 @@ interface IUser {
     firstName: string,
     lastName: string,
     gender: string,
-    birthday: string,
-    isVerified: Boolean,
-    isBlocked: Boolean,
+    birthDay: Date,
+    isVerified?: Boolean,
+    isBlocked?: Boolean,
 }
 
 interface UserCreationAttibutes extends Optional<IUser, "id"> {}
@@ -83,18 +83,19 @@ class User extends Model<IUser, UserCreationAttibutes> {
 
 
 
-    @Is(function passwordValidate(value: string): void {
-        if (!regexPassword.test(value)) {
-          throw new Error(`Password must have Uppercase, lowercase, number, special characters, and more than 8 characters.`)
-        }
-      })
     @AllowNull(false)
     @Column(DataType.STRING)
-    password!: string;
-    set setPassword(value: string){
+    set password(value: string){
+
+        if (!regexPassword.test(value)) {
+            throw new Error(`Password must have Uppercase, lowercase, number, special characters, and more than 8 characters.`)
+          }
 
         const passwordHash : string = initPasswordHash(value);
         this.setDataValue("password", passwordHash);
+    }
+    get password(): string {
+        return this.getDataValue("password");
     }
 
     @HasMany(() => Token)

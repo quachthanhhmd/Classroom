@@ -5,6 +5,8 @@ import User from "../models/user.model";
 
 import { ICreateUser } from "../interfaces/user.interface";
 
+import sequelize from "../config/db";
+
 
 @injectable()
 class UserService {
@@ -19,12 +21,13 @@ class UserService {
     public findUserById = async (id: number): Promise<User | null> => {
 
         const user = await User.findByPk(id);
-
+        
         return user;
     };
+    
+    public createUser = async (userBody: ICreateUser): Promise<User> => {
 
-    public createUser = async (userBody: ICreateUser): Promise<void> => {
-
+       return await User.create(userBody); 
     }
 }
 
