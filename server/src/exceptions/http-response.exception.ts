@@ -8,6 +8,7 @@ export enum HttpResponseStatusCodeEnum {
     BAD_REQUEST = httpStatus.BAD_REQUEST,
     UNAUTHORIZED = httpStatus.UNAUTHORIZED,
     FORBIDDEN = httpStatus.FORBIDDEN,
+    INTERNAL_SERVER_ERROR = httpStatus.INTERNAL_SERVER_ERROR,
     NOT_FOUND = httpStatus.NOT_FOUND,
 }
 
@@ -58,6 +59,13 @@ export class HttpResponse {
         )
     }
 
+    public internalServerError(message = `Internal Server Error`, payload?: any): void {
+        return this.json(
+            HttpResponseStatusCodeEnum.INTERNAL_SERVER_ERROR,
+            message,
+            payload
+        )
+    }
     public notFound(message = `Not Found`, payload?: any): void {
 
         return this.json(

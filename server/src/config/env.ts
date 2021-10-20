@@ -20,26 +20,26 @@ const envSchema: Joi.ObjectPropertiesSchema = Joi.object()
     })
     .unknown();
 
-const { value: enviroment, error } = envSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
+const { value: env, error } = envSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
 
 if (error) {
     throw new Error(`Config validation error: ${error.message}`);
 }
 
-export const env = {
-    TYPE: enviroment.TYPE,
-    PORT: enviroment.PORT,
+export default {
+    TYPE: env.TYPE,
+    PORT: env.PORT,
     DB: {
-        DB_DATABASE_NAME: enviroment.DB_DATABASE_NAME,
-        DB_DATABASE_HOST: enviroment.DB_DATABASE_HOST,
-        DB_DATABASE_PORT: enviroment.DB_DATABASE_PORT,
-        DB_PASSWORD: enviroment.DB_PASSWORD,
-        DB_DIALECT: enviroment.DB_DIALECT,
-        DB_USERNAME: enviroment.DB_USERNAME,
+        DB_DATABASE_NAME: env.DB_DATABASE_NAME,
+        DB_DATABASE_HOST: env.DB_DATABASE_HOST,
+        DB_DATABASE_PORT: env.DB_DATABASE_PORT,
+        DB_PASSWORD: env.DB_PASSWORD,
+        DB_DIALECT: env.DB_DIALECT,
+        DB_USERNAME: env.DB_USERNAME,
     },
     TOKEN: {
-        TOKEN_SERCET: enviroment.TOKEN_SERCET,
-        TOKEN_EXPIRE_DAY: enviroment.TOKEN_EXPIRE_DAY,
-        TOKEN_EXPIRE_MINUTES: enviroment.TOKEN_EXPIRE_MINUTES
+        TOKEN_SERCET: env.TOKEN_SERCET,
+        TOKEN_EXPIRE_DAY: env.TOKEN_EXPIRE_DAY,
+        TOKEN_EXPIRE_MINUTES: env.TOKEN_EXPIRE_MINUTES
     },
 }

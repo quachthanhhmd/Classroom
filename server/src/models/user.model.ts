@@ -1,9 +1,9 @@
 import { GENDER } from './../constants/gender.constant';
-import {Optional } from "sequelize";
+import { Optional } from "sequelize";
 import {
-    Table, 
-    Column, 
-    Model, 
+    Table,
+    Column,
+    Model,
     DataType,
     AutoIncrement,
     PrimaryKey,
@@ -16,12 +16,11 @@ import {
     Is
 } from "sequelize-typescript";
 
-import {initPasswordHash} from "../config/bcrypt";
+import { initPasswordHash } from "../config/bcrypt";
 
-import Token from "./token.model";
-import Member from "./member.model";
+import { Token, Member } from "./";
 
-const regexPassword = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])([a-zA-Z0-9]{8,})$/;
+
 
 interface IUser {
     id?: number,
@@ -35,7 +34,7 @@ interface IUser {
     isBlocked?: Boolean,
 }
 
-interface UserCreationAttibutes extends Optional<IUser, "id"> {}
+interface UserCreationAttibutes extends Optional<IUser, "id"> { }
 
 @Table({
     timestamps: true,
@@ -75,9 +74,9 @@ export class User extends Model<IUser, UserCreationAttibutes> {
     @Default(false)
     @Column(DataType.BOOLEAN)
     isVerified!: boolean;
-    
+
     @AllowNull(false)
-    @Default(false) 
+    @Default(false)
     @Column(DataType.BOOLEAN)
     isBlocked!: boolean;
 
@@ -85,13 +84,17 @@ export class User extends Model<IUser, UserCreationAttibutes> {
 
     @AllowNull(false)
     @Column(DataType.STRING)
-    set password(value: string){
+    set password(value: string) {
 
-        if (!regexPassword.test(value)) {
-            throw new Error(`Password must have Uppercase, lowercase, number, special characters, and more than 8 characters.`)
-          }
+        if (value.length < 8) {
+            throw new Error('password must be at least 8 characters');
+        }
 
-        const passwordHash : string = initPasswordHash(value);
+        if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
+            throw new Error('password must contain at least 1 letter and 1 number');
+        }
+
+        const passwordHash: string = initPasswordHash(value);
         this.setDataValue("password", passwordHash);
     }
     get password(): string {
@@ -103,4 +106,4 @@ export class User extends Model<IUser, UserCreationAttibutes> {
 
     @HasMany(() => Member)
     memberList?: Member[];
-};  
+};

@@ -2,9 +2,9 @@ import { Router } from 'express';
 import { IRoute } from './../../interfaces/route.interface';
 import { injectable, inject } from 'inversify';
 
-import { AuthController} from '../../controllers';
+import { AuthController } from '../../controllers';
 import { AuthValidation } from "../../validations";
-import validate from "../../middlewares/validate.middleware";
+import { validate } from "../../middlewares";
 
 @injectable()
 class AuthRoutes {
@@ -33,7 +33,7 @@ class AuthRoutes {
             "/signin",
             validate(this._authValidation.SignInValidation),
             this._authController.signIn
-            );
+        );
 
     }
 };
@@ -77,7 +77,7 @@ export default AuthRoutes;
  *                 type: string
  *             example:
  *               email: quachthanhhmd05@gmail.com
- *               password: Thanhdeptrai123!
+ *               password: Thanhdeptrai123
  *               firstName: Hai
  *               lastName: Thanh
  *               gender: male
@@ -112,7 +112,7 @@ export default AuthRoutes;
  *                  type: string
  *              example:
  *                username: quachthanhhmd05@gmail.com
- *                password: Thanhdeptrai123!
+ *                password: Thanhdeptrai123
  *
  *     responses:
  *       "200":

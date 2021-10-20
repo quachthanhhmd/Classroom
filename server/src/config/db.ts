@@ -1,9 +1,9 @@
 import { Sequelize } from 'sequelize-typescript'
 import path from "path";
 
-import { env } from "./";
+import  env  from "./env";
 
-console.log(env);
+import {User, Token, Member, Course} from "../models";
 
 export const sequelize = new Sequelize({
   database: env.DB.DB_DATABASE_NAME,
@@ -11,5 +11,5 @@ export const sequelize = new Sequelize({
   username: env.DB.DB_USERNAME,
   password: env.DB.DB_PASSWORD,
   storage: ':memory:',
-  models: [path.join(__dirname, "../models")]
+  models: [User, Token, Member, Course]
 })

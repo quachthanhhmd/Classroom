@@ -19,7 +19,6 @@ export class AuthService {
 
         if (!user || !this._userService.isPasswordMatch(user.password, password))
             return null;
-
         return user;
     }
 }

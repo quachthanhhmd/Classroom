@@ -5,7 +5,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import moment, { parseTwoDigitYear } from "moment";
 import { inject, injectable } from "inversify";
 
-import { env } from "../config";
+import  env from "../config/env";
 import { Token } from "../models";
 import { ITokenAttributes, IPayload, IResponse } from './../interfaces';
 import { TYPETOKEN } from "../constants";

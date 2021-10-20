@@ -27,13 +27,13 @@ export class AuthController {
             const userBody: ICreateUser = req.body;
 
             const existUser = await this._userService.findUserbyEmail(userBody.email);
-            if (!existUser) {
+            if (existUser) {
                 return res.composer.badRequest(USER_EXIST);
             }
 
             const newUser = await this._userService.createUser(userBody);
-            if (newUser) {
-                return res.composer.badRequest();
+            if (!newUser) {
+                return res.composer.internalServerError();
             }
 
             return res.composer.success({ user: newUser });

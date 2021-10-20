@@ -1,6 +1,6 @@
 import winston from "winston";
 
-import { env} from "./";
+import  env from "./env";
 
 const enumerateErrorFormat = winston.format((info): winston.Logform.TransformableInfo => {
     if (info instanceof Error) {

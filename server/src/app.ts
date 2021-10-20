@@ -3,8 +3,8 @@ import cors from "cors";
 //----
 
 import { IRoute } from './interfaces';
-import { successHandler, errorHandler, env, sequelize} from './config';
-
+import { successHandler, errorHandler, sequelize} from './config';
+import env from "./config/env";
 
 class App {
     public httpServer: express.Application;
@@ -34,7 +34,7 @@ class App {
     }
 
     private initializeDatabase() {
-        sequelize;
+         sequelize.sync();
     }
     private initializeRoutes(router: IRoute) {
 
