@@ -1,9 +1,8 @@
 import { Sequelize } from 'sequelize-typescript'
-import path from "path";
 
-import  env  from "./env";
+import env from "./env";
 
-import {User, Token, Member, Course} from "../models";
+import { User, Token, Member, Course } from "../models";
 
 export const sequelize = new Sequelize({
   database: env.DB.DB_DATABASE_NAME,
@@ -11,9 +10,13 @@ export const sequelize = new Sequelize({
   username: env.DB.DB_USERNAME,
   password: env.DB.DB_PASSWORD,
   storage: ':memory:',
-  models: [User, Token, Member, Course]
+  models: [User, Token, Member, Course],
+  query: {
+    raw: true,
+  }
 })
 
 export const connection = () => {
   sequelize;
+  //sequelize.sync({ force: true });
 }

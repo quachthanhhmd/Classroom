@@ -15,14 +15,14 @@ import {
 
 
 import { User, Course } from "./";
-import { TYPEROLE } from './../constants';
+import { TYPEROLE, MEMBERSTATE } from './../constants';
 
 interface IMember {
     id?: number;
     userId: number;
     courseId: number;
-    role: string;
-    type: string;
+    role?: string;
+    type?: string;
 }
 
 interface MemberCreationAttributes extends Optional<IMember, "id"> { }
@@ -60,7 +60,7 @@ export class Member extends Model<IMember, MemberCreationAttributes> {
     role!: string;
 
     @AllowNull(false)
-    @Default(false)
-    @Column(DataType.BOOLEAN)
-    isBlocked!: Boolean;
+    @Default(MEMBERSTATE.SPENDING)
+    @Column(DataType.ENUM(MEMBERSTATE.ACCEPT, MEMBERSTATE.BLOCKED, MEMBERSTATE.REJECT, MEMBERSTATE.SPENDING))
+    type!: string;
 }

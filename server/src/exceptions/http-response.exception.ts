@@ -1,5 +1,5 @@
 import { IResponse, INextFunction, IRequest } from './../interfaces';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import httpStatus from 'http-status';
 
 
@@ -95,7 +95,7 @@ export class HttpResponse {
 }
 
 export function applyHttpResponseCompose(
-    req: IRequest,
+    req: any,
     res: IResponse,
     next: INextFunction): void {
     res.composer = new HttpResponse(res);

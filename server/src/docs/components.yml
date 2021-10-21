@@ -274,15 +274,15 @@ components:
         message:
           type: string
   responses:
-    DuplicateUsername:
-      description: Username already taken
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
             $ref: "#/components/schemas/Error"
           example:
             code: 400
-            message: Username already taken
+            message: Bad Request
     Unauthorized:
       description: Unauthorized
       content:

@@ -1,8 +1,9 @@
+import { Request } from "express";
 import { IRequest, IResponse, INextFunction } from "../interfaces";
 import Joi from "joi";
 import pick from "../utils/pick";
 
-export const validate = (schema: object) => (req: IRequest, res: IResponse, next: INextFunction) => {
+export const validate = (schema: object) => (req: any, res: IResponse, next: INextFunction) => {
 
 
     const spreadSchema = pick(schema, ["params", "query", "body"]);

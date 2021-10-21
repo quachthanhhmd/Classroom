@@ -14,5 +14,22 @@ export class UserValidation {
                 id: Joi.number().required(),
             }
         })
-    } 
+    }
+
+    public getCourseUser() {
+        return Joi.object().keys({
+            query: {
+                page: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ).default(0),
+                size: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ).default(0),
+                order: Joi.string(),
+                search: Joi.string(),
+            }
+        })
+    }
 }

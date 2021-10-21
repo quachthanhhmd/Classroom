@@ -24,6 +24,19 @@ export class UserService {
     };
 
     /**
+     * Check user exists or not
+     * @param {number} id 
+     * @returns {Promise<Boolean>}
+     */
+    public isUserExist = async (id: number): Promise<Boolean> => {
+        const user = await this.findUserById(id);
+
+        if (user)
+            return true;
+        return false;
+    }
+
+    /**
      * Find User by email
      * @param {string} email 
      * @returns 
@@ -47,6 +60,7 @@ export class UserService {
         return await User.create(userBody);
     }
 
+
     /**
      * Get only information of user
      * @param {number} id 
@@ -54,7 +68,7 @@ export class UserService {
      */
     public getInforById = async (id: number): Promise<User | null> => {
         return await User.findOne({
-            attributes: ["id", "firstName", "lastName", "gender", "birthDay"],
+            attributes: ["id", "firstName", "lastName", "gender", "birthDay", "email"],
             where: {
                 id: id,
             }

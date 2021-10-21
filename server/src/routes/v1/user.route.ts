@@ -28,6 +28,13 @@ class UserRoutes {
             validate(this._userValidation.getUser),
             this._userController.getUser
         );
+
+        this.router.get(
+            '/',
+            this._authenticate.authenticate(),
+            validate(this._userValidation.getCourseUser),
+            this._userController.getCoursePaging
+        )
     }
 };
 
@@ -55,6 +62,32 @@ export default UserRoutes;
  *         schema: 
  *           type: number 
  *           required: true
+ *     responses:
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ *       "500":
+ *         $ref: '#/components/responses/InternalError' 
+ */
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: Get user's Course List by paging
+ *     tags: [User]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page 
+ *         schema: 
+ *           type: number 
+ *           example: 1
+ *       - in: query
+ *         name: size 
+ *         schema: 
+ *           type: number 
+ *           example: 8
  *     responses:
  *       "404":
  *         $ref: '#/components/responses/NotFound'

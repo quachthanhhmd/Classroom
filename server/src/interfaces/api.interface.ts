@@ -1,9 +1,16 @@
-import { NextFunction, Request, Response } from 'express'
-import { HttpResponse } from '../exceptions/http-response.exception';
-
-//export interface IUserRequest e Request & User;
-export interface IRequest extends Request {};
-export interface INextFunction extends NextFunction {};
+import { User } from './../models';
+import { NextFunction, Request, Response } from 'express';
+import { IPagingParams } from "../models";
 
 
-export interface IResponse extends Response {};
+export interface IRequest extends Request {
+
+};
+export interface INextFunction extends NextFunction { };
+export interface IResponse extends Response { };
+export interface IAuthorizeRequest extends Request {
+    currentUser?: User;
+};
+export interface IPagingRequest extends Request<any, any, any, IPagingParams> {
+    currentUser?: User;
+}

@@ -16,24 +16,26 @@ import {
 
 import { Member } from "./";
 
-interface ICourse {
-    id?: number,
-    name: string,
-    description?: string,
-    code?: string,
-    studentLimit: number,
-    studentExist: number,
-    avatar?: string,
-}
+// interface ICourse {
+//     id?: number,
+//     name: string,
+//     description?: string,
+//     topic?: string,
+//     code?: string,
+//     ownerId: number,
+//     studentLimit: number,
+//     studentExist?: number,
+//     avatarUrl?: string,
+//     backgroundUrl?: string,
+// }
 
-
-interface CourseCreationAttributes extends Optional<ICourse, "id"> { }
+// interface CourseCreationAttributes extends Optional<ICourse, "id"> { }
 
 @Table({
     paranoid: true,
     timestamps: true,
 })
-export class Course extends Model<ICourse, CourseCreationAttributes> {
+export class Course extends Model {
 
     @AllowNull(false)
     @AutoIncrement
@@ -46,27 +48,37 @@ export class Course extends Model<ICourse, CourseCreationAttributes> {
     name!: string;
 
     @AllowNull(false)
-    @Default(generateClassCode(10))
-    @Column(DataType.STRING(10))
+    @Default(generateClassCode(6))
+    @Column(DataType.STRING(6))
     code!: string;
-
 
     @AllowNull(true)
     @Column(DataType.TEXT)
     description?: string;
+
+
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    topic?: string;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
     studentLimit!: number;
 
     @AllowNull(false)
+    @Default(0)
     @Column(DataType.INTEGER.UNSIGNED)
     studentExist!: number;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.STRING)
-    avatar?: string;
+    avatarUrl?: string;
 
+    @AllowNull(true)
+    @Column(DataType.STRING)
+    backgroundUrl?: string;
+
+    // Associate
     @HasMany(() => Member)
     memberList!: Member[];
 }
