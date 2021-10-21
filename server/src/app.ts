@@ -1,10 +1,11 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-//----
+import passport from "passport";
 
 import { IRoute } from './interfaces';
-import { successHandler, errorHandler, sequelize} from './config';
+import { successHandler, errorHandler, connection } from './config';
 import env from "./config/env";
+import { jwtStrategy } from "./config";
 
 class App {
     public httpServer: express.Application;
@@ -34,7 +35,7 @@ class App {
     }
 
     private initializeDatabase() {
-         sequelize.sync();
+        connection();
     }
     private initializeRoutes(router: IRoute) {
 
@@ -59,8 +60,9 @@ class App {
         this.httpServer.use(cors());
         //this.httpServer.options('*', cors());
 
-        //this.httpServer.use(passport.initialize());
-        
+        this.httpServer.use(passport.initialize());
+        passport.use('jwt', jwtStrategy);
+
         middlewares.forEach(middleware => this.httpServer.use(middleware));
     }
 }

@@ -48,6 +48,20 @@ export class UserService {
     }
 
     /**
+     * Get only information of user
+     * @param {number} id 
+     * @returns {Promise<User | null>} is information of user
+     */
+    public getInforById = async (id: number): Promise<User | null> => {
+        return await User.findOne({
+            attributes: ["id", "firstName", "lastName", "gender", "birthDay"],
+            where: {
+                id: id,
+            }
+        })
+    }
+
+    /**
      * check password match
      * @param {string} userPassword 
      * @param {string} inputPassword 

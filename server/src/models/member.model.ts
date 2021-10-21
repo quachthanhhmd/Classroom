@@ -22,7 +22,7 @@ interface IMember {
     userId: number;
     courseId: number;
     role: string;
-    isBlocked: Boolean;
+    type: string;
 }
 
 interface MemberCreationAttributes extends Optional<IMember, "id"> { }

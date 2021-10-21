@@ -45,13 +45,15 @@ export class Course extends Model<ICourse, CourseCreationAttributes> {
     @Column(DataType.STRING)
     name!: string;
 
+    @AllowNull(false)
+    @Default(generateClassCode(10))
+    @Column(DataType.STRING(10))
+    code!: string;
+
+
     @AllowNull(true)
     @Column(DataType.TEXT)
     description?: string;
-
-    @AllowNull
-    @Column(DataType.STRING(8))
-    code!: string
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
@@ -67,4 +69,18 @@ export class Course extends Model<ICourse, CourseCreationAttributes> {
 
     @HasMany(() => Member)
     memberList!: Member[];
+}
+
+
+function generateClassCode(length: number) {
+    const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const charactersLength = characters.length;
+
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+
+    return result;
 }

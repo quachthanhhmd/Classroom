@@ -12,10 +12,19 @@ import { UserService } from "../services";
 export class UserController {
 
     constructor(
-        @inject("UserService") private readonly userService: UserService) { }
+        @inject("UserService") private readonly _userService: UserService) { }
 
-    
+    public getUser = async (req: IRequest, res: IResponse): Promise<void> => {
+        try {
+            const id = +req.params.id;
+
+            const user = await this._userService.getInforById(id);
+
+            return res.composer.success({ user });
+        } catch (err) {
+            res.composer.otherException(err);
+        }
+    }
 }
 
 
- 

@@ -13,10 +13,13 @@ import {
     AuthController,
 } from "../controllers";
 
-
-import { AuthValidation } from "../validations";
+import { Authenticate } from "../middlewares";
+import { AuthValidation, UserValidation } from "../validations";
 
 const existContainer = new Container({ defaultScope: "Singleton" });
+
+
+existContainer.bind<Authenticate>("Authenticate").to(Authenticate);
 
 existContainer.bind<AuthController>("AuthController").to(AuthController);
 existContainer.bind<AuthValidation>("AuthValidation").to(AuthValidation);
@@ -24,6 +27,7 @@ existContainer.bind<AuthService>("AuthService").to(AuthService);
 
 existContainer.bind<UserService>("UserService").to(UserService);
 existContainer.bind<UserController>("UserController").to(UserController);
+existContainer.bind<UserValidation>("UserValidation").to(UserValidation);
 
 existContainer.bind<TokenService>("TokenService").to(TokenService);
 
