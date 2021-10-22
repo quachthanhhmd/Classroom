@@ -1,0 +1,26 @@
+@import "../../utils/scss/background";
+
+.authenticate-main {
+    height: 100%;
+    width: 100%;
+
+    .login-social {
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.dark-mode {
+    background: url($background-login-dark) no-repeat center scroll;
+}
+
+.light-mode {
+    background: url($background-login) no-repeat center scroll;
+}
+
+.toggle-mode-login {
+    position: absolute;
+    top: 5%;
+    right: 10%;
+}
+
