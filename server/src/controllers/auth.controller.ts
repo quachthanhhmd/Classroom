@@ -1,10 +1,11 @@
+import { UNAUTHENTICATED } from './../constants/message/auth.message';
 import "reflect-metadata"
 
 import { inject, injectable } from "inversify";
 
 import { UserService, AuthService, TokenService } from "../services";
 import { IRequest, IResponse, INextFunction } from './../interfaces';
-import { INCORRECT_LOGIN, USER_EXIST } from "../constants";
+import { INCORRECT_LOGIN, TYPETOKEN, USER_EXIST } from "../constants";
 import { ICreateUser } from './../interfaces';
 
 
@@ -67,4 +68,37 @@ export class AuthController {
             return res.composer.otherException(err);
         }
     };
+
+    public refreshToken = async (
+        req: IRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const refreshToken: string = req.body.refreshToken;
+
+            const token = await this._tokenService.verifyToken(refreshToken, TYPETOKEN.REFRESH);
+            if (!token) return res.composer.unauthorized(UNAUTHENTICATED);
+
+            const newToken = await this._tokenService.generateTokenAuth(token!.userId);
+
+            return res.composer.success(newToken);
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    };
+
+    public logout = async (
+        req: IRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const refreshToken = req.body.refreshToken;
+
+            await this._authService.logoutAuth(refreshToken);
+
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);            
+        }
+    }
 }

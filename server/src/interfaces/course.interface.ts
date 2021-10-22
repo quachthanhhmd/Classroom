@@ -1,3 +1,4 @@
+import { number } from "joi";
 import { get } from "lodash";
 
 export interface ICreateCourse {
@@ -17,17 +18,24 @@ export interface IUpdateCourse {
 }
 
 export interface ICourseInfor {
+    id: number,
     name: string,
     description: string,
     topic: string,
     avatarUrl: string,
+    backgroundUrl: string,
 }
 
 export const serializeCourseSummary = (model: any): ICourseInfor | null => {
     if (!model) return null;
 
     return {
-        ...model,
+        id: model.id,
+        name: model.name,
+        description: model.description,
+        topic: model.topic,
+        avatarUrl: model.avatarUrl,
+        backgroundUrl: model.backgroundUrl,
     }
 }
 

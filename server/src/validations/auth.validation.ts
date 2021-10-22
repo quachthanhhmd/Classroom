@@ -39,4 +39,20 @@ export class AuthValidation {
             })
         }
     }
+
+    public RefreshToken() {
+        return {
+            body:  Joi.object().keys({
+                refreshToken: Joi.string().required(),
+            })
+        }
+    }
+
+    public Logout() {
+        return {
+            body: Joi.object().keys({
+                refreshToken: Joi.string().required(),
+            })
+        }
+    }
 }

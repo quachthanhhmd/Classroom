@@ -30,16 +30,17 @@ export class UserController {
             res.composer.otherException(err);
         }
     }
-    
+
     public getCoursePaging = async (
         req: IPagingRequest,
         res: IResponse,
     ): Promise<void> => {
         try {
             const id = req.currentUser!.id;
-            
-            const courseList = await this._courseService.getListCourseUser(id, req.query);
+
+            const courseList = await this._userService.getListCourseUser(id, req.query);
             console.log(courseList);
+            console.log(courseList.data);
             return res.composer.success(serializeCourseList(courseList));
         } catch (err) {
             return res.composer.otherException(err);

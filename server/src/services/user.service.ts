@@ -1,11 +1,13 @@
+import { FindOptions } from 'sequelize/types';
 import 'reflect-metadata';
 
 import { injectable } from "inversify";
 
 
-import { User } from "../models";
+import { User, Course, Member } from "../models";
 import { ICreateUser } from "../interfaces";
 import { comparePasswordHash } from "../config";
+import { filterPagination, IPagingResult, IPagingParams } from "../models";
 
 @injectable()
 export class UserService {
@@ -85,5 +87,24 @@ export class UserService {
         if (comparePasswordHash(userPassword, inputPassword)) return true;
 
         return false;
+    }
+
+    /**
+    * Find list Courses
+    * @param {IPagingParams} queryBody 
+    * @returns {Promise<IPagingResult<Course>>}
+    */
+    public getListCourseUser = async (userId: number, queryBody: IPagingParams): Promise<IPagingResult<Course>> => {
+
+        const whereCondition: FindOptions = {
+            include: [{
+                model: Member,
+                where: {
+                    userId: userId,
+                }
+            }],
+            raw: false,
+        };
+        return await filterPagination(Course, whereCondition, queryBody);
     }
 }

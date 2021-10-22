@@ -72,11 +72,11 @@ export class TokenService {
      * @param {string} type 
      * @returns {Promise<Token | null>}
      */
-    public verifyToken = async (tokenName: string, type: string): Promise<Token> => {
+    public verifyToken = async (tokenName: string, type: string): Promise<Token | null> => {
         const payload = jwt.verify(tokenName, env.TOKEN.TOKEN_SERCET);
         const userId = payload.sub === undefined ? -1 : +payload.sub;
 
-        if (userId === -1) throw new Error();
+        if (userId === -1) return null;
 
         const tokenDoc = await Token.findOne({
             where: {
@@ -89,12 +89,11 @@ export class TokenService {
         });
 
         if (!tokenDoc)
-            throw new Error();
+            return null;
 
         //After verify, we need to remove it out of DB
         //Check again
         await this.removeToken(tokenName, type);
-
 
         return tokenDoc;
     }

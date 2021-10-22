@@ -29,14 +29,5 @@ export class CourseService {
         return newCourse;
     }
 
-    /**
-     * Find list Courses
-     * @param {IPagingParams} queryBody 
-     * @returns {Promise<IPagingResult<Course>>}
-     */
-    public getListCourseUser = async (userId: number, queryBody: IPagingParams): Promise<IPagingResult<Course>> => {
-        console.log(queryBody);
-        const whereCondition: FindOptions = {};
-        return await filterPagination(Course, whereCondition, queryBody);
-    }
+   
 }

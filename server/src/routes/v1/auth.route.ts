@@ -34,7 +34,18 @@ class AuthRoutes {
             validate(this._authValidation.SignInValidation),
             this._authController.signIn
         );
-
+        
+        this.router.post(
+            "/refresh-token",
+            validate(this._authValidation.RefreshToken),
+            this._authController.refreshToken
+        );
+        
+        this.router.post(
+            "/logout",
+            validate(this._authValidation.Logout),
+            this._authController.logout,
+        )
     }
 };
 
@@ -135,4 +146,61 @@ export default AuthRoutes;
  *       "500":
  *          $ref: '#/components/responses/InternalError'
  *
+ */
+
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: Logout
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *             example:
+ *               refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWJhYzUzNDk1NGI1NDEzOTgwNmMxMTIiLCJpYXQiOjE1ODkyOTg0ODQsImV4cCI6MTU4OTMwMDI4NH0.m1U63blB0MLej_WfB7yC2FTMnCziif9X8yzwDEfJXAg
+ *     responses:
+ *       "200":
+ *         description: Logout success
+ *       "404":
+ *         $ref: '#/components/responses/NotFound'
+ */
+
+/**
+ * @swagger
+ * /auth/refresh-token:
+ *   post:
+ *     summary: Refresh Token 
+ *     tags: [Auth]
+ *     requestBody:
+ *       require: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - refreshToken
+ *             properties:
+ *               refreshToken:
+ *                 type: string 
+ *             example: 
+ *               refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+ *     responses:
+ *       "200":
+ *         description: Refresh token success
+ *         $ref: '#/components/Token'
+ *       "401":
+ *          $ref: '#/components/responses/Unauthorized'
+ *                
  */
