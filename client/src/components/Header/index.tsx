@@ -14,7 +14,9 @@ import ThemeMode from '../ThemeMode';
 
 
 const Header = () => {
- 
+
+
+
     return (
         <div className="header-main">
             <div className="header-main___left">
@@ -34,15 +36,23 @@ const Header = () => {
 
             <div className="header-main___right">
                 <div className="header-main___right--theme-mode">
-                    <ThemeMode/>
+                    <ThemeMode />
                 </div>
                 <div className="header-main___right--calendar">
-                    <Button>
+                    <Button
+                        style={{
+                            color: "#ffffff"
+                        }}
+                    >
                         <Event />
                     </Button>
                 </div>
                 <div className="header-main___right--more-feature">
-                    <Button>
+                    <Button
+                        style={{
+                            color: "#ffffff"
+                        }}
+                    >
                         <Add />
                     </Button>
                 </div>

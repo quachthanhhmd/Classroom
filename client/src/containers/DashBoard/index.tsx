@@ -38,24 +38,96 @@ const courseList: ICourseSummary[] = [
         topic: "web NC",
         avatarUrl: "/none-avt.png",
         backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 2,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 3,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 2,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 3,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 2,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 3,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 2,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 3,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 2,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
+    },
+    {
+        id: 3,
+        name: "Lap trinh ung dung web",
+        topic: "web NC",
+        avatarUrl: "/none-avt.png",
+        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
     }
 ]
 
 
-const CourseHeader = () => (
-    <div className="dashboard-main___courses___component--course-info">
-        <div className="dashboard-main___courses___component--name">
-            lap trinh ung dung web
+const CourseHeader = (course: ICourseSummary) => {
+    
+    return (
+        <div className="dashboard-main___courses___component--course-info">
+            <div className="dashboard-main___courses___component--name">
+                {course.name}
+            </div>
+            <div className="dashboard-main___courses___component--topic">
+                {course.topic}
+            </div>
+            <div className="dashboard-main___courses___component--avatar">
+                <img src={course.avatarUrl} alt="ownver" />
+            </div>
         </div>
-        <div className="dashboard-main___courses___component--topic">
-            React
-        </div>
-        <div className="dashboard-main___courses___component--avatar">
-            <img src="/none-avt.png" alt="ownver"/>
-        </div>
-    </div>
-)
-
+    )
+}
 
 const DashBoard = () => {
 
@@ -65,13 +137,18 @@ const DashBoard = () => {
                 Tất cả khóa học
             </div>
             <div className="dashboard-main___courses">
-                <Button>
-                    <Card className="dashboard-main___courses___component">
-                        <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader />}>
-
-                        </CardHeader>
-                    </Card>
-                </Button>
+                {
+                    courseList.map((course: ICourseSummary) => (
+                    
+                        <Button>
+                            <Card  className="dashboard-main___courses___component">
+                                <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader {...course} />}>
+                                </CardHeader>
+                            </Card>
+                        </Button>
+                       
+                    ))
+                }
             </div>
         </div >
     )

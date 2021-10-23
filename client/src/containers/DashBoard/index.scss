@@ -1,5 +1,5 @@
 .dashboard-main {
-    margin: 1rem 1rem 1rem 1rem;
+    margin: 6rem 1rem 1rem 1rem;
 
     &--title {
         font-size: 2rem;
@@ -7,6 +7,13 @@
     }
 
     &___courses {
+        //margin-left: -2rem;
+        margin-right: 1.5rem;
+        
+        > Button {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
         &___component {
             width: 20rem;
             height: 16rem;
