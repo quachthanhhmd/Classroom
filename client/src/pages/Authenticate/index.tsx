@@ -3,10 +3,10 @@ import { useSelector } from "react-redux";
 import Card from '@material-ui/core/Card';
 
 import "./index.scss";
-import Login from "../../components/Login";
+import Login from "../../containers/Login";
 import ThemeMode from "../../components/ThemeMode";
 import { AppState } from "../../reducers";
-import { GoogleButton, FacebookButton } from "../../containers/LoginSocial";
+import { GoogleButton, FacebookButton } from "../../components/LoginSocial";
 
 const changeToggleMode = () => {
     const toggle = document.getElementById("toggle-mode");
@@ -16,7 +16,6 @@ const changeToggleMode = () => {
 const Authenticate = () => {
     const themeMode = useSelector((state: AppState) => state.themeMode!.toggleMode);
 
-    console.log("Mode ne: ", themeMode);
     useEffect(() => {
         changeToggleMode();
     })

@@ -10,8 +10,8 @@ function Main() {
         <div className="App">
             {/* <ThemeMode toggleDark={toggleDark}
                 settoggleDark={settoggleDark} /> */}
-            <Authenticate />
-            {/* <Home/> */}
+            {/* <Authenticate /> */}
+            <Home/>
         </div>
     );
 }

@@ -5,15 +5,16 @@
     //margin: 0.5rem 0 0 0;
     padding: 0.5rem 0.5rem  0.5rem 1rem;
     border-bottom: 1px red solid;
-
+    height: 5rem;
+    
     &___left {
-        padding: 0.4rem 0 0.2rem 0; 
+        padding: 0.3rem 0 0.2rem 0; 
         display: flex;
         justify-content: flex-start;
 
         &--menu {
             margin-right: 1rem;
-           
+            align-self: center;
         }
         &--logo-name{
             font-size: 1.5rem;
@@ -29,12 +30,17 @@
             align-self: center;
             align-items: center;
         }
+        &--theme-mode {
+            height: 2rem;
+        }
+
         &--avatar {
 
             > Button {
                 border-radius: 100%;
                 width: 1.5rem !important;
             }
+
 
 
             img {
