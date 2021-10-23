@@ -1,0 +1,48 @@
+.header-main {
+    display: flex;
+    justify-content: space-between;
+
+    //margin: 0.5rem 0 0 0;
+    padding: 0.5rem 0.5rem  0.5rem 1rem;
+    border-bottom: 1px red solid;
+
+    &___left {
+        padding: 0.4rem 0 0.2rem 0; 
+        display: flex;
+        justify-content: flex-start;
+
+        &--menu {
+            margin-right: 1rem;
+           
+        }
+        &--logo-name{
+            font-size: 1.5rem;
+            align-self: center;
+        }
+    }
+
+    &___right {
+        display: flex;
+        justify-content: flex-end;
+        > * {
+            margin-left: 1rem;
+            align-self: center;
+            align-items: center;
+        }
+        &--avatar {
+
+            > Button {
+                border-radius: 100%;
+                width: 1.5rem !important;
+            }
+
+
+            img {
+                border-radius: 100%;
+                width: 2.5rem;
+                height: auto;
+            }   
+        }
+    }
+}
+

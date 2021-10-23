@@ -1,12 +1,54 @@
 @import "../../utils/scss/background";
 
-.authenticate-main {
+.authenticate {
     height: 100%;
     width: 100%;
+}
+.authenticate-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    flex-direction: column;
+    height: 100%;
 
+    &___form {
+        width: 35rem;
+        margin: 0 auto;
+        //height: 100%;
+        align-self: center;
+       
+        flex-wrap: wrap;
+        &--card {
+            width: 35rem;
+        }
+    }
     .login-social {
         display: flex;
+        margin: 1rem 0 1rem 0;
+        justify-content: space-evenly;
+
+        &--google {
+            font-size: 1rem;
+        }
+
+        &--facebook {
+            font-size: 1rem;
+        }
+    }
+
+    &___other-method-login {
+        margin: 0.5rem 0 0.5rem 0;
+        display: flex;
         justify-content: space-between;
+  
+        &--line {
+            align-self: center;
+            width: 40%; 
+            height: 0px;
+            margin: 0 0.7rem 0 0.7rem;
+            border-top: 1px rgb(109, 109, 109) solid;
+        }
     }
 }
 
@@ -23,4 +65,3 @@
     top: 5%;
     right: 10%;
 }
-

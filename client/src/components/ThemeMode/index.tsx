@@ -1,53 +1,34 @@
 import Switch from "@material-ui/core/Switch";
-import { red } from "@material-ui/core/colors";
-import PropTypes from 'prop-types';
 
-// const useStyles = makeStyles((theme) => ({
-  
-//     // Styling material components
-//     root: {
-//       width: "100%",
-//       height: "100vh",
-//       backgroundColor: theme.palette.background.default,
-//       [theme.breakpoints.down("xs")]: {
-//         paddingTop: theme.spacing(2),
-//       },
-//     },
-//     media: {
-//       height: 56,
-//       paddingTop: "56.25%", // 16:9
-//     },
-//     avatar: {
-//       backgroundColor: red[500],
-//     },
-//   }));
-  
+import DarkModeToggle from "react-dark-mode-toggle";
 
-interface IThemeMode {
-    toggleDark: boolean,
-    settoggleDark: Function,
-}
+import { useSelector, useDispatch } from "react-redux";
 
-const ThemeMode = (props: IThemeMode) => {
+import { AppState } from "../../reducers";
+import { updateThemeMode } from "../../actions/theme-mode.action";
 
-    const {toggleDark, settoggleDark} = props;
 
-    //const classes = useStyles();
-    
-    // Trigger toggle using onChange Switch
-    const handleModeChange = () => {
-      settoggleDark(!toggleDark);
-    };
-    return (
-        <div id="toggle-mode">
-            <Switch
-            checked={toggleDark!}
-            onChange={handleModeChange}
-            name="toggleDark"
-            color="default"
-          />
-        </div>
-    )
+const ThemeMode = () => {
+
+  const toggleMode = useSelector((state: AppState) => state.themeMode!.toggleMode);
+
+  const dispatch = useDispatch();
+
+  //const classes = useStyles();
+
+  // Trigger toggle using onChange Switch
+  const handleModeChange = () => {
+    dispatch(updateThemeMode({ toggleMode }));
+  };
+  return (
+    <div id="toggle-mode">
+      <DarkModeToggle
+        checked={toggleMode!}
+        onChange={handleModeChange}
+        size={60}
+      />
+    </div>
+  )
 }
 
 export default ThemeMode;
