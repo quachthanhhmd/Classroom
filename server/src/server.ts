@@ -5,7 +5,7 @@ import { logger } from "./config";
 import { applyHttpResponseCompose } from './exceptions/http-response.exception';
 import IndexRoutes from "./routes/v1/index";
 
-const port = parseInt(process.env.PORT || '3000')
+const port = parseInt(process.env.PORT || '5000')
 
 const app: App = new App(IndexRoutes, [applyHttpResponseCompose])
 

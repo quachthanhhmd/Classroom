@@ -12,16 +12,18 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../reducers";
 import { createCourseModal } from "../../actions";
 import { STUDENT_IN_COURSE, LENGTH_TEXT_CREATE_COURSE } from "../../constants";
-
-
+import { ICreateCourse } from "../../interfaces";
+import { createCourse } from "../../actions/course.action";
 
 function CreateCourse() {
     const [numberInput, setNumberInput] = React.useState("");
     const [nameCourse, setNameCourse] = React.useState("");
     const [topicCourse, setTopicCourse] = React.useState("");
+    const [description, setDescription] = React.useState("");
 
     const isCreateOpen = useSelector((state: AppState) => state.courseManage!.isOpenModal);
     const dispatch = useDispatch();
+
     const handleClose = () => {
         dispatch(createCourseModal(!isCreateOpen));
     };
@@ -35,15 +37,36 @@ function CreateCourse() {
     }
 
     function handleNameInput(e: any) {
-        
         if (typeof e.target.value === "string" && e.target.value.length < LENGTH_TEXT_CREATE_COURSE) {
-            setNameCourse(e.target.value );
+            setNameCourse(e.target.value);
         }
     }
-    function handleTopicInput(e: any) {
 
+    function handleTopicInput(e: any) {
         if (typeof e.target.value === "string" && e.target.value.length < LENGTH_TEXT_CREATE_COURSE) {
-            setTopicCourse(e.target.value );
+            setTopicCourse(e.target.value);
+        }
+    }
+
+    function handleDescriptionInput(e: any) {
+        if (typeof e.target.value === "string" && e.target.value.length < LENGTH_TEXT_CREATE_COURSE) {
+            setDescription(e.target.value);
+        }
+    }
+
+
+    async function handleCreateCourse() {
+        try {
+            const body: ICreateCourse = {
+                name: nameCourse,
+                description: description,
+                topic: topicCourse,
+                studentLimit: Number(numberInput),
+            }
+
+            dispatch(createCourse(body));
+        } catch (err) {
+            console.log(err);
         }
     }
 
@@ -80,6 +103,15 @@ function CreateCourse() {
                     <TextField
                         autoFocus
                         margin="dense"
+                        label="Mô tả khóa học"
+                        type="text"
+                        fullWidth
+                        value={description}
+                        onChange={handleDescriptionInput}
+                    />
+                    <TextField
+                        autoFocus
+                        margin="dense"
                         label="Số lượng học sinh"
                         type="text"
                         value={numberInput}
@@ -91,7 +123,7 @@ function CreateCourse() {
                     <Button color="primary" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button color="primary">
+                    <Button color="primary" onClick={handleCreateCourse}>
                         Create
                     </Button>
                 </DialogActions>

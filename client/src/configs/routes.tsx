@@ -33,9 +33,8 @@ const routeList: IRoute[] = [
 
 
 const renderRoutes = (routes: IRoute[]) => {
-    console.log(123123123);
+ 
 
-    console.log(routes);
     return (
         <Switch>
             {routes.map((route, index) => {
@@ -47,7 +46,7 @@ const renderRoutes = (routes: IRoute[]) => {
                         exact={exact}
                         render={(props) => {
                             try {
-                                console.log(props);
+                              
                                 const token = localStorage.getItem(
                                     env.REACT_APP_ACCESS_TOKEN
                                 );
@@ -56,9 +55,7 @@ const renderRoutes = (routes: IRoute[]) => {
 
                                 const user = jwt_decode<IPayload>(token!);
 
-                                // if (authen === false && user.sub)
-                                //     return <Redirect to="/jobs" />;
-
+             
                                 if (authen === true && (!user || !user.sub))
                                     return <Redirect to="/signin" />;
 

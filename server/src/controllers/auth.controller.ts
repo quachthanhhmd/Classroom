@@ -6,7 +6,7 @@ import { inject, injectable } from "inversify";
 import { UserService, AuthService, TokenService } from "../services";
 import { IRequest, IResponse, INextFunction } from './../interfaces';
 import { INCORRECT_LOGIN, TYPETOKEN, USER_EXIST } from "../constants";
-import { ICreateUser } from './../interfaces';
+import { ICreateUser, serializeUserLogin } from './../interfaces';
 
 
 @injectable()
@@ -59,10 +59,10 @@ export class AuthController {
             const tokenCreate = await this._tokenService.generateTokenAuth(user!.id);
 
             return res.composer.success(
-                {
+                serializeUserLogin({
                     user: user,
                     token: tokenCreate,
-                }
+                })
             );
         } catch (err) {
             return res.composer.otherException(err);

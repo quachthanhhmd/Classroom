@@ -42,6 +42,6 @@ export const serializeCourseSummary = (model: any): ICourseInfor | null => {
 export const serializeCourseList = (model: any) => {
     return {
         courses: get(model, "data", []).map(serializeCourseSummary),
-        ...model.pagination,
+        pagination: model.pagination,
     }
 }

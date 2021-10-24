@@ -16,3 +16,18 @@ export interface IInforUser {
     gender: string,
     birthDay: Date,
 }
+
+export const serializeUserLogin = (model: any) => {
+
+    return {
+        user: {
+            id: model.user.id,
+            email: model.user.email,
+            firstName: model.user.firstName,
+            lastName: model.user.lastName,
+            gender: model.user.gender,
+            birthDay: model.user.birthDay,
+        },
+        token: model.token,
+    }
+}

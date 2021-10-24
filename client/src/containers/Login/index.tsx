@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
 import TextField from '@material-ui/core/TextField';
-
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import CardHeader from '@material-ui/core/CardHeader';
 import Button from '@material-ui/core/Button';
 
-
-
 import "./index.scss";
+
+import { useSelector, useDispatch } from "react-redux";
+import { signIn } from "../../actions";
+import { AppState } from "../../reducers";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -42,9 +43,33 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 const Login = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const auth = useSelector((state: AppState) => state.auth);
 
     const classes = useStyles();
-    //const [state, dispatch] = useReducer(reducer, initialState);
+
+    async function signInWithEmailePassword() {
+        if (!email || !password)
+            return;
+
+        dispatch(
+            signIn({
+                email,
+                password,
+            })
+        );
+    }
+    useEffect(() => {
+        if (auth!.isAuth) {
+            history.push("/");
+        }
+    }, [auth!.isAuth, history]);
+
+
     return (
         <div>
             <CardHeader className={classes.header} title="Đăng Nhập" />
@@ -58,8 +83,8 @@ const Login = () => {
                         label="Email"
                         placeholder="Email"
                         margin="normal"
-                    // onChange={handleUsernameChange}
-                    // onKeyPress={handleKeyPress}
+                        onChange={(e) => setEmail(e.target.value)}
+
                     />
                     <TextField
                         //error={state.isError}
@@ -69,9 +94,7 @@ const Login = () => {
                         label="Password"
                         placeholder="Mật khẩu"
                         margin="normal"
-                    // helperText={state.helperText}
-                    // onChange={handlePasswordChange}
-                    // onKeyPress={handleKeyPress}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>
             </CardContent>
@@ -82,7 +105,7 @@ const Login = () => {
                     size="large"
                     color="secondary"
                     className={classes.loginBtn}
-                // onClick={handleLogin}
+                    onClick={signInWithEmailePassword}
                 // disabled={state.isButtonDisabled}
                 >
                     Đăng nhập

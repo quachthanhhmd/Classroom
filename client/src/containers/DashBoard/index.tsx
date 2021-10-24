@@ -1,117 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./index.scss";
 
 import {
     Card,
     CardHeader,
     Button,
-    Modal,
-    Box
 } from "@material-ui/core";
 
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 
-interface ICourseSummary {
-    id: number,
-    name: string,
-    topic: string,
-    avatarUrl: string,
-    backgroundUrl: string,
-}
-
-const courseList: ICourseSummary[] = [
-    {
-        id: 1,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 2,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 3,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 2,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 3,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 2,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 3,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 2,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 3,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 2,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 3,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 2,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    },
-    {
-        id: 3,
-        name: "Lap trinh ung dung web",
-        topic: "web NC",
-        avatarUrl: "/none-avt.png",
-        backgroundUrl: "https://www.gstatic.com/classroom/themes/img_graduation.jpg"
-    }
-]
-
+import { getUserCouseList } from "../../actions/course.action";
+import { AppState } from "../../reducers";
+import { ICourseSummary } from "../../interfaces";
 
 const CourseHeader = (course: ICourseSummary) => {
 
@@ -132,8 +33,17 @@ const CourseHeader = (course: ICourseSummary) => {
 
 
 const DashBoard = () => {
-   
-    
+
+    const history = useHistory();
+
+    const dispatch = useDispatch();
+    const courseList = useSelector((state: AppState) => state.course.data);
+
+
+    useEffect(() => {
+        dispatch(getUserCouseList());
+    }, []);
+
     return (
         <div className="dashboard-main">
             <div className="dashboard-main--title">
