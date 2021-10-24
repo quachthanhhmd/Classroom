@@ -7,11 +7,10 @@
     background-color: #222;
     color: white !important;
     z-index: 1100;
-    
+
     display: flex;
     justify-content: space-between;
 
-    
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     border-bottom: 1px red solid;
     height: 5rem;
@@ -42,6 +41,7 @@
         &--theme-mode {
             height: 2rem;
         }
+
 
         &--avatar {
             > Button {

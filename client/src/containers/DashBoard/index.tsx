@@ -5,7 +5,8 @@ import {
     Card,
     CardHeader,
     Button,
-    CardContent
+    Modal,
+    Box
 } from "@material-ui/core";
 
 
@@ -113,7 +114,7 @@ const courseList: ICourseSummary[] = [
 
 
 const CourseHeader = (course: ICourseSummary) => {
-    
+
     return (
         <div className="dashboard-main___courses___component--course-info">
             <div className="dashboard-main___courses___component--name">
@@ -129,8 +130,10 @@ const CourseHeader = (course: ICourseSummary) => {
     )
 }
 
-const DashBoard = () => {
 
+const DashBoard = () => {
+   
+    
     return (
         <div className="dashboard-main">
             <div className="dashboard-main--title">
@@ -139,14 +142,14 @@ const DashBoard = () => {
             <div className="dashboard-main___courses">
                 {
                     courseList.map((course: ICourseSummary) => (
-                    
+
                         <Button>
-                            <Card  className="dashboard-main___courses___component">
+                            <Card className="dashboard-main___courses___component">
                                 <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader {...course} />}>
                                 </CardHeader>
                             </Card>
                         </Button>
-                       
+
                     ))
                 }
             </div>

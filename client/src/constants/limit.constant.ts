@@ -1,0 +1,2 @@
+export const STUDENT_IN_COURSE = 10000000;
+export const LENGTH_TEXT_CREATE_COURSE = 100;
