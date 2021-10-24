@@ -21,10 +21,10 @@ export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInTyp
     });
 
     const result = await authApi.signIn(data);
-
+    console.log(result.data);
     dispatch({
       type: USER_LOGIN_SUCCESS,
-      payload: result.data,
+      payload: result.data.payload,
     });
   } catch (error) {
     console.log(error);
@@ -54,7 +54,7 @@ export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserH
 
     dispatch({
       type: USER_INFO_SUCCESS,
-      payload: result.data,
+      payload: result.data.payload,
     });
   } catch (error) {
     dispatch({ type: USER_INFO_FAIL });

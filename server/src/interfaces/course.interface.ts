@@ -26,7 +26,26 @@ export interface ICourseInfor {
     backgroundUrl: string,
 }
 
-export const serializeCourseSummary = (model: any): ICourseInfor | null => {
+
+export interface ICourseSummary {
+    id: number,
+    name: string,
+    topic: string,
+    avatarUrl: string,
+}
+
+export const serializeCourseSummary = (model: any): ICourseSummary | null=> {
+    if (!model) return null;
+
+    return {
+        id: model.id,
+        name: model.name,
+        topic: model.topic,
+        avatarUrl: model.avatarUrl
+    }
+}
+
+export const serializeCourseInfor = (model: any): ICourseInfor | null => {
     if (!model) return null;
 
     return {
@@ -41,7 +60,7 @@ export const serializeCourseSummary = (model: any): ICourseInfor | null => {
 
 export const serializeCourseList = (model: any) => {
     return {
-        courses: get(model, "data", []).map(serializeCourseSummary),
+        courses: get(model, "data", []).map(serializeCourseInfor),
         pagination: model.pagination,
     }
 }

@@ -49,8 +49,9 @@ export class AuthController {
         next: INextFunction
     ): Promise<void> => {
         try {
-            const { username, password } = req.body;
-            const user = await this._authService.loginWithEmailAndPassword(username, password);
+            const { email, password } = req.body;
+    
+            const user = await this._authService.loginWithEmailAndPassword(email, password);
 
             if (!user) {
                 return res.composer.badRequest(INCORRECT_LOGIN);

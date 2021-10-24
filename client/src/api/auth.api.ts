@@ -1,11 +1,10 @@
 import axiosClient from "./axios.client";
-import { ISigninInput, ISigninRespone, IUserSummary } from "../interfaces";
-
+import { ISigninInput, ISigninRespone, IUserSummary, IHttpFormat } from "../interfaces";
 
 const authApi = {
     signIn: (body: ISigninInput) => {
         const url = "/v1/auth/signin";
-        return axiosClient.post<ISigninRespone>(url, body);
+        return axiosClient.post<IHttpFormat<ISigninRespone>>(url, body);
     },
     // signUp: (body) => {
     //     const url = "/v1/auth/signup";
@@ -13,7 +12,7 @@ const authApi = {
     // },
     getInfo: (id: number) => {
         const url = `/v1/user/${id}`;
-        return axiosClient.get<IUserSummary>(url);
+        return axiosClient.get<IHttpFormat<IUserSummary>>(url);
     },
 };
 

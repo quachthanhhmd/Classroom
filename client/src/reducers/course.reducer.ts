@@ -47,6 +47,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
         case CREATE_COURSE_SUCCESS:
             action = action as ICreateCourseState;
             state.data.push(action.payload!);
+            console.log(state.data);
             return {
                 ...state,
                 course: action.payload!,

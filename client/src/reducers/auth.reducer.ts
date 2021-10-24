@@ -40,10 +40,10 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
             };
         case USER_LOGIN_SUCCESS:
             action = (action as ISignInType);
-    
+            console.log(action.payload);
             const user = action.payload!.user;
-            const token = action.payload!.token.access;
-            const refreshToken = action.payload!.token.refresh;
+            const token = action.payload!.token.access.token;
+            const refreshToken = action.payload!.token.refresh.token;
             localStorage.setItem(env.REACT_APP_ACCESS_TOKEN, token);
             localStorage.setItem(env.REACT_APP_REFRESH_TOKEN, refreshToken);
 

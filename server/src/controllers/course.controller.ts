@@ -2,7 +2,7 @@ import { ICreateCourse } from './../interfaces/course.interface';
 import "reflect-metadata";
 import { injectable, inject } from "inversify";
 
-import { INextFunction, IRequest, IResponse, IAuthorizeRequest } from './../interfaces';
+import { INextFunction, IRequest, IResponse, IAuthorizeRequest, serializeCourseSummary } from './../interfaces';
 import { CourseService, UserService } from "../services";
 
 
@@ -23,7 +23,7 @@ export class CourseController {
             const courseBody: ICreateCourse = req.body;
 
             const newClass = await this._courseService.createCourse(req.currentUser!.id, courseBody);
-            return  res.composer.success(newClass);
+            return  res.composer.success(serializeCourseSummary(newClass));
         } catch (err) {
             return res.composer.otherException(err);
         }

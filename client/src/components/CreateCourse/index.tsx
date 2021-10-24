@@ -65,6 +65,7 @@ function CreateCourse() {
             }
 
             dispatch(createCourse(body));
+            handleClose();
         } catch (err) {
             console.log(err);
         }

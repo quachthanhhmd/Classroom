@@ -19,6 +19,8 @@ export interface ICourseSummary {
     avatarUrl: string,
 }
 
+
+
 export interface ICreateCourse {
     name: string,
     description: string,

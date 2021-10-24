@@ -52,10 +52,10 @@ const renderRoutes = (routes: IRoute[]) => {
                                 );
 
                                 if (!token && authen !== true) return <Component {...props} />;
-
+                                console.log(token);
                                 const user = jwt_decode<IPayload>(token!);
-
-             
+                                
+                                    
                                 if (authen === true && (!user || !user.sub))
                                     return <Redirect to="/signin" />;
 

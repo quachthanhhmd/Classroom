@@ -25,7 +25,7 @@ const CourseHeader = (course: ICourseSummary) => {
                 {course.topic}
             </div>
             <div className="dashboard-main___courses___component--avatar">
-                <img src={course.avatarUrl} alt="ownver" />
+                <img src={course.avatarUrl ? course.avatarUrl: "/none-avt.png"} alt="ownver" />
             </div>
         </div>
     )
@@ -37,7 +37,7 @@ const DashBoard = () => {
     const history = useHistory();
 
     const dispatch = useDispatch();
-    const courseList = useSelector((state: AppState) => state.course.data);
+    const courseState = useSelector((state: AppState) => state.course);
 
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const DashBoard = () => {
             </div>
             <div className="dashboard-main___courses">
                 {
-                    courseList.map((course: ICourseSummary) => (
+                    courseState.data.map((course: ICourseSummary) => (
 
                         <Button>
                             <Card className="dashboard-main___courses___component">

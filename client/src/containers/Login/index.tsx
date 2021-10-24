@@ -53,6 +53,7 @@ const Login = () => {
     const classes = useStyles();
 
     async function signInWithEmailePassword() {
+        console.log(email, password);
         if (!email || !password)
             return;
 
@@ -67,7 +68,7 @@ const Login = () => {
         if (auth!.isAuth) {
             history.push("/");
         }
-    }, [auth!.isAuth, history]);
+    }, [auth.isAuth, history]);
 
 
     return (

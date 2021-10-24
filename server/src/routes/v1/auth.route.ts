@@ -61,7 +61,7 @@ export default AuthRoutes;
 
 /**
  * @swagger
- * /auth/signup:
+ * /v1/auth/signup:
  *   post:
  *     tags: [Auth]
  *     summary: signup account
@@ -103,7 +103,7 @@ export default AuthRoutes;
 
 /**
  * @swagger
- * /auth/signin:
+ * /v1/auth/signin:
  *   post:
  *     summary: Login by username and password
  *     tags: [Auth]
@@ -151,7 +151,7 @@ export default AuthRoutes;
 
 /**
  * @swagger
- * /auth/logout:
+ * /v1/auth/logout:
  *   post:
  *     summary: Logout
  *     tags: [Auth]
@@ -179,7 +179,7 @@ export default AuthRoutes;
 
 /**
  * @swagger
- * /auth/refresh-token:
+ * /v1/auth/refresh-token:
  *   post:
  *     summary: Refresh Token 
  *     tags: [Auth]

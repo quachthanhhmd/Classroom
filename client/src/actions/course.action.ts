@@ -17,11 +17,12 @@ export const createCourse = (data: ICreateCourse) =>
     async (dispatch: (args: ICreateCourseState) => ICreateCourseState) => {
         try {
             const result = await courseApi.createCourse(data);
-
+            console.log(result);
             if (result.status !== 200) throw new Error();
 
             dispatch({
-                type: CREATE_COURSE_SUCCESS
+                type: CREATE_COURSE_SUCCESS,
+                payload: result.data.payload,
             })
 
         } catch (err) {
@@ -43,7 +44,7 @@ export const getUserCouseList = () =>
             if (result) {
                 dispatch({
                     type: GET_ALL_USER_COURSE_SUCCESS,
-                    payload: result.data,
+                    payload: result.data.payload,
                 });
             }
         } catch (error) {
