@@ -1,0 +1,28 @@
+.avt-profile {
+    position: relative;
+    width: 85%;
+    padding-top: 100%; 
+    margin-bottom: auto;
+    text-align: center;
+
+    padding: 0;
+    margin-top: 1rem;
+    border-radius: 100%;
+    > IconButon {
+        padding: 0 !important;
+        &:hover {
+            padding:0;
+        }
+    }
+    &--image {
+        width: 100%;
+        height: auto;
+    }
+
+    &--icon-upload {
+        position: absolute;
+        bottom: 0;
+        right: 10%;
+        font-size: 2rem !important;
+    }
+}

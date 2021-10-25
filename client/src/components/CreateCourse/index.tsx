@@ -1,3 +1,5 @@
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
     Button,
     Dialog,
@@ -7,8 +9,7 @@ import {
     DialogTitle,
     TextField,
 } from "@material-ui/core";
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+
 // import { AppState } from "../../reducers";
 // import { createCourseModal } from "../../actions";
 import { STUDENT_IN_COURSE, LENGTH_TEXT_CREATE_COURSE } from "../../constants";
@@ -86,7 +87,7 @@ function CreateCourse(props: IOpenModal) {
                 <DialogTitle id="form-dialog-title">Create class</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Enter the name of class and we will create a classroom for you!
+                        Enter some information of course and we will create a classroom for you!
                     </DialogContentText>
                     <TextField
                         autoFocus

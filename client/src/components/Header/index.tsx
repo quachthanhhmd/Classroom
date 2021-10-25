@@ -15,6 +15,7 @@ import {
 import "./index.scss";
 import ThemeMode from '../ThemeMode';
 import AddCourse from "../CreateCourse";
+import Profile from "../Profile";
 
 import { useDispatch } from "react-redux";
 import { createCourseModal, signOut } from "../../actions";
@@ -31,7 +32,7 @@ const Header = () => {
     const [typeOpen, setTypeOpen] = useState("");
 
     const handleClick = (e: any, type: string) => {
-     
+
         setAnchorEl(e.currentTarget);
         setTypeOpen(type);
     };
@@ -58,6 +59,8 @@ const Header = () => {
     return (
         <>
             <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal} setIsOpenModal={handleCloseModal} />
+            <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
+
             <div className="header-main">
 
                 <div className="header-main___left">
@@ -145,7 +148,10 @@ const Header = () => {
                             onClose={handleClose}
                         >
                             <MenuItem
-
+                                onClick={() => {
+                                    setIsOpenModal(true);
+                                    handleClose();
+                                }}
                             >
                                 Thông tin cá nhân
                             </MenuItem>
