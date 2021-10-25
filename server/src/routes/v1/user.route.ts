@@ -50,7 +50,7 @@ export default UserRoutes;
 
 /**
  * @swagger
- * /user/{id}:
+ * /v1/user/{id}:
  *   get:
  *     summary: Get One User by Id.
  *     tags: [User]
@@ -71,7 +71,7 @@ export default UserRoutes;
 
 /**
  * @swagger
- * /user:
+ * /v1/user:
  *   get:
  *     summary: Get user's Course List by paging
  *     tags: [User]

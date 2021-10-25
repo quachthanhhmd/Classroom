@@ -25,7 +25,7 @@ const routeList: IRoute[] = [
         main: () => <HomePage/>
     },
     {
-        path: ROUTES.signin,
+        path: ROUTES.auth,
         exact: true,
         main: () => <AuthenticatePage/>,
     },
@@ -57,12 +57,12 @@ const renderRoutes = (routes: IRoute[]) => {
                                 
                                     
                                 if (authen === true && (!user || !user.sub))
-                                    return <Redirect to="/signin" />;
+                                    return <Redirect to="/auth" />;
 
                                 return <Component {...props} />;
                             } catch (error) {
                                 localStorage.clear();
-                                return <Redirect to="/signin" />;
+                                return <Redirect to="/auth" />;
                             }
                         }}
                     />

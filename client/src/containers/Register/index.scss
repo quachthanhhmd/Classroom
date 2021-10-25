@@ -1,0 +1,8 @@
+.name-input{
+    display: flex;
+    justify-content: space-between;
+    > *{
+        width: 45%;
+        margin: auto;
+    }
+}

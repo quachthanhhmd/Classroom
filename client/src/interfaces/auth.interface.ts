@@ -13,6 +13,8 @@ export interface IUserSummary {
     email: string,
 }
 
+
+
 export interface IUserHeader {
     type: string,
     payload?: IUserSummary,
@@ -28,4 +30,19 @@ export interface ISignInType {
     payload?: ISigninRespone
 }
 
-export type IAuthenAction = ISignInType | IUserHeader;
+//---------------
+export interface ISignUpInput {
+    firstName: string, 
+    lastName: string,
+    birthDay: any,
+    gender: string,
+    email: string,
+    password: string,
+}
+
+export interface ISignUpType {
+    type: string,
+    payload?: null,
+}
+
+export type IAuthenAction = ISignInType | IUserHeader | ISignUpType;

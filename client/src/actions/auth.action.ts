@@ -1,6 +1,14 @@
+import { USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from './../constants';
 import jwt_decode from "jwt-decode";
 import authApi from "../api/auth.api";
-import { ISignInType, ISigninInput, IPayload, IUserHeader } from "../interfaces";
+import {
+  ISignInType,
+  ISigninInput,
+  IPayload,
+  IUserHeader,
+  ISignUpInput,
+  ISignUpType
+} from "../interfaces";
 
 import env from "../configs/env";
 
@@ -19,9 +27,9 @@ export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInTyp
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
-
+  
     const result = await authApi.signIn(data);
-    console.log(result.data);
+    console.log(result);
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: result.data.payload,
@@ -34,6 +42,21 @@ export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInTyp
   }
 };
 
+export const signUp = (data: ISignUpInput) => async (dispatch: (args: ISignUpType) => (ISignUpType)) => {
+
+  try {
+    dispatch({ type: USER_REGISTER_REQUEST });
+    const result = await authApi.signUp(data);
+
+    if (result.status !== 200)
+      throw new Error();
+
+    dispatch({ type: USER_REGISTER_SUCCESS, payload: null });
+
+  } catch (err) {
+    dispatch({ type: USER_REGISTER_FAIL })
+  }
+}
 
 export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserHeader)) => {
   try {

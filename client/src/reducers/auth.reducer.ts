@@ -9,27 +9,33 @@ import {
     USER_LOGIN_FAIL,
     USER_INFO_REQUEST,
     USER_INFO_SUCCESS,
-    USER_INFO_FAIL
+    USER_INFO_FAIL,
+    USER_REGISTER_FAIL,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS
 
 } from "../constants";
 
-interface IAuthState{
+interface IAuthState {
     isAuth: boolean,
     user: IUserSummary | null,
     isLoading: boolean,
     error?: string,
     signUpStatus?: string,
+    
 }
 
-const initialState : IAuthState = {
+const initialState: IAuthState = {
     isAuth: false,
     user: null, // object -> info
     isLoading: false,
     error: "",
-    signUpStatus: "",
+    signUpStatus: ""
 };
 
 const authReducer = (state = initialState, action: IAuthenAction) => {
+
+   
     switch (action.type) {
         case USER_LOGIN_REQUEST:
             return {
@@ -53,6 +59,7 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 isAuth: true,
                 isLoading: false,
                 error: "",
+                signUpStatus: "",
             };
         case USER_LOGIN_FAIL:
             return {
@@ -60,11 +67,13 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 isAuth: false,
                 isLoading: false,
                 error: USER_LOGIN_FAIL,
+                signUpStatus: "",
             };
         case USER_INFO_REQUEST:
             return {
                 ...state,
                 isLoading: true,
+                signUpStatus: "",
             };
         case USER_INFO_SUCCESS:
             return {
@@ -72,6 +81,7 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: (action.payload as IUserSummary),
                 isLoading: false,
                 isAuth: true,
+                signUpStatus: "",
             };
         case USER_INFO_FAIL:
             return {
@@ -79,7 +89,33 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: null,
                 isLoading: false,
                 isAuth: false,
+                signUpStatus: "",
             };
+        case USER_REGISTER_FAIL:
+            return {
+                ...state,
+                user: null,
+                isLoading: false,
+                isAuth: false,
+                signUpStatus: USER_REGISTER_FAIL
+            };
+        case USER_REGISTER_REQUEST:
+            return {
+                ...state,
+                user: null,
+                isLoading: true,
+                isAuth: false,
+                signUpStatus: USER_REGISTER_REQUEST,
+            }
+        case USER_REGISTER_SUCCESS:
+     
+            return {
+                ...state,
+                user: null,
+                isLoading: true,
+                isAuth: false,
+                signUpStatus: USER_REGISTER_SUCCESS
+            }
         default:
             return {
                 ...state

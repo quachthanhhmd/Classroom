@@ -37,7 +37,7 @@ export class AuthController {
                 return res.composer.internalServerError();
             }
 
-            return res.composer.success({ user: newUser });
+            return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);
         }

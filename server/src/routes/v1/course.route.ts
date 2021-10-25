@@ -44,7 +44,7 @@ export default CourseRoute;
 
 /**
  * @swagger
- * /course:
+ * /v1/course:
  *   post: 
  *     summary: Create a new Course
  *     tags: [Course]

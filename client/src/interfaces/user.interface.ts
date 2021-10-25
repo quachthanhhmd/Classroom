@@ -11,4 +11,5 @@ export interface IUserCourseState  {
     payload?: IUserCourse,
 }
 
+
 export type IUserAction = IUserCourseState;
