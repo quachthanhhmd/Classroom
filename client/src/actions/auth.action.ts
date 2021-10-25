@@ -1,3 +1,4 @@
+import { ILogoutType } from './../interfaces/auth.interface';
 import { USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from './../constants';
 import jwt_decode from "jwt-decode";
 import authApi from "../api/auth.api";
@@ -18,7 +19,8 @@ import {
   USER_LOGIN_FAIL,
   USER_INFO_REQUEST,
   USER_INFO_SUCCESS,
-  USER_INFO_FAIL
+  USER_INFO_FAIL,
+  USER_LOGOUT
 } from "../constants";
 
 
@@ -81,5 +83,27 @@ export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserH
     });
   } catch (error) {
     dispatch({ type: USER_INFO_FAIL });
+  }
+};
+
+
+export const signOut = () => async (dispatch: (args: ILogoutType) => (ILogoutType)) => {
+  try {
+    const refreshToken = localStorage.getItem(env.REACT_APP_REFRESH_TOKEN);
+    if (!refreshToken)
+      throw new Error();
+
+    await authApi.logout({
+      refreshToken
+    });
+
+    dispatch({
+      type: USER_LOGOUT,
+    });
+  } catch (error) {
+    console.log(error);
+    dispatch({
+      type: USER_LOGOUT,
+    });
   }
 };

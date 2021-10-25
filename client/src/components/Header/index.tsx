@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Menu as MenuIcon,
     Event,
@@ -17,26 +17,47 @@ import ThemeMode from '../ThemeMode';
 import AddCourse from "../CreateCourse";
 
 import { useDispatch } from "react-redux";
-import { createCourseModal } from "../../actions";
+import { createCourseModal, signOut } from "../../actions";
+
+
+const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
+const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
 
 const Header = () => {
 
     const dispatch = useDispatch();
+    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [typeOpen, setTypeOpen] = useState("");
 
-
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const handleClick = (event: any) => {
-        setAnchorEl(event.currentTarget);
+    const handleClick = (e: any, type: string) => {
+     
+        setAnchorEl(e.currentTarget);
+        setTypeOpen(type);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
+        //setTypeOpen("");
     };
+
+    const handleLogout = () => {
+        dispatch(signOut());
+    }
+
+    const handleCloseModal = (openModal: boolean) => {
+        console.log(openModal, typeOpen);
+
+        // if (!openModal) {
+        //     setTypeOpen("");
+        // }
+        setTypeOpen("");
+        setIsOpenModal(false);
+    }
 
     return (
         <>
-            <AddCourse />
+            <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal} setIsOpenModal={handleCloseModal} />
             <div className="header-main">
 
                 <div className="header-main___left">
@@ -71,7 +92,7 @@ const Header = () => {
                         <IconButton
                             aria-controls="simple-menu"
                             aria-haspopup="true"
-                            onClick={handleClick}
+                            onClick={(e) => handleClick(e, TYPE_MODAL_COURSE)}
                             style={{
                                 color: "#ffffff"
                             }}
@@ -84,12 +105,12 @@ const Header = () => {
                             className="header-main___right--more-features___menu-add"
                             anchorEl={anchorEl}
                             keepMounted
-                            open={Boolean(anchorEl)}
+                            open={Boolean(typeOpen === TYPE_MODAL_COURSE && isOpenModal === false && anchorEl != null)}
                             onClose={handleClose}
                         >
                             <MenuItem
                                 onClick={() => {
-                                    dispatch(createCourseModal(true));
+                                    setIsOpenModal(true);
                                     handleClose();
                                 }}
                             >
@@ -105,33 +126,39 @@ const Header = () => {
                             </MenuItem>
                         </Menu>
 
+                    </div>
+                    <div className="header-main___right--avatar">
+                        <Button
+                            aria-controls="info-menu"
+                            aria-haspopup="true"
+                            onClick={(e) => handleClick(e, TYPE_MODAL_INFO)}
+                        >
+                            <img className="header-main___right--avatar___img" src="/none-avt.png" alt="avt" />
+                        </Button>
+
                         <Menu
                             id="info-menu"
                             className="header-main___right--more-features___menu-info"
                             anchorEl={anchorEl}
                             keepMounted
-                            open={Boolean(anchorEl)}
+                            open={Boolean(typeOpen === TYPE_MODAL_INFO && isOpenModal === false && anchorEl != null)}
                             onClose={handleClose}
                         >
                             <MenuItem
-                                
+
                             >
-                                Thông
+                                Thông tin cá nhân
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
                                     //setJoinOpened(true);
                                     handleClose();
+                                    handleLogout();
                                 }}
                             >
-                                Tham gia lớp học
+                                Đăng xuất
                             </MenuItem>
                         </Menu>
-                    </div>
-                    <div className="header-main___right--avatar">
-                        <Button>
-                            <img className="header-main___right--avatar___img" src="/none-avt.png" alt="avt" />
-                        </Button>
                     </div>
 
                 </div>

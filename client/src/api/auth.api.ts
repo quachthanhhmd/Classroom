@@ -4,7 +4,8 @@ import {
     ISigninRespone,
     IUserSummary,
     IHttpFormat,
-    ISignUpInput
+    ISignUpInput,
+    IRefreshToken
 } from "../interfaces";
 
 const authApi = {
@@ -21,6 +22,14 @@ const authApi = {
         const url = `/v1/user/${id}`;
         return axiosClient.get<IHttpFormat<IUserSummary>>(url);
     },
+    refeshToken: (body: IRefreshToken) => {
+        const url = `/v1/auth/refresh-token`;
+        return axiosClient.post<IHttpFormat<IRefreshToken>>(url, body);
+    },
+    logout: (body: IRefreshToken) => {
+        const url = `/v1/auth/logout`;
+        return axiosClient.post<IHttpFormat<IRefreshToken>>(url, body);
+    }   
 };
 
 export default authApi;

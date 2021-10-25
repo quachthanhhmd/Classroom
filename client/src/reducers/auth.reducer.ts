@@ -12,8 +12,8 @@ import {
     USER_INFO_FAIL,
     USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS
-
+    USER_REGISTER_SUCCESS,
+    USER_LOGOUT
 } from "../constants";
 
 interface IAuthState {
@@ -22,7 +22,7 @@ interface IAuthState {
     isLoading: boolean,
     error?: string,
     signUpStatus?: string,
-    
+
 }
 
 const initialState: IAuthState = {
@@ -35,7 +35,7 @@ const initialState: IAuthState = {
 
 const authReducer = (state = initialState, action: IAuthenAction) => {
 
-   
+
     switch (action.type) {
         case USER_LOGIN_REQUEST:
             return {
@@ -108,13 +108,23 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 signUpStatus: USER_REGISTER_REQUEST,
             }
         case USER_REGISTER_SUCCESS:
-     
+
             return {
                 ...state,
                 user: null,
                 isLoading: true,
                 isAuth: false,
                 signUpStatus: USER_REGISTER_SUCCESS
+            }
+        case USER_LOGOUT:
+            localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
+            localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
+            return {
+                ...state,
+                user: null,
+                isLoading: false,
+                isAuth: false,
+                signUpStatus: ""
             }
         default:
             return {

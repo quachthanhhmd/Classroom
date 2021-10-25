@@ -1,4 +1,4 @@
-import { ITokenResponse } from './token.interface';
+import { ITokenResponse, IRefreshToken } from './token.interface';
 export interface ISigninInput {
     email: string,
     password: string,
@@ -45,4 +45,12 @@ export interface ISignUpType {
     payload?: null,
 }
 
-export type IAuthenAction = ISignInType | IUserHeader | ISignUpType;
+
+export interface ILogoutBody extends IRefreshToken {}
+
+export interface ILogoutType {
+    type: string,
+    payload?: null,
+}
+
+export type IAuthenAction = ISignInType | IUserHeader | ISignUpType | ILogoutType;

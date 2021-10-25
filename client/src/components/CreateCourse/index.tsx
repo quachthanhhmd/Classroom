@@ -9,23 +9,28 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { AppState } from "../../reducers";
-import { createCourseModal } from "../../actions";
+// import { AppState } from "../../reducers";
+// import { createCourseModal } from "../../actions";
 import { STUDENT_IN_COURSE, LENGTH_TEXT_CREATE_COURSE } from "../../constants";
 import { ICreateCourse } from "../../interfaces";
 import { createCourse } from "../../actions/course.action";
 
-function CreateCourse() {
+interface IOpenModal {
+    isOpenModal: boolean,
+    setIsOpenModal: any,
+}
+
+function CreateCourse(props: IOpenModal) {
+    const { isOpenModal, setIsOpenModal } = props;
+
     const [numberInput, setNumberInput] = React.useState("");
     const [nameCourse, setNameCourse] = React.useState("");
     const [topicCourse, setTopicCourse] = React.useState("");
     const [description, setDescription] = React.useState("");
 
-    const isCreateOpen = useSelector((state: AppState) => state.courseManage!.isOpenModal);
     const dispatch = useDispatch();
-
     const handleClose = () => {
-        dispatch(createCourseModal(!isCreateOpen));
+        setIsOpenModal(!isOpenModal);
     };
 
     function handleNumberInput(e: any) {
@@ -74,7 +79,7 @@ function CreateCourse() {
     return (
         <div>
             <Dialog
-                open={isCreateOpen}
+                open={isOpenModal}
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
@@ -121,7 +126,7 @@ function CreateCourse() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button color="primary" onClick={handleClose}>
+                    <Button color="primary" onClick={() => handleClose()}>
                         Cancel
                     </Button>
                     <Button color="primary" onClick={handleCreateCourse}>

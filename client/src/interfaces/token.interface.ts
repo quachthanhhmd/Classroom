@@ -14,3 +14,8 @@ export interface IPayload {
     exp: number;
     type: string;
 }
+
+export interface IRefreshToken {
+    refreshToken: string,
+}
+
