@@ -104,6 +104,29 @@ const Header = () => {
                                 Tham gia lớp học
                             </MenuItem>
                         </Menu>
+
+                        <Menu
+                            id="info-menu"
+                            className="header-main___right--more-features___menu-info"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={Boolean(anchorEl)}
+                            onClose={handleClose}
+                        >
+                            <MenuItem
+                                
+                            >
+                                Thông
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => {
+                                    //setJoinOpened(true);
+                                    handleClose();
+                                }}
+                            >
+                                Tham gia lớp học
+                            </MenuItem>
+                        </Menu>
                     </div>
                     <div className="header-main___right--avatar">
                         <Button>
