@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import {Typography, Card} from '@material-ui/core';
+import { Card} from '@material-ui/core';
 
 import "./index.scss";
 
@@ -16,6 +16,8 @@ const changeToggleMode = () => {
     const toggle = document.getElementById("toggle-mode");
     toggle && toggle.classList.add("toggle-mode-login");
 }
+
+
 
 
 const Authenticate = () => {
@@ -38,8 +40,9 @@ const Authenticate = () => {
     return (
         <div className={`authenticate${themeMode ? " dark-mode" : " light-mode"}`}>
             <ThemeMode />
+            
             <div className="authenticate-main">
-                <form className="authenticate-main___form" noValidate autoComplete="off">
+                <div className="authenticate-main___form">
                     <Card className="authenticate-main___from--card">
                         {isLogin ? <Login /> : <Register />}
                         <div className="authenticate-main___other-method-login">
@@ -69,7 +72,7 @@ const Authenticate = () => {
                             }
                         </div>
                     </Card>
-                </form>
+                </div>
 
             </div>
         </div>

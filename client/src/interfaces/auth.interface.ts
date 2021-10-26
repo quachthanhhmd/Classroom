@@ -34,7 +34,7 @@ export interface ISignInType {
 export interface ISignUpInput {
     firstName: string, 
     lastName: string,
-    birthDay: any,
+    birthDay: Date,
     gender: string,
     email: string,
     password: string,

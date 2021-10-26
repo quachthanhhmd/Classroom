@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-
-import moment from "moment";
-
+import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
     Button,
     TextField,
@@ -10,29 +9,28 @@ import {
     CardActions,
     CardHeader,
     FormControl,
+    FormControlLabel,
     FormLabel,
     Radio,
     RadioGroup,
-    FormControlLabel
+    Box
 } from '@material-ui/core';
+
 
 import "./index.scss";
 
-import { useSelector, useDispatch } from "react-redux";
-import { AppState } from "../../reducers";
+import { useDispatch } from "react-redux";
 import { signUp } from "../../actions";
 import { ISignUpInput } from "../../interfaces";
+import { SignUpValidate } from "../../utils/validation";
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
-            // display: 'flex',
-            // flexWrap: 'wrap',
             width: 600,
             margin: `0 auto`,
             height: "100%",
-            // alignItems: 'center',
-            // justifyContent: 'center'
         },
         loginBtn: {
             marginTop: theme.spacing(2),
@@ -52,125 +50,118 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
+
+
 const Register = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [firstName, setFirstName] = useState<string>("");
-    const [lastName, setLastName] = useState<string>("");
-    const [birthDay, setBirthDay] = useState<string>("");
-    const [gender, setGender] = useState<string>("");
 
-  
+    const { register, handleSubmit, formState: { errors } } = useForm<ISignUpInput>({
+        resolver: yupResolver(SignUpValidate),
+    })
+
     const dispatch = useDispatch();
-    
-
     const classes = useStyles();
 
-    
-
-
-    function handleChangeGender(e: any) {
-
-        if (["female", "male", "other"].includes(e.target.value)) {
-            setGender(e.target.value);
-        }
+    function registerAccount(data: ISignUpInput) {
+        dispatch(signUp(data));
     }
 
-    async function registerAccount() {
-
-        const body: ISignUpInput = {
-            firstName,
-            lastName,
-            gender,
-            birthDay: new Date(birthDay),
-            email,
-            password
-        }
-        dispatch(signUp(body));
-    }
-
-    function handleChangeBirthDay(e: any) {
-        console.log(e.target.value, moment(e.target.value).format("YYYY-MM-DD"));
-        setBirthDay(moment(e.target.value).format("YYYY-MM-DD"));
-    }
     return (
-        <>
+
+        <form onSubmit={handleSubmit(registerAccount)}>
             <CardHeader className={classes.header} title="Đăng Ký" />
+
             <CardContent>
                 <div>
                     <div className="name-input">
-                        <TextField
-                            //error={state.isError}
+                        <div>
+                            <TextField
+                                error={Boolean(errors.firstName)}
+                                fullWidth
+                                label="Họ"
+                                placeholder="Họ"
+                                margin="normal"
+                                {...register("firstName")}
+                                autoFocus
+                                InputLabelProps={{ shrink: true, required: true }}
+                            />
+                            <Box style={{ color: "red" }}>
+                                {errors.firstName && (
+                                    <span>* {errors.firstName.message}</span>
+                                )}
+                            </Box>
+                        </div>
+                        <div>
+                            <TextField
+                                error={Boolean(errors.lastName)}
+                                fullWidth
+                                label="Tên"
+                                placeholder="Tên"
+                                margin="normal"
+                                {...register("lastName")}
+                                autoFocus
+                                InputLabelProps={{ shrink: true, required: true }}
 
-                            id="first-name"
-                            type="text"
-                            label="Họ"
-                            placeholder="Họ"
-                            margin="normal"
-                            value={firstName}
-                            onChange={(e) => setFirstName(e.target.value)}
-                            InputLabelProps={{ shrink: true, required: true }}
-                            required
-                        />
-                        <TextField
-                            //error={state.isError}
-                            id="last-name"
-                            type="text"
-                            label="Tên"
-                            placeholder="Tên"
-                            margin="normal"
-                            value={lastName}
-                            onChange={(e) => setLastName(e.target.value)}
-                            InputLabelProps={{ shrink: true, required: true }}
-                            required
-                        />
+                            />
+                            <Box style={{ color: "red" }}>
+                                {errors.lastName && (
+                                    <span>* {errors.lastName.message}</span>
+                                )}
+                            </Box>
+                        </div>
                     </div>
                     <TextField
-                        //error={state.isError}
+                        error={Boolean(errors.email)}
                         fullWidth
-                        id="email"
                         type="email"
                         label="Email"
                         placeholder="Email"
                         margin="normal"
-                        onChange={(e) => setEmail(e.target.value)}
+                        {...register("email")}
                         InputLabelProps={{ shrink: true, required: true }}
-                        required
                     />
+                    <Box style={{ color: "red" }}>
+                        {errors.email && (
+                            <span>* {errors.email.message}</span>
+                        )}
+                    </Box>
                     <TextField
-                        //error={state.isError}
+                        error={Boolean(errors.password)}
                         fullWidth
                         id="password"
                         type="password"
-                        label="Password"
+                        label="Mật khẩu"
                         placeholder="Mật khẩu"
                         margin="normal"
-                        onChange={(e) => setPassword(e.target.value)}
+                        {...register("password", { required: true })}
                         InputLabelProps={{ shrink: true, required: true }}
-                        required
                     />
+                    <Box style={{ color: "red" }}>
+                        {errors.password && (
+                            <span>* {errors.password.message}</span>
+                        )}
+                    </Box>
                     <TextField
+                        error={Boolean(errors.birthDay)}
                         fullWidth
                         type="date"
                         label="Ngày Sinh"
                         InputLabelProps={{ shrink: true, required: true }}
-                        inputProps={{ max: new Date() }}
                         margin="normal"
-                        value={birthDay}
-                        //defaultValue="2000-06-11"
-                        onChange={handleChangeBirthDay}
-                        required
+                        {...register("birthDay")}
                     />
-
-
                     <FormControl component="fieldset">
                         <FormLabel component="legend">Giới Tính</FormLabel>
-                        <RadioGroup row aria-label="gender" name="gender1" value={gender} onChange={handleChangeGender}>
+                        <RadioGroup row aria-label="gender" {...register("gender")}>
                             <FormControlLabel value="female" control={<Radio />} label="Female" />
                             <FormControlLabel value="male" control={<Radio />} label="Male" />
                             <FormControlLabel value="other" control={<Radio />} label="Other" />
                         </RadioGroup>
                     </FormControl>
+                    <Box style={{ color: "red" }}>
+                        {errors.gender && (
+                            <span>* {errors.gender.message}</span>
+                        )}
+                    </Box>
 
                 </div>
             </CardContent>
@@ -181,13 +172,13 @@ const Register = () => {
                     size="large"
                     color="secondary"
                     className={classes.loginBtn}
-                    onClick={registerAccount}
-                // disabled={state.isButtonDisabled}
+                    onClick={handleSubmit(registerAccount)}
                 >
                     Đăng Ký
                 </Button>
+
             </CardActions>
-        </>
+        </form>
     );
 }
 

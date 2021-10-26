@@ -18,7 +18,7 @@ import AddCourse from "../CreateCourse";
 import Profile from "../Profile";
 
 import { useDispatch } from "react-redux";
-import { createCourseModal, signOut } from "../../actions";
+import { signOut } from "../../actions";
 
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";

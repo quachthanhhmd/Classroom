@@ -1,15 +1,10 @@
-import { ICourseSummary, IPaginationInfo } from './';
 
-
-export interface IUserCourse {
-    courses: ICourseSummary[],
-    pagination: IPaginationInfo,
-}
-
-export interface IUserCourseState  {
-    type: string,
-    payload?: IUserCourse,
+export interface IProfileBody {
+    gender: string,
+    password: string,
+    birthDay: Date,
+    firstName: string,
+    lastName: string
 }
 
 
-export type IUserAction = IUserCourseState;

@@ -1,12 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, {  useEffect } from 'react';
 import { useHistory } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import CardHeader from '@material-ui/core/CardHeader';
-import Button from '@material-ui/core/Button';
+
+
+import {
+    Box,
+    Button,
+    CardHeader,
+    CardActions,
+    CardContent,
+    TextField
+} from '@material-ui/core';
 
 import "./index.scss";
 
@@ -14,16 +21,16 @@ import { useSelector, useDispatch } from "react-redux";
 import { signIn } from "../../actions";
 import { AppState } from "../../reducers";
 
+import { SignInValidate } from "../../utils/validation";
+import { ISigninInput } from '../../interfaces';
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
-            // display: 'flex',
-            // flexWrap: 'wrap',
             width: 600,
             margin: `0 auto`,
             height: "100%",
-            // alignItems: 'center',
-            // justifyContent: 'center'
+
         },
         loginBtn: {
             marginTop: theme.spacing(2),
@@ -34,17 +41,21 @@ const useStyles = makeStyles((theme: Theme) =>
             background: '#212121',
             color: '#fff'
         },
-        card: {
-
-        },
-
     })
 );
 
 
+const LoginError = (err: {message: string}) => {
+    return (
+        <span style={{color: "red"}}>* {err.message}</span>
+    )
+}
+
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+
+    const { register, handleSubmit, formState: { errors } } = useForm<ISigninInput>({
+        resolver: yupResolver(SignInValidate),
+    })
 
     const history = useHistory();
     const dispatch = useDispatch();
@@ -52,16 +63,10 @@ const Login = () => {
 
     const classes = useStyles();
 
-    async function signInWithEmailePassword() {
-        console.log(email, password);
-        if (!email || !password)
-            return;
-
+    function signInWithEmailePassword(data: ISigninInput) {
+        
         dispatch(
-            signIn({
-                email,
-                password,
-            })
+            signIn(data)
         );
     }
     useEffect(() => {
@@ -72,31 +77,37 @@ const Login = () => {
 
 
     return (
-        <div>
+        <form>
             <CardHeader className={classes.header} title="Đăng Nhập" />
             <CardContent>
                 <div>
                     <TextField
-                        //error={state.isError}
+                        error={Boolean(errors.email)}
                         fullWidth
                         id="email"
                         type="email"
                         label="Email"
                         placeholder="Email"
                         margin="normal"
-                        onChange={(e) => setEmail(e.target.value)}
-
+                        {...register("email")}
                     />
+                    <Box>
+                        {errors.email && (<LoginError message={errors!.email.message as string}/>)}
+                    </Box>
                     <TextField
-                        //error={state.isError}
+                        error={Boolean(errors.password)}
                         fullWidth
                         id="password"
                         type="password"
                         label="Password"
                         placeholder="Mật khẩu"
                         margin="normal"
-                        onChange={(e) => setPassword(e.target.value)}
+                        {...register("password")}
+                        
                     />
+                    <Box>
+                        {errors.password && (<LoginError message={errors!.password.message as string}/>)}
+                    </Box>
                 </div>
             </CardContent>
 
@@ -106,13 +117,12 @@ const Login = () => {
                     size="large"
                     color="secondary"
                     className={classes.loginBtn}
-                    onClick={signInWithEmailePassword}
-                // disabled={state.isButtonDisabled}
+                    onClick={handleSubmit(signInWithEmailePassword)}
                 >
                     Đăng nhập
                 </Button>
             </CardActions>
-        </div>
+        </form>
     );
 }
 

@@ -5,3 +5,4 @@ export * from "./token.interface";
 export * from "./course.interface";
 export * from "./pagination.interface";
 export * from "./http.interface";
+export * from "./user.interface";
