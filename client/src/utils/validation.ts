@@ -30,15 +30,16 @@ export const SignInValidate = yup.object({
 export const ProfileValidate = yup.object({
     firstName: yup.string().max(30, "Tối đa 30 ký tự").required("Nhập họ của bạn"),
     lastName: yup.string().max(30, "Tối đa 30 ký tự").required("Nhập tên của bạn"),
-    password: yup
-        .string()
-        .required("Please enter your password")
-        .matches(
-            /^(?=.*[A-Z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-            "Mật khẩu phải bao gồm ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và số",
-        ),
+    // password: yup
+    //     .string()
+    //     .required("Please enter your password")
+    //     .matches(
+    //         /^(?=.*[A-Z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+    //         "Mật khẩu phải bao gồm ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và số",
+    //     ),
     birthDay: yup.date().required("Nhập ngày sinh của bạn"),
     gender: yup.string().oneOf(["male", "female", "other"]).required(),
+    avatarUrl: yup.string(),
 })
 
 export const CreateCourseValidate = yup.object({

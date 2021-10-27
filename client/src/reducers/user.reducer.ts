@@ -1,51 +1,46 @@
 import {
-    GET_ALL_USER_COURSE_SUCCESS,
-    GET_ALL_USER_COURSE_FAIL,
-    GET_ALL_USER_COURSE_REQUEST
+    UPDATE_PROFILE_FAIL, UPDATE_PROFILE_REQUEST,
+    UPDATE_PROFILE_SUCCESS
 } from "../constants";
+import { IProfileBody, IUserAction } from './../interfaces/user.interface';
 
-// import { IUserAction } from "../interfaces";
+interface IInitState {
+    isLoading: boolean,
+    user: IProfileBody | null,
+    error: string,
+}
 
-// const initState = {
-//     data: [],
-//     pagination: {
-//         total: 0,
-//         size: 0,
-//         totalPages: 0,
-//         page: 0,
-//     },
-//     class: {},
-//     isLoading: false,
-// };
+const initState: IInitState = {
+    isLoading: false,
+    user: null,
+    error: ""
+}
 
-// const userReducer = (state = initState, action: IUserAction) => {
+const userReducer = (state = initState, action: IUserAction) => {
 
-//     switch (action.type) {
-//         case GET_ALL_USER_COURSE_REQUEST:
-//             return {
-//                 ...state,
-//                 data: [],
-//                 isLoading: true
-//             }
-//         case GET_ALL_USER_COURSE_SUCCESS:
-//             return {
-//                 ...state,
-//                 data: action.payload?.courses,
-//                 pagination: action.payload?.pagination,
-//                 isLoading: false,
-//             }
-//         case GET_ALL_USER_COURSE_FAIL: {
-//             return {
-//                 ...state,
-//                 data: [],
-//                 isLoading: false,
-//             }
-//         }
-//         default:
-//             return {
-//                 ...state,
-//             };
-//     }
-// }
+    switch (action.type) {
+        case UPDATE_PROFILE_FAIL:
+            return {
+                ...state,
+                isLoading: false,
+                error: "Update fail",
+            }
+        case UPDATE_PROFILE_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+                error: ""
+            }
+        case UPDATE_PROFILE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+            }
+        default:
+            return {
+                ...state,
+            }
+    }
+}
 
-// export default userReducer;
+export default userReducer;

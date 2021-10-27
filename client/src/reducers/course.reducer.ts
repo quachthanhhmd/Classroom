@@ -1,20 +1,13 @@
 import {
-    CREATE_COURSE_REQUEST,
-    CREATE_COURSE_SUCCESS,
-    CREATE_COURSE_FAIL,
-    GET_ALL_USER_COURSE_SUCCESS,
-    GET_ALL_USER_COURSE_FAIL,
-    GET_ALL_USER_COURSE_REQUEST
+    CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
+    CREATE_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL,
+    GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS
 } from "../constants";
-
 import {
-    ICourseAction,
-    ICreateCourse,
-    ICreateCourseState,
-    ICourseSummary,
-    IPaginationInfo,
+    ICourseAction, ICourseSummary, ICreateCourseState, IPaginationInfo,
     IUserCourseState
 } from "../interfaces";
+
 
 interface IInitState {
     data: ICourseSummary[],

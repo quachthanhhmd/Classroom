@@ -1,28 +1,19 @@
-import React, {  useEffect } from 'react';
-import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
-
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
-
 import {
     Box,
-    Button,
-    CardHeader,
-    CardActions,
-    CardContent,
-    TextField
+    Button, CardActions,
+    CardContent, CardHeader, TextField
 } from '@material-ui/core';
-
-import "./index.scss";
-
-import { useSelector, useDispatch } from "react-redux";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React, { useEffect } from 'react';
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { signIn } from "../../actions";
-import { AppState } from "../../reducers";
-
-import { SignInValidate } from "../../utils/validation";
 import { ISigninInput } from '../../interfaces';
+import { AppState } from "../../reducers";
+import { SignInValidate } from "../../utils/validation";
+import "./index.scss";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

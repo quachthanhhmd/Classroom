@@ -1,28 +1,20 @@
-import React from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { useForm } from "react-hook-form";
 import { yupResolver } from '@hookform/resolvers/yup';
 import {
-    Button,
-    TextField,
-    CardContent,
-    CardActions,
-    CardHeader,
-    FormControl,
-    FormControlLabel,
-    FormLabel,
-    Radio,
-    RadioGroup,
-    Box
+    Box, Button, CardActions, CardContent, CardHeader,
+    FormControl, InputLabel,
+    Select, TextField
 } from '@material-ui/core';
-
-
-import "./index.scss";
-
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { signUp } from "../../actions";
 import { ISignUpInput } from "../../interfaces";
 import { SignUpValidate } from "../../utils/validation";
+import "./index.scss";
+
+
+
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -149,13 +141,21 @@ const Register = () => {
                         margin="normal"
                         {...register("birthDay")}
                     />
-                    <FormControl component="fieldset">
-                        <FormLabel component="legend">Giới Tính</FormLabel>
-                        <RadioGroup row aria-label="gender" {...register("gender")}>
-                            <FormControlLabel value="female" control={<Radio />} label="Female" />
-                            <FormControlLabel value="male" control={<Radio />} label="Male" />
-                            <FormControlLabel value="other" control={<Radio />} label="Other" />
-                        </RadioGroup>
+                    <FormControl fullWidth>
+                        <InputLabel htmlFor="signup_gender">
+                            Giới tính
+                        </InputLabel>
+                        <Select
+                            id="signup_gender"
+                            native
+                       
+                            defaultValue="male"
+                            {...register("gender")}
+                        >
+                            <option value="male" style={{ paddingLeft: "0.5rem" }}>Nam</option>
+                            <option value="female" style={{ paddingLeft: "0.5rem" }}>Nữ</option>
+                            <option value="other" style={{ paddingLeft: "0.5rem" }}>Khác</option>
+                        </Select>
                     </FormControl>
                     <Box style={{ color: "red" }}>
                         {errors.gender && (

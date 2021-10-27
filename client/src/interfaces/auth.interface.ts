@@ -11,9 +11,8 @@ export interface IUserSummary {
     birthDay: Date,
     gender: string,
     email: string,
+    avatarUrl?: string,
 }
-
-
 
 export interface IUserHeader {
     type: string,

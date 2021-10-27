@@ -1,20 +1,15 @@
-import React, { useState } from 'react';
-
-import './App.css';
-
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline } from "@material-ui/core";
-
-import ThemeMode from "./components/ThemeMode";
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import './App.css';
 import Main from "./pages/Main";
-import { useSelector } from 'react-redux'
 import { AppState } from "./reducers";
+
 
 function App() {
   const themeMode = useSelector((state: AppState) => state.themeMode?.toggleMode);
-  // const dispatch = useDispatch();
 
-  // const [toggleDark, settoggleDark] = useState(false);
   const darkTheme = createTheme({
     palette: {
       type: "dark",

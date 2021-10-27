@@ -1,20 +1,13 @@
-import jwt_decode from "jwt-decode";
-import authApi from "../api/auth.api";
-import { ISignInType, IUserSummary, IAuthenAction } from "../interfaces";
 import env from "../configs/env";
-
 import {
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_LOGIN_FAIL,
-    USER_INFO_REQUEST,
-    USER_INFO_SUCCESS,
-    USER_INFO_FAIL,
-    USER_REGISTER_FAIL,
+    USER_INFO_FAIL, USER_INFO_REQUEST,
+    USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
-    USER_LOGOUT
+    USER_REGISTER_SUCCESS
 } from "../constants";
+import { IAuthenAction, ISignInType, IUserSummary } from "../interfaces";
+
 
 interface IAuthState {
     isAuth: boolean,

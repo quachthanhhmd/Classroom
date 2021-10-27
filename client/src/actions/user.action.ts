@@ -1,47 +1,27 @@
-import { GET_ALL_USER_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL } from "../constants";
-import { IUserCourseState } from "../interfaces";
+import userApi from "../api/user.api";
+import {
+    UPDATE_PROFILE_FAIL, UPDATE_PROFILE_REQUEST,
+    UPDATE_PROFILE_SUCCESS
+} from "../constants";
+import { IProfileBody, IProfileState } from "../interfaces";
 
-// import userApi from "../api/user.api";
+export const updateProfile = async (data: IProfileBody) =>
+    async (dispatch: (args: IProfileState) => (IProfileState)) => {
+        try {
+            dispatch({
+                type: UPDATE_PROFILE_REQUEST
+            });
+            const result = await userApi.updateProfile(data);
 
-// export const getUserCouseList = () =>
-//     async (dispatch: (args: IUserCourseState) => IUserCourseState) => {
-//         try {
+            if (result.status !== 200) throw new Error();
 
-
-//             let result = await userApi.getAllCourse();
-
-//             if (result.status !== 200)
-//                 throw new Error();
-
-//             if (result) {
-//                 dispatch({
-//                     type: GET_ALL_USER_COURSE_SUCCESS,
-//                     payload: result.data,
-//                 });
-//             }
-//         } catch (error) {
-//             console.log(error);
-//             dispatch({
-//                 type: GET_ALL_USER_COURSE_FAIL,
-//             });
-//         }
-//     };
-
-// // export const getClass = (id) => async (dispatch) => {
-// //     try {
-// //         let result = await classApi.getOne(id);
-
-// //         if (result) {
-// //             dispatch({
-// //                 type: CLASS_CONSTANTS.CLASS_GET_ONE_SUCCESS,
-// //                 payload: result,
-// //             });
-// //         }
-// //     } catch (error) {
-// //         console.log(error);
-// //         dispatch({
-// //             type: CLASS_CONSTANTS.CLASS_GET_ONE_FAIL,
-// //         });
-// //     }
-// // };
-
+            dispatch({
+                type: UPDATE_PROFILE_SUCCESS,
+                payload: result.data.payload,
+            });
+        } catch (err) {
+            dispatch({
+                type: UPDATE_PROFILE_FAIL
+            })
+        }
+    }
