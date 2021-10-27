@@ -17,9 +17,9 @@ import ThemeMode from '../ThemeMode';
 import AddCourse from "../CreateCourse";
 import Profile from "../Profile";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../actions";
-
+import { AppState } from "../../reducers";
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
@@ -27,6 +27,8 @@ const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
 const Header = () => {
 
     const dispatch = useDispatch();
+    const auth = useSelector((state: AppState) => state!.auth);
+
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState("");
@@ -136,7 +138,7 @@ const Header = () => {
                             aria-haspopup="true"
                             onClick={(e) => handleClick(e, TYPE_MODAL_INFO)}
                         >
-                            <img className="header-main___right--avatar___img" src="/none-avt.png" alt="avt" />
+                            <img className="header-main___right--avatar___img" src={auth.user && auth.user.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} alt="avt" />
                         </Button>
 
                         <Menu

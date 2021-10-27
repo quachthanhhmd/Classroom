@@ -1,9 +1,9 @@
-import 'reflect-metadata';
-
-import Joi from "joi";
 import { injectable } from 'inversify';
-
+import Joi from "joi";
+import 'reflect-metadata';
 import { GENDER } from './../constants';
+
+
 
 @injectable()
 export class AuthValidation {

@@ -32,4 +32,16 @@ export class UserValidation {
             }
         })
     }
+
+    public UpdateProfile() {
+        return {
+            body: Joi.object().keys({
+                firstName: Joi.string(),
+                lastName: Joi.string(),
+                birthDay: Joi.date(),
+                gender: Joi.string().valid(GENDER.FEMALE, GENDER.MALE, GENDER.OTHER),
+                avatarUrl: Joi.string(),
+            })
+        }
+    }
 }

@@ -1,8 +1,7 @@
-import {sequelize} from "./config/db";
+import { sequelize } from "./config/db";
 
 (async () => {
     sequelize.sync({
         force: true
     })
-
 })();

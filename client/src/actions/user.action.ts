@@ -5,7 +5,7 @@ import {
 } from "../constants";
 import { IProfileBody, IProfileState } from "../interfaces";
 
-export const updateProfile = async (data: IProfileBody) =>
+export const updateProfile = (data: IProfileBody) =>
     async (dispatch: (args: IProfileState) => (IProfileState)) => {
         try {
             dispatch({

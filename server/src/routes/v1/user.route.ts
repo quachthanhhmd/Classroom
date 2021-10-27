@@ -1,14 +1,13 @@
 import { Router } from 'express';
-import { injectable, inject } from 'inversify';
-
-import { IRoute } from './../../interfaces';
+import { inject, injectable } from 'inversify';
 import { UserController } from '../../controllers';
-import { validate, Authenticate } from "../../middlewares";
+import { Authenticate, validate } from "../../middlewares";
 import { UserValidation } from "../../validations";
+import { IRoute } from './../../interfaces';
+
 
 @injectable()
 class UserRoutes {
-
     public router: IRoute;
 
     constructor(
@@ -19,8 +18,7 @@ class UserRoutes {
         this.router = Router();
         this.initializeRoutes();
     };
-
-
+    
     private initializeRoutes() {
         this.router.get(
             "/:id",
@@ -34,6 +32,13 @@ class UserRoutes {
             this._authenticate.authenticate(),
             validate(this._userValidation.getCourseUser),
             this._userController.getCoursePaging
+        );
+
+        this.router.patch(
+            "/",
+            this._authenticate.authenticate(),
+            validate(this._userValidation.UpdateProfile),
+            this._userController.updateProfile
         )
     }
 };

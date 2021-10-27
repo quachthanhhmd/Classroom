@@ -1,4 +1,3 @@
-
 export interface ICreateUser {
     email: string;
     password: string;
@@ -15,6 +14,15 @@ export interface IInforUser {
     lastName: string,
     gender: string,
     birthDay: Date,
+    avatarUrl?: string,
+}
+
+export interface IUpdateUser {
+    firstName?: string,
+    lastName?: string,
+    gender?: string,
+    birthDay?: Date,
+    avatarUrl?: string,
 }
 
 export const serializeUserLogin = (model: any) => {
@@ -29,5 +37,15 @@ export const serializeUserLogin = (model: any) => {
             birthDay: model.user.birthDay,
         },
         token: model.token,
+    }
+}
+
+export const serializeUserProfile = (model: any) => {
+    return {
+        firstName: model.firstName,
+        lastName: model.lastName,
+        birthDay: model.birthDay,
+        gender: model.gender,
+        avatrUrl: model.avatarUrl,
     }
 }

@@ -4,7 +4,8 @@ import {
     USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS
+    USER_REGISTER_SUCCESS,
+    USER_UPDATE_HEADER
 } from "../constants";
 import { IAuthenAction, ISignInType, IUserSummary } from "../interfaces";
 
@@ -108,6 +109,11 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 isLoading: true,
                 isAuth: false,
                 signUpStatus: USER_REGISTER_SUCCESS
+            }
+        case USER_UPDATE_HEADER:
+            return {
+                ...state,
+                user: (action.payload as IUserSummary),
             }
         case USER_LOGOUT:
             localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);

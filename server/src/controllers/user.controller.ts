@@ -1,13 +1,9 @@
-import { serializeCourseList } from './../interfaces/course.interface';
-import "reflect-metadata"
-
 import { inject, injectable } from "inversify";
-
-import { ICreateUser } from './../interfaces/user.interface';
-import { IRequest, IResponse, IAuthorizeRequest, IPagingRequest } from './../interfaces';
+import "reflect-metadata";
 import { CourseService, UserService } from "../services";
-
-
+import { IAuthorizeRequest, IPagingRequest, IRequest, IResponse } from './../interfaces';
+import { serializeCourseList } from './../interfaces/course.interface';
+import { serializeUserProfile } from './../interfaces/user.interface';
 
 @injectable()
 export class UserController {
@@ -39,9 +35,26 @@ export class UserController {
             const id = req.currentUser!.id;
 
             const courseList = await this._userService.getListCourseUser(id, req.query);
-          
+
             return res.composer.success(serializeCourseList(courseList));
         } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public updateProfile = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const userId = req.currentUser!.id;
+            const body = req.body;
+
+            await this._userService.updateProfile(userId, body);
+            const userAfterUpdate = await this._userService.findUserById(userId);
+
+            return res.composer.success(serializeUserProfile(userAfterUpdate));
+        } catch(err) {
             return res.composer.otherException(err);
         }
     }

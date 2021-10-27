@@ -21,7 +21,7 @@ const routeList: IRoute[] = [
     {
         path: ROUTES.home,
         exact: true,
-        //authen: true,
+        authen: true,
         main: () => <HomePage/>
     },
     {

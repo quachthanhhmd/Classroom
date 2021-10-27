@@ -29,21 +29,22 @@ axiosClient.interceptors.response.use(
   (error) => {
     const originalRequest = error.config;
     if (error.response.status === 401) {
-      if (originalRequest.url === "/v1/auth/refresh-tokens") {
+      if (originalRequest.url === "/v1/auth/refresh-token") {
         localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
         localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
         return;
       }
       axiosClient
-        .post("/v1/auth/refresh-tokens", {
+        .post("/v1/auth/refresh-token", {
           refreshToken:
             localStorage.getItem(env.REACT_APP_REFRESH_TOKEN) || 1,
         })
         .then((res: any) => {
+          console.log(res);
           if (res && res.access) {
             localStorage.setItem(
               env.REACT_APP_ACCESS_TOKEN,
-              res.access.tokens
+              res.access.token
             );
             axios.defaults.headers.common[
               "Authorization"

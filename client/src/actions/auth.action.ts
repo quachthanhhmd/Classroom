@@ -8,7 +8,8 @@ import {
   IPayload,
   IUserHeader,
   ISignUpInput,
-  ISignUpType
+  ISignUpType,
+  IUserSummary
 } from "../interfaces";
 
 import env from "../configs/env";
@@ -20,7 +21,8 @@ import {
   USER_INFO_REQUEST,
   USER_INFO_SUCCESS,
   USER_INFO_FAIL,
-  USER_LOGOUT
+  USER_LOGOUT,
+  USER_UPDATE_HEADER
 } from "../constants";
 
 
@@ -29,7 +31,7 @@ export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInTyp
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
-  
+
     const result = await authApi.signIn(data);
     console.log(result);
     dispatch({
@@ -69,7 +71,7 @@ export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserH
 
     if (!userID)
       throw new Error();
-
+    console.log(userID);
     const result = await authApi.getInfo(userID);
 
     if (!result) {
@@ -107,3 +109,23 @@ export const signOut = () => async (dispatch: (args: ILogoutType) => (ILogoutTyp
     });
   }
 };
+
+
+export const updateUserHeader = (data: IUserSummary) =>
+  async (dispatch: (args: IUserHeader) => (IUserHeader)) => {
+
+    try {
+      const token = localStorage.getItem(env.REACT_APP_ACCESS_TOKEN);
+      const userID: number = jwt_decode<IPayload>(token!)?.sub;
+
+      if (!userID)
+        throw new Error();
+
+      dispatch({
+        type: USER_UPDATE_HEADER,
+        payload: data
+      })
+    } catch (err) {
+      console.log(err);
+    }
+  }

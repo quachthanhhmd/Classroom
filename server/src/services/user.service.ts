@@ -1,13 +1,9 @@
-import { FindOptions } from 'sequelize/types';
-import 'reflect-metadata';
-
 import { injectable } from "inversify";
-
-
-import { User, Course, Member } from "../models";
-import { ICreateUser } from "../interfaces";
+import 'reflect-metadata';
+import { FindOptions } from 'sequelize/types';
 import { comparePasswordHash } from "../config";
-import { filterPagination, IPagingResult, IPagingParams } from "../models";
+import { ICreateUser, IUpdateUser } from "../interfaces";
+import { Course, filterPagination, IPagingParams, IPagingResult, Member, User } from "../models";
 
 @injectable()
 export class UserService {
@@ -95,7 +91,6 @@ export class UserService {
     * @returns {Promise<IPagingResult<Course>>}
     */
     public getListCourseUser = async (userId: number, queryBody: IPagingParams): Promise<IPagingResult<Course>> => {
-
         const whereCondition: FindOptions = {
             include: [{
                 model: Member,
@@ -106,5 +101,21 @@ export class UserService {
             raw: false,
         };
         return await filterPagination(Course, whereCondition, queryBody);
+    }
+
+    /**
+     * Update user
+     * @param {number} userId 
+     * @param {updateUser} userBody 
+     */
+    public updateProfile = async (userId: number, userBody: IUpdateUser): Promise<void> => {
+        await User.update(
+            userBody,
+            {
+                where: {
+                    id: userId
+                }
+            }
+        )
     }
 }

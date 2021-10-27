@@ -30,6 +30,7 @@ interface IUser {
     lastName: string,
     gender: string,
     birthDay: Date,
+    avatarUrl?: string,
     isVerified?: Boolean,
     isBlocked?: Boolean,
 }
@@ -80,7 +81,9 @@ export class User extends Model<IUser, UserCreationAttibutes> {
     @Column(DataType.BOOLEAN)
     isBlocked!: boolean;
 
-
+    @AllowNull(true)
+    @Column(DataType.STRING)
+    avatarUrl!: string;
 
     @AllowNull(false)
     @Column(DataType.STRING)

@@ -5,7 +5,7 @@ export interface IProfileBody {
     birthDay: Date,
     firstName: string,
     lastName: string,
-    avatarUrl: string,
+    avatarUrl?: string,
 }
 
 export interface IProfileState {

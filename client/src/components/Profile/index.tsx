@@ -8,13 +8,15 @@ import {
 import { PhotoCamera } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfile, updateUserHeader } from "../../actions";
 import { storage } from "../../configs/firebase";
 import { IProfileBody } from "../../interfaces";
-import { ProfileValidate } from "../../utils/validation";
-import "./index.scss";
 import { AppState } from "../../reducers";
-import { updateProfile } from "../../actions";
-import { useDispatch, useSelector } from "react-redux";
+import { objectFieldChange } from "../../utils/object-solve";
+import { ProfileValidate } from "../../utils/validation";
+
+import "./index.scss";
 
 
 interface IOpenModal {
@@ -70,24 +72,40 @@ const ProfileUser = (props: IOpenModal) => {
             setSelectedFile(undefined)
             return
         }
-        console.log(e.target.files[0]);
+
         setSelectedFile(e.target.files[0])
     }
+    function dispatchProfileAndUpdate(data: any) {
+        console.log(data);
+        const newData: any = objectFieldChange(userProfile, data);
+        console.log(newData);
+        dispatch(updateProfile(newData));
 
-    const handleUpload = () => {
+        //change header
+        const newHeader = { ...userProfile, ...newData };
+        dispatch(updateUserHeader(newHeader));
+    }
+
+    const handleUpload = async  () => {
         const uploadTask = storage.ref(`images/${selectedFile!.name}`).put(selectedFile!);
+        console.log("chay o day");
         uploadTask.on(
             "state_changed",
+            (snapShot) => {
+                //takes a snap shot of the process as it is happening
+                console.log(snapShot)
+            },
             (error: any) => {
                 console.log(error);
             },
             () => {
+                console.log("hahahahahah");
                 storage
                     .ref("images")
                     .child(selectedFile!.name)
                     .getDownloadURL()
                     .then((url: string) => {
-
+                        dispatchProfileAndUpdate({ avatarUrl: url })
                         setPreview(url);
                     });
             }
@@ -99,8 +117,8 @@ const ProfileUser = (props: IOpenModal) => {
         if (typeof selectedFile !== "undefined") {
             await handleUpload();
         }
-        data.avatarUrl = preview;
-        dispatch(updateProfile(data));
+        dispatchProfileAndUpdate(data);
+
     }
 
     return (
