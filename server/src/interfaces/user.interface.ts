@@ -1,10 +1,13 @@
+import { IOAuthRequest } from "./";
+
 export interface ICreateUser {
     email: string;
-    password: string;
+    password?: string;
     firstName: string;
     lastName: string;
-    gender: string;
-    birthDay: Date;
+    gender?: string;
+    birthDay?: Date;
+    avatarUrl?: string;
 }
 
 export interface IInforUser {
@@ -24,6 +27,13 @@ export interface IUpdateUser {
     birthDay?: Date,
     avatarUrl?: string,
 }
+export interface ILoginOAuth extends IOAuthRequest{
+    firstName: string,
+    lastName?: string,
+    email: string,
+    avatarUrl?: string,
+}
+
 
 export const serializeUserLogin = (model: any) => {
 
@@ -35,6 +45,7 @@ export const serializeUserLogin = (model: any) => {
             lastName: model.user.lastName,
             gender: model.user.gender,
             birthDay: model.user.birthDay,
+            avatarUrl: model.user.avatarUrl,
         },
         token: model.token,
     }

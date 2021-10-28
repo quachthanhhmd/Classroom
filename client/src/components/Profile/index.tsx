@@ -15,8 +15,8 @@ import { IProfileBody } from "../../interfaces";
 import { AppState } from "../../reducers";
 import { objectFieldChange } from "../../utils/object-solve";
 import { ProfileValidate } from "../../utils/validation";
-
 import "./index.scss";
+
 
 
 interface IOpenModal {
@@ -86,9 +86,8 @@ const ProfileUser = (props: IOpenModal) => {
         dispatch(updateUserHeader(newHeader));
     }
 
-    const handleUpload = async  () => {
+    const handleUpload = async () => {
         const uploadTask = storage.ref(`images/${selectedFile!.name}`).put(selectedFile!);
-        console.log("chay o day");
         uploadTask.on(
             "state_changed",
             (snapShot) => {
@@ -99,7 +98,7 @@ const ProfileUser = (props: IOpenModal) => {
                 console.log(error);
             },
             () => {
-                console.log("hahahahahah");
+
                 storage
                     .ref("images")
                     .child(selectedFile!.name)
@@ -249,7 +248,12 @@ const ProfileUser = (props: IOpenModal) => {
                 <Button color="primary" onClick={() => handleClose()}>
                     Cancel
                 </Button>
-                <Button color="primary" onClick={handleSubmit(handleUpdateProfile)}>
+                <Button
+                    color="primary"
+                    onClick={() => {
+                        handleSubmit(handleUpdateProfile);
+                        handleClose();
+                    }}>
                     Update
                 </Button>
 

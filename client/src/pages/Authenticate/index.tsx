@@ -1,31 +1,30 @@
+import { Card } from '@material-ui/core';
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { Card} from '@material-ui/core';
-
-import "./index.scss";
-
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { FacebookButton, GoogleButton } from "../../components/LoginSocial";
+import ThemeMode from "../../components/ThemeMode";
+import { signInWithGoogle } from "../../configs/firebase";
+import { USER_REGISTER_SUCCESS } from "../../constants";
 import Login from "../../containers/Login";
 import Register from "../../containers/Register";
-import ThemeMode from "../../components/ThemeMode";
 import { AppState } from "../../reducers";
-import { GoogleButton, FacebookButton } from "../../components/LoginSocial";
-
-import { USER_REGISTER_SUCCESS } from "../../constants";
+import { loginOAuth } from "../../actions";
+import "./index.scss";
 
 const changeToggleMode = () => {
     const toggle = document.getElementById("toggle-mode");
     toggle && toggle.classList.add("toggle-mode-login");
 }
 
-
-
-
 const Authenticate = () => {
     const [isLogin, setIsLogin] = useState(true);
 
+    const dispatch = useDispatch();
     const auth = useSelector((state: AppState) => state.auth);
     const themeMode = useSelector((state: AppState) => state.themeMode!.toggleMode);
-
+    const history = useHistory();
+    
     useEffect(() => {
         changeToggleMode();
     })
@@ -34,13 +33,27 @@ const Authenticate = () => {
         setIsLogin(true);
     }, [(auth.signUpStatus === USER_REGISTER_SUCCESS)]);
 
+    useEffect(() => {
+        if (auth!.isAuth) {
+            history.push("/");
+        }
+    }, [auth.isAuth, history]);
+
     function handleChangeAuthen() {
         setIsLogin(!isLogin);
     }
+
+    const handleSignInWithGoogle = async () => {
+        const user = await signInWithGoogle();
+        console.log(user);
+        if (!user) return;
+        dispatch(loginOAuth(user));
+    }
+
     return (
         <div className={`authenticate${themeMode ? " dark-mode" : " light-mode"}`}>
             <ThemeMode />
-            
+
             <div className="authenticate-main">
                 <div className="authenticate-main___form">
                     <Card className="authenticate-main___from--card">
@@ -55,7 +68,7 @@ const Authenticate = () => {
                             </div>
                         </div>
                         <div className="login-social">
-                            <GoogleButton className="login-social--google" onClick={() => alert("Hello")} />
+                            <GoogleButton className="login-social--google" onClick={handleSignInWithGoogle} />
                             <FacebookButton className="login-social--facebook" onClick={() => alert("Hello")} />
                         </div>
 

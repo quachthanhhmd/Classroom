@@ -45,6 +45,12 @@ class AuthRoutes {
             "/logout",
             validate(this._authValidation.Logout),
             this._authController.logout,
+        );
+
+        this.router.post(
+            "/login-oauth",
+            validate(this._authValidation.LoginOAuth),
+            this._authController.loginByOAuth
         )
     }
 };

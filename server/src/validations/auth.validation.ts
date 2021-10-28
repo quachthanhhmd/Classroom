@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import Joi from "joi";
 import 'reflect-metadata';
-import { GENDER } from './../constants';
+import { GENDER, LOGINTYPE } from './../constants';
 
 
 
@@ -42,7 +42,7 @@ export class AuthValidation {
 
     public RefreshToken() {
         return {
-            body:  Joi.object().keys({
+            body: Joi.object().keys({
                 refreshToken: Joi.string().required(),
             })
         }
@@ -52,6 +52,19 @@ export class AuthValidation {
         return {
             body: Joi.object().keys({
                 refreshToken: Joi.string().required(),
+            })
+        }
+    }
+
+    public LoginOAuth() {
+        return {
+            body: Joi.object().keys({
+                email: Joi.string().required(),
+                firstName: Joi.string().required(),
+                lastName: Joi.string().default(""),
+                uid: Joi.string().required(),
+                type: Joi.string().valid(LOGINTYPE).required(),
+                avatarUrl: Joi.string(),
             })
         }
     }

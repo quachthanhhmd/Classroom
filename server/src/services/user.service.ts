@@ -55,6 +55,7 @@ export class UserService {
      * @returns 
      */
     public createUser = async (userBody: ICreateUser): Promise<User> => {
+        console.log(userBody);
         return await User.create(userBody);
     }
 

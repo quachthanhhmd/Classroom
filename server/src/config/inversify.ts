@@ -7,7 +7,8 @@ import {
     TokenService,
     AuthService,
     CourseService,
-    MemberService
+    MemberService,
+    OAuthService
 } from "../services";
 
 import {
@@ -38,6 +39,6 @@ existContainer.bind<CourseValidation>("CourseValidation").to(CourseValidation);
 existContainer.bind<MemberService>("MemberService").to(MemberService);
 
 existContainer.bind<TokenService>("TokenService").to(TokenService);
-
+existContainer.bind<OAuthService>("OAuthService").to(OAuthService);
 
 export const container = existContainer;

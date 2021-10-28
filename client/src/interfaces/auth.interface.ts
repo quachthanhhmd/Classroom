@@ -1,4 +1,6 @@
-import { ITokenResponse, IRefreshToken } from './token.interface';
+import { IOAuthRequest } from './';
+import { IRefreshToken, ITokenResponse } from './token.interface';
+
 export interface ISigninInput {
     email: string,
     password: string,
@@ -31,7 +33,7 @@ export interface ISignInType {
 
 //---------------
 export interface ISignUpInput {
-    firstName: string, 
+    firstName: string,
     lastName: string,
     birthDay: Date,
     gender: string,
@@ -39,17 +41,30 @@ export interface ISignUpInput {
     password: string,
 }
 
+export interface ILoginOAuth extends IOAuthRequest {
+    firstName: string,
+    lastName?: string,
+    email: string,
+    avatarUrl?: string,
+}
+
+export interface ILoginOAuthType {
+    type: string,
+    payload?: ILoginOAuth,
+}
+
+
 export interface ISignUpType {
     type: string,
     payload?: null,
 }
 
 
-export interface ILogoutBody extends IRefreshToken {}
+export interface ILogoutBody extends IRefreshToken { }
 
 export interface ILogoutType {
     type: string,
     payload?: null,
 }
 
-export type IAuthenAction = ISignInType | IUserHeader | ISignUpType | ILogoutType;
+export type IAuthenAction = ISignInType | IUserHeader | ISignUpType | ILogoutType | ILoginOAuthType;

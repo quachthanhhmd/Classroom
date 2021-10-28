@@ -9,7 +9,9 @@ import {
   IUserHeader,
   ISignUpInput,
   ISignUpType,
-  IUserSummary
+  IUserSummary,
+  ILoginOAuthType,
+  ILoginOAuth
 } from "../interfaces";
 
 import env from "../configs/env";
@@ -22,7 +24,10 @@ import {
   USER_INFO_SUCCESS,
   USER_INFO_FAIL,
   USER_LOGOUT,
-  USER_UPDATE_HEADER
+  USER_UPDATE_HEADER,
+  USER_LOGIN_OAUTH_REQUEST,
+  USER_LOGIN_OAUTH_SUCCESS,
+  USER_LOGIN_OAUTH_FAIL,
 } from "../constants";
 
 
@@ -128,4 +133,27 @@ export const updateUserHeader = (data: IUserSummary) =>
     } catch (err) {
       console.log(err);
     }
+  };
+
+export const loginOAuth = (data: ILoginOAuth) =>
+  async (dispatch: (args: ISignInType) => (ISignInType)) => {
+    try {
+      dispatch({
+        type: USER_LOGIN_OAUTH_REQUEST,
+      })
+
+      const result = await authApi.loginOAuth(data);
+      console.log(result.data.payload);
+      if (result.status !== 200) throw new Error();
+
+      dispatch({
+        type: USER_LOGIN_OAUTH_SUCCESS,
+        payload: result.data.payload,
+      })
+    } catch (err) {
+      dispatch({
+        type: USER_LOGIN_OAUTH_FAIL
+      })
+    }
   }
+

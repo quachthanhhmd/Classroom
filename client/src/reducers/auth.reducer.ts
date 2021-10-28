@@ -1,7 +1,9 @@
 import env from "../configs/env";
 import {
     USER_INFO_FAIL, USER_INFO_REQUEST,
-    USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_REQUEST,
+    USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_OAUTH_FAIL,
+    USER_LOGIN_OAUTH_REQUEST,
+    USER_LOGIN_OAUTH_SUCCESS, USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
@@ -28,9 +30,8 @@ const initialState: IAuthState = {
 };
 
 const authReducer = (state = initialState, action: IAuthenAction) => {
-
-
     switch (action.type) {
+        case USER_LOGIN_OAUTH_REQUEST:
         case USER_LOGIN_REQUEST:
             return {
                 ...state,
@@ -38,6 +39,7 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 error: "",
                 signUpStatus: "",
             };
+        case USER_LOGIN_OAUTH_SUCCESS:
         case USER_LOGIN_SUCCESS:
             action = (action as ISignInType);
             console.log(action.payload);
@@ -55,6 +57,7 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 error: "",
                 signUpStatus: "",
             };
+        case USER_LOGIN_OAUTH_FAIL:
         case USER_LOGIN_FAIL:
             return {
                 ...state,
@@ -125,6 +128,7 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 isAuth: false,
                 signUpStatus: ""
             }
+
         default:
             return {
                 ...state

@@ -1,13 +1,12 @@
-import React from "react";
-import { Route, Redirect, Switch } from "react-router-dom";
+import { findAllByDisplayValue } from "@testing-library/react";
 import jwt_decode from "jwt-decode";
-
+import React from "react";
+import { Redirect, Route, Switch } from "react-router-dom";
+import { ROUTES } from "../constants";
+import { IPayload } from "../interfaces";
 import AuthenticatePage from "../pages/Authenticate";
 import HomePage from "../pages/Home";
 import env from "./env";
-
-import { IPayload } from "../interfaces";
-import { ROUTES } from "../constants";
 
 
 type IRoute = {
@@ -22,18 +21,18 @@ const routeList: IRoute[] = [
         path: ROUTES.home,
         exact: true,
         authen: true,
-        main: () => <HomePage/>
+        main: () => <HomePage />
     },
     {
         path: ROUTES.auth,
         exact: true,
-        main: () => <AuthenticatePage/>,
+        main: () => <AuthenticatePage />,
     },
 ]
 
 
 const renderRoutes = (routes: IRoute[]) => {
- 
+
 
     return (
         <Switch>
@@ -46,22 +45,26 @@ const renderRoutes = (routes: IRoute[]) => {
                         exact={exact}
                         render={(props) => {
                             try {
-                              
                                 const token = localStorage.getItem(
                                     env.REACT_APP_ACCESS_TOKEN
                                 );
 
                                 if (!token && authen !== true) return <Component {...props} />;
-                                console.log(token);
                                 const user = jwt_decode<IPayload>(token!);
-                                
-                                    
-                                if (authen === true && (!user || !user.sub))
+
+                                console.log(typeof user !== "undefined" && user.sub);
+                                console.log(authen);
+                                if (authen === false && (typeof user !== "undefined" && typeof user.sub !== "undefined"))
+                                    return <Redirect to="/" />;
+
+                                if (authen === true && (typeof user === "undefined" || typeof user.sub === "undefined"))
                                     return <Redirect to="/auth" />;
 
+                                console.log("hahahaha");
                                 return <Component {...props} />;
                             } catch (error) {
-                                localStorage.clear();
+                                localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
+                                localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
                                 return <Redirect to="/auth" />;
                             }
                         }}

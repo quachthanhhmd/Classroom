@@ -5,13 +5,13 @@ import {
     IUserSummary,
     IHttpFormat,
     ISignUpInput,
-    IRefreshToken
+    IRefreshToken,
+    ILoginOAuth
 } from "../interfaces";
 
 const authApi = {
     signIn: (body: ISigninInput) => {
         const url = "/v1/auth/signin";
-       
         return axiosClient.post<IHttpFormat<ISigninRespone>>(url, body);
     },
     signUp: (body: ISignUpInput) => {
@@ -29,7 +29,11 @@ const authApi = {
     logout: (body: IRefreshToken) => {
         const url = `/v1/auth/logout`;
         return axiosClient.post<IHttpFormat<IRefreshToken>>(url, body);
-    }   
+    },
+    loginOAuth: (body: ILoginOAuth) => {
+        const url = `/v1/auth/login-oauth`;
+        return axiosClient.post<IHttpFormat<ISigninRespone>>(url, body);
+    }
 };
 
 export default authApi;

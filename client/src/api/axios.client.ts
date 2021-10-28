@@ -41,14 +41,14 @@ axiosClient.interceptors.response.use(
         })
         .then((res: any) => {
           console.log(res);
-          if (res && res.access) {
+          if (res && res.data.access) {
             localStorage.setItem(
               env.REACT_APP_ACCESS_TOKEN,
-              res.access.token
+              res.data.access.token
             );
             axios.defaults.headers.common[
               "Authorization"
-            ] = `Bearer ${res.access.tokens}`;
+            ] = `Bearer ${res.data.access.token}`;
             axiosClient(originalRequest);
           }
         })

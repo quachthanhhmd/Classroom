@@ -1,9 +1,11 @@
 import { CssBaseline } from "@material-ui/core";
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
+import { BrowserRouter } from "react-router-dom";
 import './App.css';
-import Main from "./pages/Main";
+import Loading from "./components/Loading";
+import renderRoutes from "./configs/routes";
 import { AppState } from "./reducers";
 
 
@@ -44,7 +46,13 @@ function App() {
     // Wrapping code in ThemeProvider
     <ThemeProvider theme={themeMode ?  darkTheme: lightTheme}>
       <CssBaseline />
-      <Main />
+      <div className="App">
+            <BrowserRouter>
+                <Suspense fallback={<Loading />}>
+                    {renderRoutes}
+                </Suspense>
+            </BrowserRouter>
+        </div >
     </ThemeProvider>
   );
 }

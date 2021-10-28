@@ -1,38 +1,24 @@
-import { GENDER } from './../constants/gender.constant';
 import { Optional } from "sequelize";
 import {
-    Table,
-    Column,
-    Model,
-    DataType,
-    AutoIncrement,
-    PrimaryKey,
-    IsEmail,
-    Default,
-    Index,
-    Unique,
-    AllowNull,
-    HasMany,
-    Is
+    AllowNull, AutoIncrement, Column, DataType, Default, HasMany, Index, IsEmail, Model, PrimaryKey, Table, Unique
 } from "sequelize-typescript";
-
 import { initPasswordHash } from "../config/bcrypt";
-
-import { Token, Member } from "./";
-
-
+import { Member, Token } from "./";
+import { GENDER } from './../constants/gender.constant';
+import { OAuth } from "./oAuth.model";
 
 interface IUser {
     id?: number,
     email: string,
-    password: string,
+    password?: string,
     firstName: string,
     lastName: string,
-    gender: string,
-    birthDay: Date,
+    gender?: string,
+    birthDay?: Date,
     avatarUrl?: string,
     isVerified?: Boolean,
     isBlocked?: Boolean,
+    OAuthId?: string,
 }
 
 interface UserCreationAttibutes extends Optional<IUser, "id"> { }
@@ -54,20 +40,20 @@ export class User extends Model<IUser, UserCreationAttibutes> {
     @Column(DataType.STRING(30))
     email!: string;
 
-
     @AllowNull(false)
     @Column(DataType.STRING(50))
     firstName!: string;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.STRING(50))
     lastName!: string;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.DATEONLY)
     birthDay!: Date;
 
     @AllowNull(false)
+    @Default(GENDER.MALE)
     @Column(DataType.ENUM(GENDER.FEMALE, GENDER.MALE, GENDER.OTHER))
     gender!: string;
 
@@ -87,7 +73,13 @@ export class User extends Model<IUser, UserCreationAttibutes> {
 
     @AllowNull(false)
     @Column(DataType.STRING)
-    set password(value: string) {
+    set password(value: string | undefined) {
+        console.log("3, ", value);
+        if (typeof value === "undefined") {
+            const passwordHash: string = initPasswordHash(generateRandomPassword());
+            this.setDataValue("password", passwordHash);
+            return
+        }
 
         if (value.length < 8) {
             throw new Error('password must be at least 8 characters');
@@ -101,7 +93,7 @@ export class User extends Model<IUser, UserCreationAttibutes> {
         this.setDataValue("password", passwordHash);
     }
     get password(): string {
-        return this.getDataValue("password");
+        return this.getDataValue("password") as string;
     }
 
     @HasMany(() => Token)
@@ -109,4 +101,35 @@ export class User extends Model<IUser, UserCreationAttibutes> {
 
     @HasMany(() => Member)
     memberList?: Member[];
+
+    @HasMany(() => OAuth)
+    oAuthList?: OAuth[];
 };
+
+
+const generateFromList = (strList: string, length: number): string => {
+    let result: string = "";
+    for (let i = 0; i < length; i++) {
+        result += strList.charAt(Math.floor(Math.random() * strList.length));
+    }
+    return result;
+}
+
+export const generateRandomPassword = (length = 15): string => {
+
+    const upperCaseList = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const lowerCaseList = "abcdefghijklmnopqrstuvwxyz";
+    const numberList = "0123456789";
+
+    const upperCaseLength = Math.floor(Math.random() * (length - 3) + 1);
+    const lowerCaseLength = Math.floor(Math.random() * (length - upperCaseLength - 1) + 1);
+    const numberLength = Math.floor(Math.random() * (length - upperCaseLength - lowerCaseLength - 1) + 1);
+    console.log(upperCaseLength, lowerCaseLength, numberLength);
+    const result = generateFromList(upperCaseList, upperCaseLength) + generateFromList(lowerCaseList, lowerCaseLength) + generateFromList(numberList, numberLength);
+    console.log(result);
+    
+    return result
+        .split('')
+        .sort((a, b) => 0.5 - Math.random())
+        .join('');
+}

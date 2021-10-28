@@ -1,13 +1,9 @@
-import { UNAUTHENTICATED } from './../constants/message/auth.message';
-import "reflect-metadata"
-
 import { inject, injectable } from "inversify";
-
-import { UserService, AuthService, TokenService } from "../services";
-import { IRequest, IResponse, INextFunction } from './../interfaces';
+import "reflect-metadata";
 import { INCORRECT_LOGIN, TYPETOKEN, USER_EXIST } from "../constants";
-import { ICreateUser, serializeUserLogin } from './../interfaces';
-
+import { AuthService, TokenService, UserService } from "../services";
+import { UNAUTHENTICATED } from './../constants/message/auth.message';
+import { ICreateUser, INextFunction, IRequest, IResponse, serializeUserLogin } from './../interfaces';
 
 @injectable()
 export class AuthController {
@@ -50,7 +46,7 @@ export class AuthController {
     ): Promise<void> => {
         try {
             const { email, password } = req.body;
-    
+
             const user = await this._authService.loginWithEmailAndPassword(email, password);
 
             if (!user) {
@@ -88,6 +84,28 @@ export class AuthController {
         }
     };
 
+    public loginByOAuth = async (
+        req: IRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const body = req.body;
+
+            const userOAuth = await this._authService.loginOrCreateOAuth(body);
+            console.log(userOAuth);
+            const tokenCreate = await this._tokenService.generateTokenAuth(userOAuth!.id);
+
+            return res.composer.success(
+                serializeUserLogin({
+                    user: userOAuth,
+                    token: tokenCreate,
+                })
+            );
+        } catch (err) {
+            res.composer.otherException(err);
+        }
+    }
+
     public logout = async (
         req: IRequest,
         res: IResponse
@@ -99,7 +117,7 @@ export class AuthController {
 
             return res.composer.success();
         } catch (err) {
-            return res.composer.otherException(err);            
+            return res.composer.otherException(err);
         }
     }
 }

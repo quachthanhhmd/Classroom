@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Menu as MenuIcon,
     Event,
@@ -13,6 +13,7 @@ import {
 } from "@material-ui/core";
 
 import "./index.scss";
+import { useHistory } from "react-router-dom";
 import ThemeMode from '../ThemeMode';
 import AddCourse from "../CreateCourse";
 import Profile from "../Profile";
@@ -25,13 +26,15 @@ const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
 
 const Header = () => {
-
     const dispatch = useDispatch();
+    const history = useHistory();
     const auth = useSelector((state: AppState) => state!.auth);
 
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState("");
+
+  
 
     const handleClick = (e: any, type: string) => {
 
@@ -41,19 +44,14 @@ const Header = () => {
 
     const handleClose = () => {
         setAnchorEl(null);
-        //setTypeOpen("");
     };
 
     const handleLogout = () => {
         dispatch(signOut());
+        window.location.href = "/auth";
     }
 
     const handleCloseModal = (openModal: boolean) => {
-        console.log(openModal, typeOpen);
-
-        // if (!openModal) {
-        //     setTypeOpen("");
-        // }
         setTypeOpen("");
         setIsOpenModal(false);
     }
@@ -62,7 +60,6 @@ const Header = () => {
         <>
             <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal} setIsOpenModal={handleCloseModal} />
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
-
             <div className="header-main">
 
                 <div className="header-main___left">
@@ -159,9 +156,8 @@ const Header = () => {
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
-                                    //setJoinOpened(true);
-                                    handleClose();
                                     handleLogout();
+                                    handleClose();
                                 }}
                             >
                                 Đăng xuất
