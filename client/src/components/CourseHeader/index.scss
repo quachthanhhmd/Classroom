@@ -1,0 +1,82 @@
+.header-main {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0; /* Position the navbar at the top of the page */
+    width: 100%; /* Full width */
+    overflow: hidden;
+    background-color: #222;
+    color: white !important;
+    z-index: 1100;
+
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-bottom: 1px red solid;
+    height: 4.5rem;
+
+    &___left {
+        padding: 0.3rem 0 0.2rem 0;
+        display: flex;
+        justify-content: flex-start;
+        flex: 1 1 0.0625rem;
+        width: 30%;
+
+        &--menu {
+            margin-right: 1rem;
+            align-self: center;
+        }
+        &--logo-name {
+            font-size: 1rem;
+            align-self: center;
+            width: 50%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    }
+
+    &___middle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: white;
+
+        &--click-pill {
+            backdrop-filter: contrast(0.5)
+        }
+        > * {
+            color: white !important;
+        }
+    }
+
+    &___right {
+        display: flex;
+        justify-content: flex-end;
+
+        flex: 1 1 0.0625rem;
+        > * {
+            margin-left: 1rem;
+            align-self: center;
+            align-items: center;
+        }
+        &--theme-mode {
+            height: 2rem;
+        }
+
+        &--avatar {
+            > Button {
+                border-radius: 100%;
+                width: 1.5rem !important;
+            }
+
+            img {
+                border-radius: 100%;
+                width: 2.5rem;
+                height: auto;
+            }
+        }
+    }
+}

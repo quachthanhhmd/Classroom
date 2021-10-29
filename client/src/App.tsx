@@ -2,12 +2,13 @@ import { CssBaseline } from "@material-ui/core";
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Redirect, Route } from "react-router-dom";
 import './App.css';
 import Loading from "./components/Loading";
 import renderRoutes from "./configs/routes";
 import { AppState } from "./reducers";
-
+import Course from "./pages/Course";
+import Authenticate from "./pages/Authenticate";
 
 function App() {
   const themeMode = useSelector((state: AppState) => state.themeMode?.toggleMode);
@@ -44,15 +45,21 @@ function App() {
   return (
 
     // Wrapping code in ThemeProvider
-    <ThemeProvider theme={themeMode ?  darkTheme: lightTheme}>
+    <ThemeProvider theme={themeMode ? darkTheme : lightTheme}>
       <CssBaseline />
       <div className="App">
-            <BrowserRouter>
-                <Suspense fallback={<Loading />}>
-                    {renderRoutes}
-                </Suspense>
-            </BrowserRouter>
-        </div >
+        <BrowserRouter>
+          {/* <Course /> */}
+          <Suspense fallback={<Loading />}>
+            {renderRoutes}
+            {/* <Route exact path="/" component={Course} />
+            <Route exact path="/auth" component={Authenticate } />
+            <Route exact path="/member" component={Authenticate} />
+            <Redirect from="/" to="/" /> */}
+          </Suspense>
+        </BrowserRouter>
+
+      </div >
     </ThemeProvider>
   );
 }

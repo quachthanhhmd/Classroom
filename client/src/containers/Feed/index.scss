@@ -1,0 +1,225 @@
+.feed-main {
+    padding-top: 1.2rem;
+    width: 74%;
+    margin: auto;
+
+    &___background {
+        height: 15rem;
+
+        background-repeat: no-repeat;
+        -webkit-background-size: cover;
+        background-size: cover;
+        position: relative;
+
+        &--has-image {
+            &:before {
+                background: linear-gradient(rgba(32, 33, 36, 0) 30%, rgba(32, 33, 36, 0.8));
+                background-color: rgba(32, 33, 36, 0.6);
+                content: "";
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                width: 100%;
+            }
+        }
+
+        &___course-name {
+            bottom: 0;
+            color: #fff;
+            left: 0;
+            padding: 1rem 1.5rem;
+            position: absolute;
+            right: 2rem;
+
+            > * {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                display: block;
+            }
+            > h1 {
+                font-family: "Google Sans", Roboto, Arial, sans-serif;
+                font-size: 2.25rem;
+                font-weight: 500;
+                line-height: 2.75rem;
+                color: #fff;
+                margin: 0;
+            }
+        }
+
+        &___more-infor {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: auto;
+        }
+    }
+
+    &___show-infor {
+        width: 60%;
+        margin: auto;
+        height: 15rem;
+
+        &___modal-detail {
+            &--title {
+                font-weight: bold;
+                font-size: 1.4rem;
+            }
+            &--info {
+                font-size: 1.2rem;
+            }
+        }
+    }
+    &___body {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        padding: 1.5rem 0 1.5rem 0 !important;
+
+        &___left {
+            width: 23%;
+
+            &--card-header {
+                font-size: 1.2rem;
+                margin: 0;
+                font-weight: bold;
+            }
+
+            &--course-code,
+            &--deadline {
+                width: 100%;
+                margin-bottom: 1rem;
+
+                &___content {
+                    padding: 0 1rem 0.5rem 1rem !important;
+                    &--code {
+                        align-self: center;
+                        align-items: center;
+                        font-size: 1.5rem;
+                        font-weight: bold;
+                    }
+                    &--item {
+                        margin: 0.5rem 0 0.5rem 0 !important;
+                        font-size: 1rem;
+
+                        &___time {
+                            opacity: 0.8;
+                        }
+                        &___link {
+                            &--name {
+                                text-decoration: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        &___right {
+            width: 73%;
+
+            &--write-status {
+                &___expand {
+                    &--rich-text {
+                        border: 1px solid black;
+                        min-height: 19rem;
+                        padding: 2px;
+                    }
+                    &--submit {
+                        display: flex;
+                        justify-content: flex-end;
+                        margin-top: 1rem;
+
+                        > * {
+                            margin-left: 1rem;
+                        }
+                    }
+                }
+
+                &___brief {
+                    display: flex;
+                    justify-content: flex-start;
+                    &--avt {
+                        width: 3rem;
+                        height: 3rem;
+                        margin-right: 1rem;
+                        margin-left: 0.2rem;
+
+                        border-radius: 100%;
+                        > img {
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+                    &--content {
+                        align-items: center;
+                        align-self: center;
+
+                        font-size: 1rem;
+                        opacity: 0.8;
+                        text-transform: lowercase !important;
+                    }
+                }
+            }
+            &--exam {
+            }
+        }
+
+        &___show-code {
+            &___modal {
+                &--code {
+                    font-size: 5rem;
+                    font-weight: 400;
+                    line-height: 1;
+                    padding: 1.5rem 0;
+                    text-align: center;
+                    border-bottom: 1px solid black;
+                }
+                &--copy {
+                    font-size: 1.5rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+
+                    &--course-name {
+                        width: 50%;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        display: block;
+                    }
+                    &--copy-code {
+                        margin-bottom: 1rem;
+                        > Button {
+                            color: black !important;
+                            border-radius: 0% !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.container-info {
+    border-radius: 2px;
+}
+
+.overflow-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+}
+
+.editor-class {
+    background-color: white;
+    color: black;
+    min-height: 19rem;
+    padding: 0 0.5rem 0 0.5rem;
+}
+
+.toolbar-class {
+    color: black;
+}
