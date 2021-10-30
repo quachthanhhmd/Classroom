@@ -8,9 +8,9 @@ function Main() {
     return (
         <div className="App">
             <BrowserRouter>
-                <Suspense fallback={<Loading />}>
+                {/* <Suspense fallback={<Loading />}> */}
                     {renderRoutes}
-                </Suspense>
+                {/* </Suspense> */}
             </BrowserRouter>
         </div >
     );

@@ -21,11 +21,14 @@ import Profile from "../Profile";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../actions";
 import { AppState } from "../../reducers";
+import {useScollHook} from "../../customs";
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
 
 const Header = () => {
+    const styleScroll = useScrollHook();
+
     const dispatch = useDispatch();
     const history = useHistory();
     const auth = useSelector((state: AppState) => state!.auth);
@@ -60,7 +63,7 @@ const Header = () => {
         <>
             <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal} setIsOpenModal={handleCloseModal} />
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
-            <div className="header-main">
+            <div className="header-main" style={styleScroll}>
 
                 <div className="header-main___left">
                     <div className="header-main___left--menu">

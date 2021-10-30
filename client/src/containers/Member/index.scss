@@ -1,0 +1,68 @@
+.member-main {
+    width: 60%;
+    margin: auto;
+
+    &___teacher,
+    &___student,
+    &___assist {
+        margin-top: 2.5rem;
+        width: 100%;
+        &___header {
+            padding: 0.4rem 0 0.4rem 0.4rem;
+            border-bottom: 1px solid;
+
+            display: flex;
+            justify-content: space-between;
+            &--title {
+                font-size: 2rem;
+            }
+            &--add-member {
+                * {
+                    font-size: 2rem !important;
+                }
+            }
+        }
+
+        &___content {
+            margin-top: 1rem;
+            &--member {
+                > Button {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 0.5rem;
+                }
+                &___information {
+                    display: flex;
+                    width: 50%;
+                    &--avt {
+                        > img {
+                            width: 2.5rem;
+                            height: 2.5rem;
+                            border-radius: 100%;
+                        }
+                        margin-right: 0.5rem;
+                        margin-left: 0.5rem;
+                    }
+                    &--name {
+                        font-size: 1.3rem;
+                        text-transform: none;
+                        align-self: center;
+                    }
+                }
+                &___util {
+                    * {
+                        font-size: 1.5rem;
+                    }
+                }
+            }
+            &--check-all {
+                &___check-box {
+                    margin-left: -0.1rem;
+                    * {
+                        font-size: 1.5rem;
+                    }
+                }
+            }
+        }
+    }
+}

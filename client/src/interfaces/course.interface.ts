@@ -20,6 +20,16 @@ export interface ICourseSummary {
 }
 
 
+export interface ICourseInfo {
+    id: number,
+    name: string,
+    topic: string,
+    avatarUrl: string,
+    backgroundUrl: string,
+    code: string,
+}
+
+//-------------------------------------
 
 export interface ICreateCourse {
     name: string,
@@ -33,4 +43,9 @@ export interface ICreateCourseState {
     payload?: ICourseSummary,
 }
 
-export type ICourseAction = ICreateCourseState | IUserCourseState;
+export interface ICourseInfoState {
+    type: string,
+    payload?: ICourseInfo;
+}
+
+export type ICourseAction = ICreateCourseState | IUserCourseState | ICourseInfoState;

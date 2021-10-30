@@ -1,13 +1,13 @@
 import {
-    AppBar, Button,
-    IconButton, Menu, MenuItem, Tab, Tabs, TabProps
+    Button,
+    IconButton, Menu, MenuItem, Tab, TabProps, Tabs
 } from "@material-ui/core";
 import {
     Event, Menu as MenuIcon
 } from "@material-ui/icons";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, Switch, Route, Link, LinkProps } from "react-router-dom";
+import { Link, LinkProps, useHistory } from "react-router-dom";
 import { signOut } from "../../actions";
 import { AppState } from "../../reducers";
 import Profile from "../Profile";
@@ -22,6 +22,8 @@ const TYPE_PILL_EXAM = "TYPE_PILL_EXAM";
 const TYPE_PILL_MEMBER = "TYPE_PILL_MEMBER";
 
 const Header = () => {
+    const styleScroll = useScrollHook();
+
     const [typePill, setTypePill] = useState<number>(0);
     const dispatch = useDispatch();
     const history = useHistory();
@@ -31,7 +33,11 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState("");
 
-
+    useEffect(() => {
+        window.location.pathname.includes("course") && setTypePill(0);
+        //window.location.pathname.includes("exam") && setTypePill(1);
+        window.location.pathname.includes("member") && setTypePill(2);
+    }, [window.location.pathname])
 
     const handleClick = (e: any, type: string) => {
 
@@ -58,7 +64,7 @@ const Header = () => {
     return (
         <>
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
-            <div className="header-main">
+            <div className="header-main" style={styleScroll}>
 
                 <div className="header-main___left">
                     <div className="header-main___left--menu">
@@ -71,7 +77,7 @@ const Header = () => {
                         </Button>
                     </div>
                     <div className="header-main___left--logo-name">
-                        <p>LTUDW - Lap trinh ung dung web asdasjkhd kjahsjkasjdhaksjd ajkh jahsdkjashkjd</p>
+                        <p>LTUDW - Lap trinh ung dung web </p>
                     </div>
                 </div>
                 <div className="header-main___middle">
@@ -85,13 +91,13 @@ const Header = () => {
                         centered
                     // style={navStyle}
                     >
-                        <LinkTab label="Bảng tin" component={Link}  className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to="/course/2" >
+                        <LinkTab label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to="/course/2" >
 
                         </LinkTab>
-                        <LinkTab label="Bài tập" component={Link}  className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to="/auth" >
+                        <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to="/auth" >
                             <Link to="/auth/2" />
                         </LinkTab>
-                        <LinkTab label="Mọi người" component={Link}  className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to="/member/2" />
+                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to="/member/2" />
                     </Tabs>
 
                 </div>
@@ -99,7 +105,7 @@ const Header = () => {
                     <div className="header-main___right--theme-mode">
                         <ThemeMode />
                     </div>
-                    
+
                     <div className="header-main___right--calendar">
                         <IconButton
                             style={{

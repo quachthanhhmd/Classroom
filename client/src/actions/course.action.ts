@@ -1,15 +1,13 @@
+import courseApi from "../api/course.api";
 import {
-    CREATE_COURSE_SUCCESS,
-    CREATE_COURSE_FAIL,
-    GET_ALL_USER_COURSE_SUCCESS,
-    GET_ALL_USER_COURSE_FAIL
+    CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
+    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS
 } from "../constants";
 import {
-    ICreateCourse,
+    ICourseInfoState, ICreateCourse,
     ICreateCourseState,
     IUserCourseState
 } from "../interfaces";
-import courseApi from "../api/course.api";
 
 
 
@@ -54,3 +52,26 @@ export const getUserCouseList = () =>
             });
         }
     };
+
+
+export const getAllCourseInfo = (id: number) =>
+    async (dispatch: (args: ICourseInfoState) => (ICourseInfoState)) => {
+        try {
+            dispatch({
+                type: GET_ALL_INFO_COURSE_REQUEST
+            });
+
+            const result = await courseApi.getAllInfor(id);
+
+            if (result.status !== 200) throw new Error();
+
+            dispatch({
+                type: GET_ALL_INFO_COURSE_SUCCESS,
+                payload: result.data.payload,
+            })
+        } catch (err) {
+            dispatch({
+                type: GET_ALL_INFO_COURSE_FAIL
+            })
+        }
+    }

@@ -91,8 +91,7 @@ export class AuthController {
         try {
             const body = req.body;
 
-            const userOAuth = await this._authService.loginOrCreateOAuth(body);
-            console.log(userOAuth);
+            const userOAuth = await this._authService.loginOrCreateOAuth(body);  
             const tokenCreate = await this._tokenService.generateTokenAuth(userOAuth!.id);
 
             return res.composer.success(

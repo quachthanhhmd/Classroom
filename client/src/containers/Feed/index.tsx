@@ -5,10 +5,13 @@ import {
     CropFree, FileCopy, MoreHoriz, MoreVert
 } from "@material-ui/icons";
 import { EditorState } from "draft-js";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useParams } from "react-router-dom";
+import { getAllCourseInfo } from "../../actions";
+import { AppState } from "../../reducers";
 import "./index.scss";
 
 const deadlineList = [
@@ -35,13 +38,21 @@ const deadlineList = [
 ]
 
 const Feed = () => {
+    const { courseId } = useParams<{ courseId: number }>();
+
+    const course = useSelector((state: AppState) => state.course.course) ;
+    const dispatch = useDispatch();
+
     const [editorState, setEditorState] = useState(() =>
         EditorState.createEmpty()
     );
-
     const [isShowInfor, setIsShowInfor] = useState(false);
     const [isShowShareCode, setIsShowShareCode] = useState(false);
     const [isWriteStatus, setIsWriteStatus] = useState(false);
+
+    useEffect(() => {
+        dispatch(getAllCourseInfo(courseId));
+    }, [])
 
     const handleClose = () =>
         isShowInfor && setIsShowInfor(false);
@@ -63,11 +74,11 @@ const Feed = () => {
                 <DialogContent>
                     <div className="feed-main___body___show-code___modal">
                         <div className="feed-main___body___show-code___modal--code">
-                            ripgco6
+                            {course.code}
                         </div>
                         <div className="feed-main___body___show-code___modal--copy">
                             <div className="feed-main___body___show-code___modal--copy--course-name">
-                                Lap trinh ung dung web
+                                {course.name}
                             </div>
                             <div className="feed-main___body___show-code___modal--copy--copy-code">
 
@@ -80,12 +91,10 @@ const Feed = () => {
                             </div>
                         </div>
                     </div>
-
                 </DialogContent>
             </Dialog>
 
             <Dialog
-
                 keepMounted
                 open={isShowInfor}
                 onClose={handleClose}>
@@ -93,7 +102,7 @@ const Feed = () => {
                 <DialogContent>
                     <div className="feed-main___show-infor___modal-detail">
                         <span className="feed-main___show-infor___modal-detail--title">Mã Lớp: </span>
-                        <span className="feed-main___show-infor___modal-detail--info">Reactjs </span>
+                        <span className="feed-main___show-infor___modal-detail--info">{course.code}</span>
                         <IconButton onClick={() => {
                             handleClose();
                             setIsShowShareCode(true);
@@ -103,7 +112,7 @@ const Feed = () => {
                     </div>
                     <div className="feed-main___show-infor___modal-detail">
                         <span className="feed-main___show-infor___modal-detail--title">Chủ đề: </span>
-                        <span className="feed-main___show-infor___modal-detail--info">Reactjs </span>
+                        <span className="feed-main___show-infor___modal-detail--info">{course.topic} </span>
                     </div>
                     <div className="feed-main___show-infor___modal-detail">
                         <span className="feed-main___show-infor___modal-detail--title">Phòng: </span>
@@ -125,8 +134,8 @@ const Feed = () => {
             <div className="feed-main">
                 <Paper elevation={4} className={`container-info feed-main___background${" feed-main___background--has-image"}`} style={{ backgroundImage: `url("/background-course.jpg")` }} >
                     <div className="feed-main___background___course-name">
-                        <h1>LTUUW nang cao</h1>
-                        <div>CQ_18-3</div>
+                        <h1>{course.name}</h1>
+                        <div>{course.topic}</div>
                     </div>
                     <div className="feed-main___background___more-infor">
                         <IconButton onClick={(e) => setIsShowInfor(!isShowInfor)}>

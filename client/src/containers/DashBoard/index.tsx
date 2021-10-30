@@ -1,18 +1,14 @@
-import React, { useEffect } from "react";
-import "./index.scss";
-
 import {
-    Card,
-    CardHeader,
-    Button,
+    Button, Card,
+    CardHeader
 } from "@material-ui/core";
-
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-
+import { Link, useHistory } from "react-router-dom";
 import { getUserCouseList } from "../../actions/course.action";
-import { AppState } from "../../reducers";
 import { ICourseSummary } from "../../interfaces";
+import { AppState } from "../../reducers";
+import "./index.scss";
 
 const CourseHeader = (course: ICourseSummary) => {
 
@@ -52,14 +48,14 @@ const DashBoard = () => {
             <div className="dashboard-main___courses">
                 {
                     courseState.data.map((course: ICourseSummary) => (
-
+                        <Link to={`/course/${course.id}`}>
                         <Button>
                             <Card className="dashboard-main___courses___component">
                                 <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader {...course} />}>
                                 </CardHeader>
                             </Card>
                         </Button>
-
+                        </Link>
                     ))
                 }
             </div>

@@ -1,10 +1,11 @@
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
-    CREATE_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL,
+    CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
+    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL,
     GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS
 } from "../constants";
 import {
-    ICourseAction, ICourseSummary, ICreateCourseState, IPaginationInfo,
+    ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IPaginationInfo,
     IUserCourseState
 } from "../interfaces";
 
@@ -12,7 +13,7 @@ import {
 interface IInitState {
     data: ICourseSummary[],
     isLoading: boolean,
-    course: ICourseSummary | null,
+    course: ICourseSummary | ICourseInfo | null,
     pagination: IPaginationInfo
 }
 
@@ -40,10 +41,10 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
         case CREATE_COURSE_SUCCESS:
             action = action as ICreateCourseState;
             state.data.push(action.payload!);
-            console.log(state.data);
+
             return {
                 ...state,
-                course: action.payload!,
+                course: action.payload! as ICourseSummary,
                 isLoading: false,
             }
         case CREATE_COURSE_FAIL:
@@ -73,6 +74,24 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 isLoading: false,
             }
         }
+        case GET_ALL_INFO_COURSE_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+                course: null,
+            }
+        case GET_ALL_INFO_COURSE_SUCCESS:
+            return {
+                ...state,
+                isLoading: true,
+                course: action.payload! as ICourseInfo,
+            }
+        case GET_ALL_INFO_COURSE_FAIL:
+            return {
+                ...state,
+                isLoading: true,
+                course: null,
+            }
         default: {
             return {
                 ...state,

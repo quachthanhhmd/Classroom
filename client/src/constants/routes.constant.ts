@@ -1,7 +1,7 @@
 export const ROUTES = {
     auth: "/auth",
     home: "/",
-    course: "/course",
-    member: "/member",
-    exam: "/exam",
+    course: "/course/:courseId",
+    member: "/member/:courseId",
+    exam: "/exam/:courseId",
 }
