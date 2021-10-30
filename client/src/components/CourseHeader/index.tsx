@@ -12,6 +12,7 @@ import { signOut } from "../../actions";
 import { AppState } from "../../reducers";
 import Profile from "../Profile";
 import ThemeMode from '../ThemeMode';
+import { useScrollHook } from "../../customs";
 import "./index.scss";
 
 const LinkTab: React.ComponentType<TabProps & LinkProps> = Tab as React.ComponentType<TabProps & LinkProps>;
@@ -49,8 +50,8 @@ const Header = () => {
         setAnchorEl(null);
     };
 
-    const handleLogout = () => {
-        dispatch(signOut());
+    const handleLogout = async () => {
+        await dispatch(signOut());
         window.location.href = "/auth";
     }
 

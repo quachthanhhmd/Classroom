@@ -21,7 +21,7 @@ import Profile from "../Profile";
 import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../actions";
 import { AppState } from "../../reducers";
-import {useScollHook} from "../../customs";
+import { useScrollHook } from "../../customs";
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
@@ -37,7 +37,7 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState("");
 
-  
+
 
     const handleClick = (e: any, type: string) => {
 
@@ -49,8 +49,8 @@ const Header = () => {
         setAnchorEl(null);
     };
 
-    const handleLogout = () => {
-        dispatch(signOut());
+    const handleLogout = async () => {
+        await dispatch(signOut());
         window.location.href = "/auth";
     }
 

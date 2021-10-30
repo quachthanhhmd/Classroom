@@ -64,3 +64,18 @@ export const serializeCourseList = (model: any) => {
         pagination: model.pagination,
     }
 }
+
+
+export const serializeCourseDetail = (model: any) => {
+    return {
+        id: model.id,
+        name: model.name,
+        code: model.code,
+        description: model.decription,
+        topic: model.topic,
+        avatarUrl: model.avatarUrl,
+        backgroundUrl: model.backgroundUrl,
+        studentExist: model.studentExist,
+        studentLimit: model.studentLimit,
+    }
+}

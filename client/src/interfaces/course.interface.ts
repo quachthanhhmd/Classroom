@@ -23,10 +23,13 @@ export interface ICourseSummary {
 export interface ICourseInfo {
     id: number,
     name: string,
+    description: string,
     topic: string,
     avatarUrl: string,
     backgroundUrl: string,
     code: string,
+    studentExist: number,
+    studentLimit: number,
 }
 
 //-------------------------------------

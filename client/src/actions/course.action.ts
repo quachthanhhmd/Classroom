@@ -38,7 +38,7 @@ export const getUserCouseList = () =>
 
             if (result.status !== 200)
                 throw new Error();
-
+         
             if (result) {
                 dispatch({
                     type: GET_ALL_USER_COURSE_SUCCESS,
@@ -64,7 +64,7 @@ export const getAllCourseInfo = (id: number) =>
             const result = await courseApi.getAllInfor(id);
 
             if (result.status !== 200) throw new Error();
-
+            console.log(result.data);
             dispatch({
                 type: GET_ALL_INFO_COURSE_SUCCESS,
                 payload: result.data.payload,

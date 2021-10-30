@@ -64,7 +64,7 @@ const signInWithGoogle = async () => {
             uid: user!.uid,
         }
     } catch (err: any) {
-        alert(err.message);
+        //alert(err.message);
     }
 };
 const logout = () => {

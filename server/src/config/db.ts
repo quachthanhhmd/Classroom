@@ -6,6 +6,7 @@ import { User, Token, Member, Course, OAuth } from "../models";
 
 export const sequelize = new Sequelize({
   database: env.DB.DB_DATABASE_NAME,
+  host: env.DB.DB_DATABASE_HOST,
   dialect: env.DB.DB_DIALECT,
   username: env.DB.DB_USERNAME,
   password: env.DB.DB_PASSWORD,

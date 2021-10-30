@@ -1,7 +1,7 @@
-import  Joi  from 'joi';
+import { injectable } from "inversify";
+import Joi from 'joi';
 import "reflect-metadata";
 
-import { injectable, inject } from "inversify";
 
 @injectable()
 export class CourseValidation {
@@ -14,6 +14,16 @@ export class CourseValidation {
                 description: Joi.string(),
                 topic: Joi.string(),
                 studentLimit: Joi.number().min(1),
+            }
+        })
+    }
+    public getCourse = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                )
             }
         })
     }

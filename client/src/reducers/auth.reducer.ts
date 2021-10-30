@@ -119,6 +119,7 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: (action.payload as IUserSummary),
             }
         case USER_LOGOUT:
+            console.log(env);
             localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
             localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
             return {

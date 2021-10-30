@@ -29,5 +29,8 @@ export class CourseService {
         return newCourse;
     }
 
+    public getCourseDetail = async (id: number): Promise<Course | null> => {
+        return await Course.findByPk(id);
+    }
    
 }

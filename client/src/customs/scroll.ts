@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export function useScollHook() {
+export function useScrollHook() {
     const [style, setStyle] = useState({});
 
     useEffect(() => {

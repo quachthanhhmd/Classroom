@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import { getAllCourseInfo } from "../../actions";
 import { AppState } from "../../reducers";
+import { ICourseInfo } from "../../interfaces";
 import "./index.scss";
 
 const deadlineList = [
@@ -36,11 +37,16 @@ const deadlineList = [
         content: "22:00 - BTCN03 - Chức năng tạo và đăng ký"
     }
 ]
+interface ParamTypes {
+    courseId: string
+}
 
 const Feed = () => {
-    const { courseId } = useParams<{ courseId: number }>();
+    const { courseId } = useParams<ParamTypes>();
 
-    const course = useSelector((state: AppState) => state.course.course) ;
+    const courseState = useSelector((state: AppState) => state.course!);
+    const course: ICourseInfo = courseState.course as ICourseInfo;
+
     const dispatch = useDispatch();
 
     const [editorState, setEditorState] = useState(() =>
@@ -51,7 +57,8 @@ const Feed = () => {
     const [isWriteStatus, setIsWriteStatus] = useState(false);
 
     useEffect(() => {
-        dispatch(getAllCourseInfo(courseId));
+        console.log(courseId);
+        dispatch(getAllCourseInfo(Number(courseId)));
     }, [])
 
     const handleClose = () =>
@@ -74,11 +81,11 @@ const Feed = () => {
                 <DialogContent>
                     <div className="feed-main___body___show-code___modal">
                         <div className="feed-main___body___show-code___modal--code">
-                            {course.code}
+                            {course?.code}
                         </div>
                         <div className="feed-main___body___show-code___modal--copy">
                             <div className="feed-main___body___show-code___modal--copy--course-name">
-                                {course.name}
+                                {course?.name}
                             </div>
                             <div className="feed-main___body___show-code___modal--copy--copy-code">
 
@@ -102,7 +109,7 @@ const Feed = () => {
                 <DialogContent>
                     <div className="feed-main___show-infor___modal-detail">
                         <span className="feed-main___show-infor___modal-detail--title">Mã Lớp: </span>
-                        <span className="feed-main___show-infor___modal-detail--info">{course.code}</span>
+                        <span className="feed-main___show-infor___modal-detail--info">{course?.code}</span>
                         <IconButton onClick={() => {
                             handleClose();
                             setIsShowShareCode(true);
@@ -112,7 +119,7 @@ const Feed = () => {
                     </div>
                     <div className="feed-main___show-infor___modal-detail">
                         <span className="feed-main___show-infor___modal-detail--title">Chủ đề: </span>
-                        <span className="feed-main___show-infor___modal-detail--info">{course.topic} </span>
+                        <span className="feed-main___show-infor___modal-detail--info">{course?.topic} </span>
                     </div>
                     <div className="feed-main___show-infor___modal-detail">
                         <span className="feed-main___show-infor___modal-detail--title">Phòng: </span>
@@ -134,8 +141,8 @@ const Feed = () => {
             <div className="feed-main">
                 <Paper elevation={4} className={`container-info feed-main___background${" feed-main___background--has-image"}`} style={{ backgroundImage: `url("/background-course.jpg")` }} >
                     <div className="feed-main___background___course-name">
-                        <h1>{course.name}</h1>
-                        <div>{course.topic}</div>
+                        <h1>{course?.name}</h1>
+                        <div>{course?.topic}</div>
                     </div>
                     <div className="feed-main___background___more-infor">
                         <IconButton onClick={(e) => setIsShowInfor(!isShowInfor)}>
@@ -156,7 +163,7 @@ const Feed = () => {
                                 title={<p className="feed-main___body___left--card-header">Mã lớp</p>}
                             />
                             <CardContent className="feed-main___body___left--course-code___content">
-                                <span className="feed-main___body___left--course-code___content--code">Hajahd </span>
+                                <span className="feed-main___body___left--course-code___content--code">{course?.code} </span>
                                 <IconButton style={{ marginTop: "-0.5rem" }} onClick={() => {
                                     handleClose();
                                     setIsShowShareCode(true);

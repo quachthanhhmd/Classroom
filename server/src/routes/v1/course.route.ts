@@ -28,6 +28,12 @@ class CourseRoute {
             validate(this._courseValidation.addCourse),
             this._courseController.addCourse,
         );
+        this.router.get(
+            "/:courseId",
+            this._authenticate.authenticate(),
+            validate(this._courseValidation.getCourse),
+            this._courseController.getCourseDetail,
+        )
         
     }
 
