@@ -52,7 +52,7 @@ const Header = () => {
 
     const handleLogout = async () => {
         await dispatch(signOut());
-        window.location.href = "/auth";
+        window.location.href = "/";
     }
 
     const handleCloseModal = (openModal: boolean) => {

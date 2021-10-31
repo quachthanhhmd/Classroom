@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
-import cors from "cors";
+import cors  from "cors";
 import passport from "passport";
 
 import { IRoute } from './interfaces';
@@ -49,15 +49,14 @@ class App {
             this.httpServer.use(successHandler);
             this.httpServer.use(errorHandler);
         }
-
+        // enable cors
+        this.httpServer.use(cors());
         // parse json request body
         this.httpServer.use(express.json());
 
         // parse urlencoded request body
         this.httpServer.use(express.urlencoded({ extended: true }));
 
-        // enable cors
-        this.httpServer.use(cors());
         //this.httpServer.options('*', cors());
 
         this.httpServer.use(passport.initialize());
