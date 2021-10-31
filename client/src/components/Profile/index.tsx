@@ -111,10 +111,10 @@ const ProfileUser = (props: IOpenModal) => {
         );
     };
 
-    const handleUpdateProfile = async (data: IProfileBody) => {
+    const handleUpdateProfile = (data: IProfileBody) => {
 
         if (typeof selectedFile !== "undefined") {
-            await handleUpload();
+            handleUpload();
         }
         dispatchProfileAndUpdate(data);
 
