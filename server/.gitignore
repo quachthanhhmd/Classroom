@@ -1,5 +1,7 @@
+/node_modules
 
-.env
-node_modules/
 .git
-build/
+.env
+
+# production
+/build/

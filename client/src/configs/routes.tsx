@@ -12,7 +12,7 @@ import env from "./env";
 
 const Feed = lazy(() => import("../containers/Feed"));
 const Member = lazy(() => import("../containers/Member"));
-
+const NotFound = lazy(() => import("../pages/NotFound"));
 type IRoute = {
     path: string,
     exact?: boolean,
@@ -22,7 +22,7 @@ type IRoute = {
 
 
 const RouteConfig = (route: IRoute, index: number, Layout?: any) => {
-   
+
     const { path, exact, main: Component, auth = false } = route;
     return (
         <Route
@@ -41,7 +41,7 @@ const RouteConfig = (route: IRoute, index: number, Layout?: any) => {
 
                     if (!token && auth !== true) {
                         if (!Layout) {
-                            return <Component {...props} />
+                            return <Redirect to="/auth" />;
                         }
                         return Layout(<Component {...props} />);
                     }
@@ -143,6 +143,10 @@ const renderRoutes = (defaultRoutes: IRoute[], HomeRoutes: IRoute[], CourseRoute
             {CourseRoutes.map((route, index) => {
                 return RouteConfig(route, index, CourseLayout);
             })},
+
+            <Route>
+                <NotFound />
+            </Route>
         </Switch>
     );
 };

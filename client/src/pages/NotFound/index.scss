@@ -1,0 +1,12 @@
+.notfound-main {
+    padding-top: 5rem;
+
+    &___content {
+        color: black;
+        -webkit-text-fill-color: white;
+        -webkit-text-stroke-width: 1px;
+        -webkit-text-stroke-color: black;
+        text-shadow: 2px 2px 5px #000;
+        user-select: none;
+    }
+}
