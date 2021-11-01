@@ -67,7 +67,7 @@ export class UserService {
      */
     public getInforById = async (id: number): Promise<User | null> => {
         return await User.findOne({
-            attributes: ["id", "firstName", "lastName", "gender", "birthDay", "email"],
+            attributes: ["id", "firstName", "lastName", "gender", "birthDay", "email", "avatarUrl"],
             where: {
                 id: id,
             }

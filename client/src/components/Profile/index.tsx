@@ -6,7 +6,7 @@ import {
     Select, TextField
 } from "@material-ui/core";
 import { PhotoCamera } from "@material-ui/icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateUserHeader } from "../../actions";
@@ -36,19 +36,33 @@ const ProfileUser = (props: IOpenModal) => {
     const [selectedFile, setSelectedFile] = useState<File | undefined>();
     const [preview, setPreview] = useState<string>("");
 
-    const userProfile = useSelector((state: AppState) => state.auth.user);
-
+    const auth = useSelector((state: AppState) => state.auth);
+    const userProfile = auth.user;
+   
     const dispatch = useDispatch();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<IProfileBody>({
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<IProfileBody>({
         resolver: yupResolver(ProfileValidate),
-        defaultValues: {
+        defaultValues: useMemo(() => {
+            return {
+                firstName: userProfile?.firstName,
+                lastName: userProfile?.lastName,
+                birthDay: userProfile?.birthDay,
+                gender: userProfile?.gender,
+                avatarUrl: userProfile?.avatarUrl
+            }
+        }, [userProfile])
+    })
+    useEffect(() => {
+        setPreview(userProfile?.avatarUrl || "");
+        reset({
             firstName: userProfile?.firstName,
             lastName: userProfile?.lastName,
             birthDay: userProfile?.birthDay,
             gender: userProfile?.gender,
-        }
-    })
+            avatarUrl: userProfile?.avatarUrl
+        });
+    }, [auth]);
 
     const handleClose = () => {
         setIsOpenModal(!isOpenModal);
@@ -76,9 +90,9 @@ const ProfileUser = (props: IOpenModal) => {
         setSelectedFile(e.target.files[0])
     }
     function dispatchProfileAndUpdate(data: any) {
-        console.log(data);
+
         const newData: any = objectFieldChange(userProfile, data);
-        console.log(newData);
+   
         dispatch(updateProfile(newData));
 
         //change header
@@ -111,17 +125,19 @@ const ProfileUser = (props: IOpenModal) => {
         );
     };
 
-    const handleUpdateProfile = (data: IProfileBody) => {
+    const handleUpdateProfile = async (data: IProfileBody) => {
+        handleClose();
 
+    
         if (typeof selectedFile !== "undefined") {
-            handleUpload();
+            await handleUpload();
         }
-        dispatchProfileAndUpdate(data);
+        await dispatchProfileAndUpdate(data);
 
     }
 
     return (
-
+       
         <Dialog
             open={isOpenModal}
             onClose={handleClose}
@@ -250,15 +266,13 @@ const ProfileUser = (props: IOpenModal) => {
                 </Button>
                 <Button
                     color="primary"
-                    onClick={() => {
-                        handleSubmit(handleUpdateProfile);
-                        handleClose();
-                    }}>
+                    onClick={
+                        handleSubmit(handleUpdateProfile)
+                        //handleClose(); handleUpdateProfile
+                    }>
                     Update
                 </Button>
-
             </DialogActions>
-
         </Dialog>
 
     )

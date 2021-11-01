@@ -22,7 +22,7 @@ type IRoute = {
 
 
 const RouteConfig = (route: IRoute, index: number, Layout?: any) => {
-    console.log(route);
+   
     const { path, exact, main: Component, auth = false } = route;
     return (
         <Route
@@ -34,7 +34,11 @@ const RouteConfig = (route: IRoute, index: number, Layout?: any) => {
                     const token = localStorage.getItem(
                         env.REACT_APP_ACCESS_TOKEN
                     );
-                    console.log(token, auth);
+                    // const refreshToken = localStorage.getItem(
+                    //     env.REACT_APP_REFRESH_TOKEN
+                    // );
+                    // if (!token )
+
                     if (!token && auth !== true) {
                         if (!Layout) {
                             return <Component {...props} />
@@ -105,6 +109,7 @@ const homeRouteList: IRoute[] = [
 const defaultRouteList = [
     {
         path: ROUTES.auth,
+        auth: false,
         exact: true,
         main: () => <AuthenticatePage />,
     },

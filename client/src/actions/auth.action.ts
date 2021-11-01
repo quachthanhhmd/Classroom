@@ -76,7 +76,7 @@ export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserH
 
     if (!userID)
       throw new Error();
-    console.log(userID);
+   
     const result = await authApi.getInfo(userID);
 
     if (!result) {

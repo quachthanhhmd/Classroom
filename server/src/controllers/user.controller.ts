@@ -21,7 +21,7 @@ export class UserController {
 
             const user = await this._userService.getInforById(id);
 
-            return res.composer.success({ user });
+            return res.composer.success(user);
         } catch (err) {
             res.composer.otherException(err);
         }

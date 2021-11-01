@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, LinkProps, useHistory } from "react-router-dom";
-import { signOut } from "../../actions";
+import { signOut, getUserData } from "../../actions";
 import { AppState } from "../../reducers";
 import Profile from "../Profile";
 import ThemeMode from '../ThemeMode';
@@ -39,6 +39,12 @@ const Header = () => {
         //window.location.pathname.includes("exam") && setTypePill(1);
         window.location.pathname.includes("member") && setTypePill(2);
     }, [window.location.pathname])
+
+    useEffect(() => {
+        if (!auth.user) {
+            dispatch(getUserData())
+        }
+    }, [])
 
     const handleClick = (e: any, type: string) => {
 

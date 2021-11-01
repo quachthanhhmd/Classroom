@@ -18,8 +18,9 @@ import ThemeMode from '../ThemeMode';
 import AddCourse from "../CreateCourse";
 import Profile from "../Profile";
 
+
 import { useDispatch, useSelector } from "react-redux";
-import { signOut } from "../../actions";
+import { signOut, getUserData } from "../../actions";
 import { AppState } from "../../reducers";
 import { useScrollHook } from "../../customs";
 
@@ -36,8 +37,12 @@ const Header = () => {
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState("");
-
-
+    console.log(auth.user);
+    useEffect(() => {
+        if (!auth.user) {
+            dispatch(getUserData())
+        }
+    }, [])
 
     const handleClick = (e: any, type: string) => {
 
