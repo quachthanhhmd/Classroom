@@ -41,7 +41,7 @@ const RouteConfig = (route: IRoute, index: number, Layout?: any) => {
 
                     if (!token && auth !== true) {
                         if (!Layout) {
-                            return <Redirect to="/auth" />;
+                            return <Component {...props} />
                         }
                         return Layout(<Component {...props} />);
                     }

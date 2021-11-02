@@ -8,7 +8,6 @@ import {
 } from "@material-ui/icons";
 import React from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
 import "./index.scss";
 
 interface IMember {

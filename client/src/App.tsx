@@ -2,13 +2,11 @@ import { CssBaseline } from "@material-ui/core";
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
-import { BrowserRouter, Redirect, Route } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import './App.css';
 import Loading from "./components/Loading";
 import renderRoutes from "./configs/routes";
 import { AppState } from "./reducers";
-import Course from "./pages/Course";
-import Authenticate from "./pages/Authenticate";
 
 function App() {
   const themeMode = useSelector((state: AppState) => state.themeMode?.toggleMode);

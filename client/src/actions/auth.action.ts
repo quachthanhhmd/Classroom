@@ -30,6 +30,7 @@ import {
   USER_LOGIN_OAUTH_FAIL,
 } from "../constants";
 
+import axiosClient from "../api/axios.client";
 
 export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInType) => (ISignInType)) => {
   try {
@@ -38,7 +39,7 @@ export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInTyp
     });
 
     const result = await authApi.signIn(data);
-    console.log(result);
+    
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: result.data.payload,
@@ -67,13 +68,14 @@ export const signUp = (data: ISignUpInput) => async (dispatch: (args: ISignUpTyp
   }
 }
 
+
+
 export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserHeader)) => {
   try {
     dispatch({ type: USER_INFO_REQUEST });
 
     const token = localStorage.getItem(env.REACT_APP_ACCESS_TOKEN);
     const userID: number = jwt_decode<IPayload>(token!)?.sub;
-
     if (!userID)
       throw new Error();
    

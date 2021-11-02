@@ -16,6 +16,7 @@ axiosClient.interceptors.request.use(async (config: any) => {
   const token =
     localStorage.getItem(env.REACT_APP_ACCESS_TOKEN) || null;
   config.headers["Authorization"] = `Bearer ${token}`;
+
   return config;
 });
 

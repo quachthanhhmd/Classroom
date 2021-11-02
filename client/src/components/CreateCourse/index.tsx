@@ -1,5 +1,3 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {
     Button,
     Dialog,
@@ -7,14 +5,16 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    TextField,
+    TextField
 } from "@material-ui/core";
-
+import React from "react";
+import { useDispatch } from "react-redux";
+import { createCourse } from "../../actions/course.action";
 // import { AppState } from "../../reducers";
 // import { createCourseModal } from "../../actions";
-import { STUDENT_IN_COURSE, LENGTH_TEXT_CREATE_COURSE } from "../../constants";
+import { LENGTH_TEXT_CREATE_COURSE, STUDENT_IN_COURSE } from "../../constants";
 import { ICreateCourse } from "../../interfaces";
-import { createCourse } from "../../actions/course.action";
+
 
 interface IOpenModal {
     isOpenModal: boolean,

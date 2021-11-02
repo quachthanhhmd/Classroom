@@ -1,12 +1,7 @@
-import Switch from "@material-ui/core/Switch";
-
 import DarkModeToggle from "react-dark-mode-toggle";
-
-import { useSelector, useDispatch } from "react-redux";
-
-import { AppState } from "../../reducers";
+import { useDispatch, useSelector } from "react-redux";
 import { updateThemeMode } from "../../actions/theme-mode.action";
-
+import { AppState } from "../../reducers";
 
 const ThemeMode = () => {
 
