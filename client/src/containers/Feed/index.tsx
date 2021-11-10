@@ -14,6 +14,7 @@ import { Link, useParams } from "react-router-dom";
 import { getAllCourseInfo } from "../../actions";
 import { AppState } from "../../reducers";
 import { ICourseInfo } from "../../interfaces";
+import { TYPEROLE } from "../../constants";
 import CourseInfo from "../../components/CourseInfo";
 import env from "../../configs/env";
 
@@ -49,6 +50,8 @@ const Feed = () => {
     const { courseId } = useParams<ParamTypes>();
 
     const courseState = useSelector((state: AppState) => state.course!);
+    const role = useSelector((state: AppState) => state.member);
+
     const course: ICourseInfo = courseState.course as ICourseInfo;
 
     const dispatch = useDispatch();
@@ -77,7 +80,7 @@ const Feed = () => {
 
     return (
         <>
-            <CourseInfo isOpenModal={isChangeInfo}  setIsOpenModal={handleChangeInfo}/>
+            <CourseInfo isOpenModal={isChangeInfo} setIsOpenModal={handleChangeInfo} />
             <Dialog
                 fullWidth
                 keepMounted
@@ -121,16 +124,18 @@ const Feed = () => {
                 onClose={handleClose}>
                 <DialogTitle>Thông tin về lớp học</DialogTitle>
                 <DialogContent>
-                    <div className="feed-main___show-infor___modal-detail">
-                        <span className="feed-main___show-infor___modal-detail--title">Mã Lớp: </span>
-                        <span className="feed-main___show-infor___modal-detail--info">{course?.code}</span>
-                        <IconButton onClick={() => {
-                            handleClose();
-                            setIsShowShareCode(true);
-                        }}>
-                            <CropFree />
-                        </IconButton>
-                    </div>
+                    {role && role.currentRole && role.currentRole.role !== TYPEROLE.STUDENT &&
+                        <div className="feed-main___show-infor___modal-detail">
+                            <span className="feed-main___show-infor___modal-detail--title">Mã Lớp: </span>
+                            <span className="feed-main___show-infor___modal-detail--info">{course?.code}</span>
+                            <IconButton onClick={() => {
+                                handleClose();
+                                setIsShowShareCode(true);
+                            }}>
+                                <CropFree />
+                            </IconButton>
+                        </div>
+                    }
                     <div className="feed-main___show-infor___modal-detail">
                         <span className="feed-main___show-infor___modal-detail--title">Chủ đề: </span>
                         <span className="feed-main___show-infor___modal-detail--info">{course?.topic} </span>
@@ -158,11 +163,13 @@ const Feed = () => {
                         <h1>{course?.name}</h1>
                         <div>{course?.topic}</div>
                     </div>
-                    <div className="feed-main___background___change-info">
-                        <IconButton onClick={(e) => { setIsChangeInfo(!isChangeInfo) }}>
-                            <Settings style={{ fontSize: "2rem", color: "white" }} />
-                        </IconButton>
-                    </div>
+                    {role && role.currentRole && role.currentRole.role === TYPEROLE.TEACHER &&
+                        <div className="feed-main___background___change-info">
+                            <IconButton onClick={(e) => { setIsChangeInfo(!isChangeInfo) }}>
+                                <Settings style={{ fontSize: "2rem", color: "white" }} />
+                            </IconButton>
+                        </div>
+                    }
                     <div className="feed-main___background___more-infor">
                         <IconButton onClick={(e) => setIsShowInfor(!isShowInfor)}>
                             <MoreHoriz style={{ fontSize: "2rem", color: "white" }} />
@@ -172,26 +179,28 @@ const Feed = () => {
 
                 <Container className="feed-main___body">
                     <div className="feed-main___body___left">
-                        <Card className="feed-main___body___left--course-code">
-                            <CardHeader
-                                action={
-                                    <IconButton aria-label="settings">
-                                        <MoreVert />
+                        {
+                            role.currentRole && role.currentRole.role !== TYPEROLE.STUDENT &&
+                            <Card className="feed-main___body___left--course-code">
+                                <CardHeader
+                                    action={
+                                        <IconButton aria-label="settings">
+                                            <MoreVert />
+                                        </IconButton>
+                                    }
+                                    title={<p className="feed-main___body___left--card-header">Mã lớp</p>}
+                                />
+                                <CardContent className="feed-main___body___left--course-code___content">
+                                    <span className="feed-main___body___left--course-code___content--code">{course?.code} </span>
+                                    <IconButton style={{ marginTop: "-0.5rem" }} onClick={() => {
+                                        handleClose();
+                                        setIsShowShareCode(true);
+                                    }}>
+                                        <CropFree />
                                     </IconButton>
-                                }
-                                title={<p className="feed-main___body___left--card-header">Mã lớp</p>}
-                            />
-                            <CardContent className="feed-main___body___left--course-code___content">
-                                <span className="feed-main___body___left--course-code___content--code">{course?.code} </span>
-                                <IconButton style={{ marginTop: "-0.5rem" }} onClick={() => {
-                                    handleClose();
-                                    setIsShowShareCode(true);
-                                }}>
-                                    <CropFree />
-                                </IconButton>
-                            </CardContent>
-                        </Card>
-
+                                </CardContent>
+                            </Card>
+                        }
                         <Card className="feed-main___body___left--deadline" style={{ fontSize: "1rem" }}>
                             <CardHeader
                                 title={<p className="feed-main___body___left--card-header">Sắp hết hạn</p>}

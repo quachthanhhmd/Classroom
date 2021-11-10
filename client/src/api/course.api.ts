@@ -8,7 +8,7 @@ const courseApi = {
         return axiosClient.post<IHttpFormat<ICourseSummary>>(url, body);
     },
     joinCourse: (code: string) => {
-        const url = `v1/course/${code}`;
+        const url = `v1/course/join/${code}`;
         return axiosClient.post<IHttpFormat<ICourseInfo>>(url);
     },
     getAllCourse: () => {

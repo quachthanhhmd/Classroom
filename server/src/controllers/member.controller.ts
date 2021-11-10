@@ -57,13 +57,14 @@ export class MemberController {
     ): Promise<void> => {
         try {
             const upsertBody: IUpsertStudentID = req.body;
+            const userId = req.currentUser!.id;
 
-            const isStudentRole = await this._memberService.isStudentRole(upsertBody.userId, upsertBody.courseId);
-            if (!isStudentRole) {
+            const member = await this._memberService.findMemberByUserAndCourseId(userId, upsertBody.courseId);
+            if (!member || member.studentId) {
                 return res.composer.unauthorized();
             }
-
-            await this._memberService.AddStudentId(upsertBody.userId, upsertBody.courseId, upsertBody.studentId);
+    
+            await this._memberService.AddStudentId(userId, upsertBody.courseId, upsertBody.studentId);
             return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);
@@ -77,11 +78,12 @@ export class MemberController {
         try {
             const userId = req.currentUser?.id;
             const courseId =  req.params.courseId;
-
+           
             const result = await this._memberService.getRoleMember(userId!, +courseId);
+            console.log(result);
             if (!result) return res.composer.notFound();
 
-        return res.composer.success(serializeGetRole(result));
+            return res.composer.success(serializeGetRole(result));
         } catch (err) {
             res.composer.otherException(err);
         }

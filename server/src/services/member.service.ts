@@ -128,10 +128,9 @@ export class MemberService {
                 [Op.and]: {
                     userId: userId,
                     courseId: courseId,
-
                 }
             }
         })
-
     }
+
 }

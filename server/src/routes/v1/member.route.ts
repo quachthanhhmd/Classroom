@@ -20,14 +20,14 @@ class MemberRoute {
 
     private initializeRoutes() {
         this.router.post(
-            "/upsertId", 
+            "/upsert", 
             this._authenticate.authenticate(),
             validate(this._memberValidation.UpsertStudentId()), 
             this._memberController.upsertStudentId,
         )
 
         this.router.get(
-            "/:courseId",
+              "/:courseId",
             this._authenticate.authenticate(),
             validate(this._memberValidation.getRoleMember()),
             this._memberController.getRoleMember,

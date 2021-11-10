@@ -33,5 +33,16 @@ export class CourseService {
         return await Course.findByPk(id);
     }
 
-   
+    /**
+     * get course info by code
+     * @param {string} code 
+     * @returns 
+     */
+    public getCourseByCode = async (code: string) : Promise<Course | null> => {
+        return await Course.findOne({
+            where: {
+                code: code,
+            }
+        }) 
+    }
 }

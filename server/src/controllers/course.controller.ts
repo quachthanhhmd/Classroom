@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { injectable, inject } from "inversify";
 
 import { INextFunction, IRequest, IResponse, IAuthorizeRequest, serializeCourseSummary, serializeCourseDetail } from './../interfaces';
-import { CourseService, UserService } from "../services";
+import { CourseService, MemberService, UserService } from "../services";
 
 
 @injectable()
@@ -11,6 +11,7 @@ export class CourseController {
 
     constructor(
         @inject("CourseService") private readonly _courseService: CourseService,
+        @inject("MemberService") private readonly _memberService: MemberService,
         @inject("UserService") private readonly _userService: UserService,
     ) { }
 
@@ -37,13 +38,32 @@ export class CourseController {
             const courseId: number = +req.params.courseId;
 
             const course = await this._courseService.getCourseDetail(courseId!);
-            if (!course) {{
+            if (!course) {
                 return res.composer.notFound();
-            }}  
-          
+            }
+
             return res.composer.success(serializeCourseDetail(course));
         } catch (err) {
             return res.composer.otherException(err);
+        }
+    }
+
+    public joinCourseByCode = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const code = req.params.code;
+            const userId = req.currentUser?.id;
+
+            const course = await this._courseService.getCourseByCode(code);
+            if (!course)
+                return res.composer.notFound();
+
+            await this._memberService.upsetMember(userId!, course.id);
+            return res.composer.success(serializeCourseDetail(course));
+        } catch (err) {
+            res.composer.otherException(err);
         }
     }
 }

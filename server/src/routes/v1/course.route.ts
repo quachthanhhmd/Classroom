@@ -33,8 +33,14 @@ class CourseRoute {
             this._authenticate.authenticate(),
             validate(this._courseValidation.getCourse),
             this._courseController.getCourseDetail,
+        );
+        this.router.post(
+            "/join/:code",
+            this._authenticate.authenticate(),
+            validate(this._courseValidation.joinCourseByCode),
+            this._courseController.joinCourseByCode,
         )
-        
+
     }
 
 }

@@ -10,15 +10,15 @@ import { validate } from "../../middlewares";
 class AuthRoutes {
 
     public router: IRoute;
-
+    
     constructor(
         @inject("AuthController") private readonly _authController: AuthController,
         @inject("AuthValidation") private readonly _authValidation: AuthValidation,
-    ) {
-
-        this.router = Router();
-        this.initializeRoutes();
-    };
+        ) {
+            
+            this.router = Router();
+            this.initializeRoutes();
+        };
 
 
     private initializeRoutes() {

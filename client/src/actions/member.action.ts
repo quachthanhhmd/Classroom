@@ -30,7 +30,7 @@ export const getRoleMember = (courseId: number) =>
         try {
             const result = await memberApi.getMemberRole(courseId);
             if (result.status !== 200) throw new Error();
-
+            console.log(result.data.payload);
             dispatch({
                 type: GET_ROLE_MEMBER_SUCCESS,
                 payload: result.data.payload,

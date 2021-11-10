@@ -44,7 +44,6 @@ const AddIDModal = () => {
 
     const handleCreateID = (data: ICreateID) => {
         handleClose();
-        console.log(data);
         dispatch(upsertStudentId(+courseId, data.studentId));
     }
     return (

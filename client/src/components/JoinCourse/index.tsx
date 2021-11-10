@@ -42,7 +42,6 @@ const JoinCourse = (props: IOpenModal) => {
 
     const handleSubmitJoin = (data: IJoinCourse) => {
         handleClose();
-        console.log(data);
         dispatch(joinCoursebyCode(data.code));
     }
     useEffect(() => {
