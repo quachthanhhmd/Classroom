@@ -3,6 +3,7 @@ import courseManageReducer from "./course-manage.reducer";
 import authReducer from "./auth.reducer";
 import userReducer from "./user.reducer";
 import courseReducer from "./course.reducer";
+import memberReducer from "./member.reducer";
 
 import { combineReducers } from "redux";
 
@@ -12,6 +13,7 @@ export const reducer = combineReducers({
     auth: authReducer,
     course: courseReducer,
     user: userReducer,
+    member: memberReducer,
 });
 
 

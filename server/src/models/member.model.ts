@@ -22,6 +22,7 @@ interface IMember {
     userId: number;
     courseId: number;
     role?: string;
+    studentId?: string;
     type?: string;
 }
 
@@ -32,7 +33,6 @@ interface MemberCreationAttributes extends Optional<IMember, "id"> { }
     timestamps: true,
 })
 export class Member extends Model<IMember, MemberCreationAttributes> {
-
     @AllowNull(false)
     @AutoIncrement
     @PrimaryKey
@@ -58,6 +58,10 @@ export class Member extends Model<IMember, MemberCreationAttributes> {
     @AllowNull(false)
     @Column(DataType.ENUM(TYPEROLE.ASSISTANT, TYPEROLE.STUDENT, TYPEROLE.TEACHER))
     role!: string;
+
+    @AllowNull(true)
+    @Column(DataType.STRING(10))
+    studentId!: string;
 
     @AllowNull(false)
     @Default(MEMBERSTATE.SPENDING)

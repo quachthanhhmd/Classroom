@@ -75,4 +75,63 @@ export class MemberService {
             type: state,
         })
     }
+    /**
+     * Add id for student if member is student
+     * @param {number} userId 
+     * @param {number} courseId 
+     * @param {string} studentId 
+     */
+    public AddStudentId = async (userId: number, courseId: number, studentId: string): Promise<void> => {
+        await Member.update({
+            studentId: studentId
+        }, {
+            where: {
+                [Op.and]: {
+                    userId: userId,
+                    courseId: courseId,
+                }
+            }
+        })
+    }
+
+    /**
+     * Check if user is student role or not
+     * @param {number} userId 
+     * @param {number} courseId 
+     * @returns {Promise<Member | null>}
+     */
+    public isStudentRole = async (userId: number, courseId: number): Promise<boolean> => {
+        const student = await Member.findOne({
+            where: {
+                [Op.and]: {
+                    userId: userId,
+                    courseId: courseId,
+                    role: TYPEROLE.STUDENT
+                }
+            }
+        })
+
+        if (!student) return false;
+        return true;
+    }
+
+    /**
+     * Check if user is student role or not
+     * @param {number} userId 
+     * @param {number} courseId 
+     * @returns {Promise<Member | null>}
+     */
+    public getRoleMember = async (userId: number, courseId: number): Promise<Member | null> => {
+        return await Member.findOne({
+            attributes: ["role", "type", "studentId"],
+            where: {
+                [Op.and]: {
+                    userId: userId,
+                    courseId: courseId,
+
+                }
+            }
+        })
+
+    }
 }

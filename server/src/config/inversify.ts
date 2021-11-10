@@ -8,17 +8,18 @@ import {
     AuthService,
     CourseService,
     MemberService,
-    OAuthService
+    OAuthService,
 } from "../services";
 
 import {
     UserController,
     AuthController,
-    CourseController
+    CourseController,
+    MemberController,
 } from "../controllers";
 
 import { Authenticate } from "../middlewares";
-import { AuthValidation, CourseValidation, UserValidation } from "../validations";
+import { AuthValidation, CourseValidation, UserValidation, MemberValidation } from "../validations";
 
 const existContainer = new Container({ defaultScope: "Singleton" });
 
@@ -37,6 +38,8 @@ existContainer.bind<CourseService>("CourseService").to(CourseService);
 existContainer.bind<CourseValidation>("CourseValidation").to(CourseValidation);
 
 existContainer.bind<MemberService>("MemberService").to(MemberService);
+existContainer.bind<MemberController>("MemberController").to(MemberController)
+existContainer.bind<MemberValidation>("MemberValidation").to(MemberValidation);
 
 existContainer.bind<TokenService>("TokenService").to(TokenService);
 existContainer.bind<OAuthService>("OAuthService").to(OAuthService);

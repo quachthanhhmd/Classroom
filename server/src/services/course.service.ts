@@ -32,5 +32,6 @@ export class CourseService {
     public getCourseDetail = async (id: number): Promise<Course | null> => {
         return await Course.findByPk(id);
     }
+
    
 }

@@ -6,7 +6,7 @@ import { IAuthorizeRequest, IResponse } from './../interfaces';
 import { injectable, inject } from 'inversify';
 import { MemberService } from "../services";
 import { MEMBER_EXISTS } from "../constants";
-
+import { IGetRoleUser, IUpsertStudentID, serializeGetRole } from '../interfaces/member.interface';
 
 @injectable()
 export class MemberController {
@@ -48,6 +48,42 @@ export class MemberController {
             return res.composer.success("Request completed!");
         } catch (err) {
             return res.composer.otherException(err);
+        }
+    }
+
+    public upsertStudentId = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const upsertBody: IUpsertStudentID = req.body;
+
+            const isStudentRole = await this._memberService.isStudentRole(upsertBody.userId, upsertBody.courseId);
+            if (!isStudentRole) {
+                return res.composer.unauthorized();
+            }
+
+            await this._memberService.AddStudentId(upsertBody.userId, upsertBody.courseId, upsertBody.studentId);
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public getRoleMember = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const userId = req.currentUser?.id;
+            const courseId =  req.params.courseId;
+
+            const result = await this._memberService.getRoleMember(userId!, +courseId);
+            if (!result) return res.composer.notFound();
+
+        return res.composer.success(serializeGetRole(result));
+        } catch (err) {
+            res.composer.otherException(err);
         }
     }
 }

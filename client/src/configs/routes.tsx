@@ -104,7 +104,7 @@ const homeRouteList: IRoute[] = [
     {
         path: ROUTES.home,
         exact: true,
-        auth: false,
+        auth: true,
         main: () => <HomePage />
     },
 ]
@@ -122,13 +122,13 @@ const courseRouteList = [
     {
         path: ROUTES.course,
         exact: false,
-        auth: false,
+        auth: true,
         main: () => <Feed />,
     },
     {
         path: ROUTES.member,
         exact: false,
-        auth: false,
+        auth: true,
         main: () => <Member />
     }
 ]

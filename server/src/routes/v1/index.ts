@@ -7,6 +7,7 @@ import DocsRoutes from "./docs.route";
 import UserRoutes from "./user.route";
 import AuthRoutes from "./auth.route";
 import CourseRoutes from "./course.route";
+import MemberRoutes from "./member.route";
 
 class IndexRoutes {
 
@@ -21,7 +22,8 @@ class IndexRoutes {
         this.router.use("/v1/auth", container.resolve<AuthRoutes>(AuthRoutes).router);
         this.router.use("/v1/user", container.resolve<UserRoutes>(UserRoutes).router);
         this.router.use("/v1/course", container.resolve<CourseRoutes>(CourseRoutes).router);
-
+        this.router.use("/v1/member", container.resolve<MemberRoutes>(MemberRoutes).router);
+        
         if (env.TYPE === "development") {
             this.router.use("/docs", DocsRoutes);
         }

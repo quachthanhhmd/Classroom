@@ -5,3 +5,4 @@ export * from "./routes.constant";
 export * from "./auth.constant";
 export * from "./user.constant";
 export * from "./course.constant";
+export * from "./member.constant";

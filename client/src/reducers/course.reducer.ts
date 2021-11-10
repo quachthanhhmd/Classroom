@@ -2,7 +2,7 @@ import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
     CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
     GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL,
-    GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS
+    GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
     ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IPaginationInfo,
@@ -51,7 +51,24 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
             return {
                 ...state,
                 course: null,
+                isLoading: false,
+            }
+        case JOIN_COURSE_REQUEST:
+            return {
+                ...state,
+                course: null,
                 isLoading: true,
+            }
+        case JOIN_COURSE_SUCCESS:
+            return {
+                ...state,
+                isLoading: true,
+                course: action.payload! as ICourseInfo,
+            }
+        case JOIN_COURSE_FAIL:
+            return {
+                ...state,
+                isLoading: false,
             }
         case GET_ALL_USER_COURSE_REQUEST:
             return {
