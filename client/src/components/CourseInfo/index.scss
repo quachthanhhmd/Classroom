@@ -1,0 +1,50 @@
+.change-info {
+    position: absolute;
+    top: 3%;
+    right: 0%;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    &___modal {
+        &--header {
+            height: 10rem;
+            background-repeat: no-repeat;
+            -webkit-background-size: cover;
+            background-size: cover;
+            position: relative;
+            
+            &___course-img {
+                position: absolute;
+                top: 5rem;
+                left: 20%;
+                &--img {
+                    > img {
+                        width: 7rem;
+                        height: 7rem;
+                        border-radius: 100%;
+                    }
+                }
+
+                &--icon-upload {
+                    position: absolute;
+                    bottom: 5%;
+                    right: 7%;
+                }
+            }
+        }
+
+        &--body {
+            margin-top: 3rem;
+            padding-right: 1rem;
+            padding-left: 1rem;
+            > * {
+                margin: 0.5rem 0 0.5rem 0;
+            }
+
+            &___text-input {
+                margin-left: 0.5rem;
+                margin-right: 0.5rem;
+            }
+        }
+    }
+}

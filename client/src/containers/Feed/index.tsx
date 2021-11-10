@@ -1,18 +1,22 @@
 import {
-    Button, Card, CardContent, CardHeader, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper
+    Button, Card, CardContent, CardHeader, Container, Dialog, DialogActions, DialogContent, Grid, DialogTitle, IconButton, Paper, TextField
 } from "@material-ui/core";
 import {
-    CropFree, FileCopy, MoreHoriz, MoreVert
+    CropFree, FileCopy, MoreHoriz, MoreVert, Settings, PhotoCamera
 } from "@material-ui/icons";
 import { EditorState } from "draft-js";
 import React, { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useDispatch, useSelector } from "react-redux";
+
 import { Link, useParams } from "react-router-dom";
 import { getAllCourseInfo } from "../../actions";
 import { AppState } from "../../reducers";
 import { ICourseInfo } from "../../interfaces";
+import CourseInfo from "../../components/CourseInfo";
+import env from "../../configs/env";
+
 import "./index.scss";
 
 const deadlineList = [
@@ -55,6 +59,7 @@ const Feed = () => {
     const [isShowInfor, setIsShowInfor] = useState(false);
     const [isShowShareCode, setIsShowShareCode] = useState(false);
     const [isWriteStatus, setIsWriteStatus] = useState(false);
+    const [isChangeInfo, setIsChangeInfo] = useState(false);
 
     useEffect(() => {
         console.log(courseId);
@@ -67,9 +72,12 @@ const Feed = () => {
     const handleCloseCode = () =>
         isShowShareCode && setIsShowShareCode(false);
 
+    const handleChangeInfo = () =>
+        isChangeInfo && setIsChangeInfo(false);
 
     return (
         <>
+            <CourseInfo isOpenModal={isChangeInfo}  setIsOpenModal={handleChangeInfo}/>
             <Dialog
                 fullWidth
                 keepMounted
@@ -80,6 +88,7 @@ const Feed = () => {
                 <DialogTitle>Mã Lớp Học</DialogTitle>
                 <DialogContent>
                     <div className="feed-main___body___show-code___modal">
+
                         <div className="feed-main___body___show-code___modal--code">
                             {course?.code}
                         </div>
@@ -87,9 +96,14 @@ const Feed = () => {
                             <div className="feed-main___body___show-code___modal--copy--course-name">
                                 {course?.name}
                             </div>
+
                             <div className="feed-main___body___show-code___modal--copy--copy-code">
 
-                                <IconButton style={{ borderRadius: "0%" }} onClick={() => navigator.clipboard.writeText('ripgco6')}>
+                                <IconButton style={{ borderRadius: "0%" }} onClick={() => {
+                                    const urlJoinCourse = `${env.REACT_APP_BASE_URL}/course/${course?.id || 1}?give=${course?.code ? course.code : "sfsfff"}`;
+                                    navigator.clipboard.writeText(urlJoinCourse)
+                                }
+                                }>
                                     <FileCopy />
                                     <span>
                                         Sao chép đường liên kết
@@ -143,6 +157,11 @@ const Feed = () => {
                     <div className="feed-main___background___course-name">
                         <h1>{course?.name}</h1>
                         <div>{course?.topic}</div>
+                    </div>
+                    <div className="feed-main___background___change-info">
+                        <IconButton onClick={(e) => { setIsChangeInfo(!isChangeInfo) }}>
+                            <Settings style={{ fontSize: "2rem", color: "white" }} />
+                        </IconButton>
                     </div>
                     <div className="feed-main___background___more-infor">
                         <IconButton onClick={(e) => setIsShowInfor(!isShowInfor)}>

@@ -16,6 +16,7 @@ import "./index.scss";
 import { useHistory } from "react-router-dom";
 import ThemeMode from '../ThemeMode';
 import AddCourse from "../CreateCourse";
+import JoinCourse from '../JoinCourse';
 import Profile from "../Profile";
 
 
@@ -26,6 +27,7 @@ import { useScrollHook } from "../../customs";
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
+const TYPE_MODAL_JOIN = "TYPE_MODAL_JOIN";
 
 const Header = () => {
     const styleScroll = useScrollHook();
@@ -34,10 +36,11 @@ const Header = () => {
     const history = useHistory();
     const auth = useSelector((state: AppState) => state!.auth);
 
-    const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [isOpenCourse, setIsOpenCourse] = useState<number>(0);
     const [anchorEl, setAnchorEl] = useState(null);
-    const [typeOpen, setTypeOpen] = useState("");
-    console.log(auth.user);
+    const [typeOpen, setTypeOpen] = useState<string>("");
+
     useEffect(() => {
         if (!auth.user) {
             dispatch(getUserData())
@@ -45,13 +48,13 @@ const Header = () => {
     }, [])
 
     const handleClick = (e: any, type: string) => {
-
         setAnchorEl(e.currentTarget);
         setTypeOpen(type);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
+        //setIsOpenCourse(0);
     };
 
     const handleLogout = async () => {
@@ -66,8 +69,9 @@ const Header = () => {
 
     return (
         <>
-            <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal} setIsOpenModal={handleCloseModal} />
-            <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
+            <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 1} setIsOpenModal={handleCloseModal} />
+            <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal }  setIsOpenModal={handleCloseModal} />
+            <JoinCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 2} setIsOpenModal={handleCloseModal}/>
             <div className="header-main" style={styleScroll}>
 
                 <div className="header-main___left">
@@ -120,6 +124,7 @@ const Header = () => {
                         >
                             <MenuItem
                                 onClick={() => {
+                                    setIsOpenCourse(1);
                                     setIsOpenModal(true);
                                     handleClose();
                                 }}
@@ -128,7 +133,8 @@ const Header = () => {
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
-                                    //setJoinOpened(true);
+                                    setIsOpenCourse(2);
+                                    setIsOpenModal(true);
                                     handleClose();
                                 }}
                             >

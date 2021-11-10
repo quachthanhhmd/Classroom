@@ -11,6 +11,8 @@
         background-size: cover;
         position: relative;
 
+        
+
         &--has-image {
             &:before {
                 background: linear-gradient(rgba(32, 33, 36, 0) 30%, rgba(32, 33, 36, 0.8));
@@ -193,7 +195,6 @@
                         margin-bottom: 1rem;
                         padding-top: 0.7rem;
                         > Button {
-                           
                             border-radius: 0% !important;
                         }
                     }

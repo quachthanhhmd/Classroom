@@ -49,3 +49,17 @@ export const CreateCourseValidate = yup.object({
     studentLimit: yup.number().max(1000000, "Lớp học tối đa chỉ được 1 triệu học sinh"),
 })
 
+export const JoinCourseValidate = yup.object({
+    code: yup.string().max(10, "Mã lớp chỉ tối đa 10 ký tự").required("Nhập mã lớp học mà giao viên cung cấp"),
+})
+
+export const ChangeCourseInfoValidate = yup.object({
+    name: yup.string().max(100, "Tối đa 100 ký tự.").required("Nhập tên lớp học của bạn"),
+    topic: yup.string().max(100, "Tối đa 100 ký tự"),
+    description: yup.string().max(200, "Tối đa 200 ký tự"),
+    studentLimit: yup.number().max(1000000, "Lớp học tối đa chỉ được 1 triệu học sinh"),
+})
+
+export const AddStudentIDValidate = yup.object({
+    studentId: yup.string().max(100, "Mã số sinh viên chỉ tối đa 100 ký tự").required("Bạn phải nhập mã số sinh viên khi vào lớp"),
+})

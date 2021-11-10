@@ -8,6 +8,8 @@ import { IPayload } from "../interfaces";
 import AuthenticatePage from "../pages/Authenticate";
 import HomePage from "../pages/Home";
 import Loading from "../components/Loading";
+import AddIDModal from "../components/AddIDModal";
+
 import env from "./env";
 
 const Feed = lazy(() => import("../containers/Feed"));
@@ -89,6 +91,7 @@ const CourseLayout = (component: any) => {
     return (
         <>
             <CourseHeader />
+            <AddIDModal/>
             <Suspense fallback={<Loading />}>
                 {component}
             </Suspense>
@@ -101,7 +104,7 @@ const homeRouteList: IRoute[] = [
     {
         path: ROUTES.home,
         exact: true,
-        auth: true,
+        auth: false,
         main: () => <HomePage />
     },
 ]
@@ -119,13 +122,13 @@ const courseRouteList = [
     {
         path: ROUTES.course,
         exact: false,
-        auth: true,
+        auth: false,
         main: () => <Feed />,
     },
     {
         path: ROUTES.member,
         exact: false,
-        auth: true,
+        auth: false,
         main: () => <Member />
     }
 ]
