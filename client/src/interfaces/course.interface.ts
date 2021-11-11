@@ -66,7 +66,26 @@ export interface IJoinCourseByUrlState {
 }
 
 export interface IJoinCourseByUrlResponse {
-    
+
 }
 
-export type ICourseAction = ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState; 
+export interface IMemberInfoSummary {
+    firstName: string,
+    lastName: string,
+    userId: number,
+    avatarUrl: string,
+}
+
+export interface IMemberSummary {
+    memberId: number,
+    type: string,
+    role: string,
+    user: IMemberInfoSummary
+}
+
+export interface ICourseMemberState {
+    type: string,
+    payload?: IMemberSummary[],
+}
+
+export type ICourseAction = ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState;

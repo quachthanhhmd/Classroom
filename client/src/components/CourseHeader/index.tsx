@@ -6,6 +6,7 @@ import {
     Event, Menu as MenuIcon
 } from "@material-ui/icons";
 import React, { useEffect, useState } from 'react';
+import { useParams } from "react-router"
 import { useDispatch, useSelector } from "react-redux";
 import { Link, LinkProps, useHistory } from "react-router-dom";
 import { signOut, getUserData } from "../../actions";
@@ -22,7 +23,11 @@ const TYPE_PILL_FEED = "TYPE_PILL_FEED";
 const TYPE_PILL_EXAM = "TYPE_PILL_EXAM";
 const TYPE_PILL_MEMBER = "TYPE_PILL_MEMBER";
 
+interface ParamTypes {
+    courseId: string,
+}
 const Header = () => {
+    const { courseId } = useParams<ParamTypes>();
     const styleScroll = useScrollHook();
 
     const [typePill, setTypePill] = useState<number>(0);
@@ -98,13 +103,13 @@ const Header = () => {
                         centered
                     // style={navStyle}
                     >
-                        <LinkTab label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to="/course/2" >
+                        <LinkTab label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
 
                         </LinkTab>
                         <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to="/auth" >
                             <Link to="/auth/2" />
                         </LinkTab>
-                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to="/member/2" />
+                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to= {`/member/${courseId}`} />
                     </Tabs>
 
                 </div>

@@ -31,5 +31,5 @@ export const serializeGetSummaryMember = (model: any) => {
                 avatarUrl: member.user.avatarUrl,
             }
         }
-    })
+    })  
 }

@@ -80,6 +80,7 @@ export class MemberController {
             const courseId = req.params.courseId;
 
             const result = await this._memberService.getRoleMember(userId!, +courseId);
+           
             if (!result) return res.composer.notFound();
 
             return res.composer.success(serializeGetRole(result));
@@ -95,7 +96,7 @@ export class MemberController {
         try {
             const courseId = req.params.courseId;
             const result = await this._memberService.getAllSummaryMember(+courseId);
-
+        
             return res.composer.success(serializeGetSummaryMember(result));
         } catch (err) {
             res.composer.otherException(err);

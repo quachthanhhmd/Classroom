@@ -35,7 +35,6 @@ const DashBoard = () => {
     const dispatch = useDispatch();
     const courseState = useSelector((state: AppState) => state.course);
 
-
     useEffect(() => {
         dispatch(getUserCouseList());
     }, []);

@@ -1,11 +1,11 @@
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
     CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
-    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL,
+    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, GET_ALL_USER_COURSE_FAIL,
     GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
-    ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IPaginationInfo,
+    ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IMemberSummary, IPaginationInfo,
     IUserCourseState
 } from "../interfaces";
 
@@ -15,6 +15,7 @@ interface IInitState {
     isLoading: boolean,
     course: ICourseSummary | ICourseInfo | null,
     pagination: IPaginationInfo
+    memberList: IMemberSummary[]
 }
 
 const initState: IInitState = {
@@ -26,7 +27,8 @@ const initState: IInitState = {
         size: 0,
         totalPages: 0,
         page: 0,
-    }
+    },
+    memberList: [],
 }
 
 
@@ -120,6 +122,24 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: true,
                 course: null,
+            }
+        case GET_ALL_MEMBER_FAIL:
+            return {
+                ...state,
+                isLoading: false,
+                data: [],
+            }
+        case GET_ALL_MEMBER_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                memberList: action.payload,
+            }
+        case GET_ALL_MEMBER_REQUEST:
+            return {
+                ...state,
+                isLoading: true,
+                data: [],
             }
         default: {
             return {

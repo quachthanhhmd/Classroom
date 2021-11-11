@@ -1,4 +1,4 @@
-import { ICourseInfo, ICourseSummary, ICreateCourse, IHttpFormat, IUserCourse } from './../interfaces';
+import { IMemberSummary, ICourseInfo, ICourseSummary, ICreateCourse, IHttpFormat, IUserCourse } from './../interfaces';
 import axiosClient from "./axios.client";
 
 
@@ -22,6 +22,10 @@ const courseApi = {
     getAllInfor: (id: number) => {
         const url = `v1/course/${id}`;
         return axiosClient.get<IHttpFormat<ICourseInfo>>(url);
+    },
+    getAllMemberInCourse: (id: number) => {
+        const url = `v1/member/all/${id}`;
+        return axiosClient.get<IHttpFormat<IMemberSummary[]>>(url);
     }
 }
 

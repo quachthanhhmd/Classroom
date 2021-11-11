@@ -1,10 +1,11 @@
+import { GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS } from './../constants/course.constant';
 import courseApi from "../api/course.api";
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
-    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
+    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
-    ICourseInfoState, ICreateCourse,
+    ICourseInfoState, ICourseMemberState, ICreateCourse,
     ICreateCourseState,
     IJoinCodeState,
     IJoinCourseByUrlState,
@@ -81,7 +82,7 @@ export const getAllCourseInfo = (id: number) =>
 export const joinCoursebyCode = (code: string) =>
     async (dispatch: (args: IJoinCodeState) => IJoinCodeState) => {
         try {
-            dispatch({ 
+            dispatch({
                 type: JOIN_COURSE_REQUEST
             })
             const result = await courseApi.joinCourse(code);
@@ -93,27 +94,49 @@ export const joinCoursebyCode = (code: string) =>
                 payload: result.data.payload,
             })
 
-        }catch(err) {
+        } catch (err) {
             dispatch({
                 type: JOIN_COURSE_FAIL
             })
         }
     }
 
-    export const joinCourseByUrl = (courseId: number, code: string) =>
-        async (dispatch: (args: IJoinCourseByUrlState) => IJoinCourseByUrlState) =>{
-            try {
-                dispatch({
-                    type: JOIN_COURSE_BY_URL_REQUEST
-                });
+export const joinCourseByUrl = (courseId: number, code: string) =>
+    async (dispatch: (args: IJoinCourseByUrlState) => IJoinCourseByUrlState) => {
+        try {
+            dispatch({
+                type: JOIN_COURSE_BY_URL_REQUEST
+            });
 
-                const result = await courseApi.joinCourseByUrl(courseId, code);
-                if (result.status !==200) throw new Error();
+            const result = await courseApi.joinCourseByUrl(courseId, code);
+            if (result.status !== 200) throw new Error();
 
-                dispatch({ type: JOIN_COURSE_BY_URL_SUCCESS});
-            } catch(err) {
-                dispatch({ 
-                    type: JOIN_COURSE_BY_URL_FAIL
-                })
-            }
+            dispatch({ type: JOIN_COURSE_BY_URL_SUCCESS });
+        } catch (err) {
+            dispatch({
+                type: JOIN_COURSE_BY_URL_FAIL
+            })
         }
+    };
+
+
+export const getAllMemberInCourse = (courseId: number) =>
+    async (dispatch: (args: ICourseMemberState) => ICourseMemberState) => {
+        try {
+            dispatch({
+                type: GET_ALL_MEMBER_REQUEST,
+            });
+
+            const result = await courseApi.getAllMemberInCourse(courseId);
+            if (result.status !== 200) throw new Error();
+
+            dispatch({
+                type: GET_ALL_MEMBER_SUCCESS,
+                payload: result.data.payload,
+            })
+        } catch (err) {
+            dispatch({
+                type: GET_ALL_MEMBER_FAIL
+            })
+        }
+    }
