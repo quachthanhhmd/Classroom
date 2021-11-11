@@ -35,4 +35,15 @@ export class CourseValidation {
             }
         })
     }
+    
+    public joinCourseByUrl = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.number().required()
+            },
+            query: {
+                give: Joi.string().required(),
+            }
+        })
+    }
 }

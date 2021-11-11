@@ -45,4 +45,15 @@ export class CourseService {
             }
         }) 
     }
+
+    public isMatchCodeAndId = async (courseId: number, code: string): Promise<boolean> => {
+        const course = await Course.findOne({
+            where: {
+                id: courseId,
+                code: code,
+            }
+        });
+        if (course) return true;
+        return false;
+    }
 }

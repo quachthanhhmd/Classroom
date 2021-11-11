@@ -60,4 +60,13 @@ export interface IJoinCodeState {
     payload?: ICourseInfo,
 }
 
-export type ICourseAction = ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState; 
+export interface IJoinCourseByUrlState {
+    type: string,
+    payload?: any,
+}
+
+export interface IJoinCourseByUrlResponse {
+    
+}
+
+export type ICourseAction = ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState; 

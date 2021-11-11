@@ -1,12 +1,13 @@
 import courseApi from "../api/course.api";
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
-    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
+    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
     ICourseInfoState, ICreateCourse,
     ICreateCourseState,
     IJoinCodeState,
+    IJoinCourseByUrlState,
     IUserCourseState
 } from "../interfaces";
 
@@ -98,3 +99,21 @@ export const joinCoursebyCode = (code: string) =>
             })
         }
     }
+
+    export const joinCourseByUrl = (courseId: number, code: string) =>
+        async (dispatch: (args: IJoinCourseByUrlState) => IJoinCourseByUrlState) =>{
+            try {
+                dispatch({
+                    type: JOIN_COURSE_BY_URL_REQUEST
+                });
+
+                const result = await courseApi.joinCourseByUrl(courseId, code);
+                if (result.status !==200) throw new Error();
+
+                dispatch({ type: JOIN_COURSE_BY_URL_SUCCESS});
+            } catch(err) {
+                dispatch({ 
+                    type: JOIN_COURSE_BY_URL_FAIL
+                })
+            }
+        }

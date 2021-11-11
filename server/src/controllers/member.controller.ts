@@ -4,7 +4,7 @@ import "reflect-metadata";
 import { IAuthorizeRequest, IResponse } from './../interfaces';
 
 import { injectable, inject } from 'inversify';
-import { MemberService } from "../services";
+import { CourseService, MemberService } from "../services";
 import { MEMBER_EXISTS } from "../constants";
 import { IGetRoleUser, IUpsertStudentID, serializeGetRole } from '../interfaces/member.interface';
 
@@ -12,6 +12,7 @@ import { IGetRoleUser, IUpsertStudentID, serializeGetRole } from '../interfaces/
 export class MemberController {
     constructor(
         @inject("MemberService") private readonly _memberService: MemberService,
+        @inject("CourseService") private readonly _courseService: CourseService
     ) { }
 
     public addNewMember = async (
@@ -23,7 +24,6 @@ export class MemberController {
             const memberId = req.body;
 
             const requestJoin = await this._memberService.upsetMember(memberId, courseId, MEMBERSTATE.ACCEPT);
-            console.log(requestJoin);
 
             return res.composer.success("Request completed!");
         } catch (err) {
@@ -63,7 +63,7 @@ export class MemberController {
             if (!member || member.studentId) {
                 return res.composer.unauthorized();
             }
-    
+
             await this._memberService.AddStudentId(userId, upsertBody.courseId, upsertBody.studentId);
             return res.composer.success();
         } catch (err) {
@@ -77,10 +77,9 @@ export class MemberController {
     ): Promise<void> => {
         try {
             const userId = req.currentUser?.id;
-            const courseId =  req.params.courseId;
-           
+            const courseId = req.params.courseId;
+
             const result = await this._memberService.getRoleMember(userId!, +courseId);
-            console.log(result);
             if (!result) return res.composer.notFound();
 
             return res.composer.success(serializeGetRole(result));

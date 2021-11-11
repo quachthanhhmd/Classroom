@@ -66,4 +66,25 @@ export class CourseController {
             res.composer.otherException(err);
         }
     }
+    
+    public joinCourseByUrl = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const code = req.query.give;
+            const courseId = req.params.courseId;
+            const userId = req.currentUser!.id;
+            
+            const isMatchCodeAndId = this._courseService.isMatchCodeAndId(+courseId, String(code));
+            if (!isMatchCodeAndId) {
+                return res.composer.notFound();
+            }
+
+            await this._memberService.upsetMember(userId, +courseId);
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 }

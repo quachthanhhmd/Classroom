@@ -7,9 +7,13 @@ const courseApi = {
         const url = "v1/course/";
         return axiosClient.post<IHttpFormat<ICourseSummary>>(url, body);
     },
-    joinCourse: (code: string) => {
+    joinCourse: (code: string) => { 
         const url = `v1/course/join/${code}`;
         return axiosClient.post<IHttpFormat<ICourseInfo>>(url);
+    },
+    joinCourseByUrl: (courseId: number, code: string) => {
+        const url = `v1/course/${courseId}?give=${code}`;
+        return axiosClient.patch<IHttpFormat<null>>(url)
     },
     getAllCourse: () => {
         const url = "v1/user/";

@@ -10,8 +10,8 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Link, useParams } from "react-router-dom";
-import { getAllCourseInfo } from "../../actions";
+import { Link, useParams, useLocation } from "react-router-dom";
+import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
 import { AppState } from "../../reducers";
 import { ICourseInfo } from "../../interfaces";
 import { TYPEROLE } from "../../constants";
@@ -48,13 +48,16 @@ interface ParamTypes {
 
 const Feed = () => {
     const { courseId } = useParams<ParamTypes>();
+    const search = useLocation().search;
+    const code = new URLSearchParams(search).get('give');
+
 
     const courseState = useSelector((state: AppState) => state.course!);
+
     const role = useSelector((state: AppState) => state.member);
-
-    const course: ICourseInfo = courseState.course as ICourseInfo;
-
     const dispatch = useDispatch();
+    const course: ICourseInfo = courseState.course as ICourseInfo;
+ 
 
     const [editorState, setEditorState] = useState(() =>
         EditorState.createEmpty()
@@ -65,8 +68,11 @@ const Feed = () => {
     const [isChangeInfo, setIsChangeInfo] = useState(false);
 
     useEffect(() => {
-        console.log(courseId);
+        if (code){
+            dispatch(joinCourseByUrl(+courseId, code));
+        }
         dispatch(getAllCourseInfo(Number(courseId)));
+
     }, [])
 
     const handleClose = () =>

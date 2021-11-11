@@ -40,7 +40,13 @@ class CourseRoute {
             validate(this._courseValidation.joinCourseByCode),
             this._courseController.joinCourseByCode,
         )
-
+        
+        this.router.patch(
+            "/:courseId",
+            this._authenticate.authenticate(),
+            validate(this._courseValidation.joinCourseByUrl()),
+            this._courseController.joinCourseByUrl
+        )
     }
 
 }

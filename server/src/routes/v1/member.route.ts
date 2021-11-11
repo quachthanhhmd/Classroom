@@ -32,6 +32,7 @@ class MemberRoute {
             validate(this._memberValidation.getRoleMember()),
             this._memberController.getRoleMember,
         )
+        
     }
 }
 
