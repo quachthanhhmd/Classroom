@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { inject, injectable } from "inversify";
 import { Op } from "sequelize";
 
-import { Member } from "../models";
+import { Course, Member, User } from "../models";
 import { MEMBERSTATE } from "../constants";
 import { TYPEROLE } from './../constants/role.constant';
 
@@ -132,5 +132,23 @@ export class MemberService {
             }
         })
     }
-
+    /**
+     * get ALl summary info member in course 
+     * @param courseId 
+     * @returns 
+     */
+    public getAllSummaryMember = async (courseId: number) => {
+        return Member.findAll({
+            attributes: ["id", "studentId", "type", "role"],
+            where: {
+                courseId: courseId
+            },
+            include: [{
+                model: User,
+                attributes: ["firstName", "lastName", "id", "avatarUrl"]
+            }],
+            raw: false,
+            nest: true,
+        })
+    }
 }

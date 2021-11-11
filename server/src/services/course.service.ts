@@ -46,6 +46,12 @@ export class CourseService {
         }) 
     }
 
+    /**
+     * Check wonder if code and Id equal or not
+     * @param {number} courseId 
+     * @param {string} code 
+     * @returns 
+     */
     public isMatchCodeAndId = async (courseId: number, code: string): Promise<boolean> => {
         const course = await Course.findOne({
             where: {
@@ -56,4 +62,6 @@ export class CourseService {
         if (course) return true;
         return false;
     }
+
+    
 }

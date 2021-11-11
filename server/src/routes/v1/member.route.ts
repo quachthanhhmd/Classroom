@@ -33,6 +33,12 @@ class MemberRoute {
             this._memberController.getRoleMember,
         )
         
+        this.router.get(
+            "/all/:courseId",
+            this._authenticate.authenticate(),
+            validate(this._memberValidation.getAllSummaryMember()),
+            this._memberController.getAllSummaryMember
+        )
     }
 }
 

@@ -38,7 +38,7 @@ const ProfileUser = (props: IOpenModal) => {
 
     const auth = useSelector((state: AppState) => state.auth);
     const userProfile = auth.user;
-   
+
     const dispatch = useDispatch();
 
     const { register, handleSubmit, formState: { errors }, reset } = useForm<IProfileBody>({
@@ -92,7 +92,7 @@ const ProfileUser = (props: IOpenModal) => {
     function dispatchProfileAndUpdate(data: any) {
 
         const newData: any = objectFieldChange(userProfile, data);
-   
+
         dispatch(updateProfile(newData));
 
         //change header
@@ -125,19 +125,20 @@ const ProfileUser = (props: IOpenModal) => {
         );
     };
 
-    const handleUpdateProfile = async (data: IProfileBody) => {
+    const handleUpdateProfile = (data: any) => {
+        console.log(data);
         handleClose();
 
-    
+
         if (typeof selectedFile !== "undefined") {
-            await handleUpload();
+           handleUpload();
         }
-        await dispatchProfileAndUpdate(data);
+        dispatchProfileAndUpdate(data);
 
     }
 
     return (
-       
+
         <Dialog
             open={isOpenModal}
             onClose={handleClose}
@@ -266,13 +267,16 @@ const ProfileUser = (props: IOpenModal) => {
                 </Button>
                 <Button
                     color="primary"
+                    type="submit"
                     onClick={
-                        handleSubmit(handleUpdateProfile)
-                        //handleClose(); handleUpdateProfile
+                        () => {
+                            handleClose();
+                            handleSubmit(handleUpdateProfile);
+                        }
                     }>
                     Update
                 </Button>
-            </DialogActions>
+            </DialogActions>    
         </Dialog>
 
     )

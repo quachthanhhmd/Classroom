@@ -3,17 +3,21 @@ import { UNAUTHENTICATED } from './../constants';
 import "reflect-metadata";
 import passport from "passport";
 
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 
 import { IResponse, INextFunction, IAuthorizeRequest } from './../interfaces';
 import { User } from "../models";
-
+import { MemberService } from "../services";
+import { roleRights } from "../config/role";
 
 @injectable()
 export class Authenticate {
+    constructor(
+        @inject("MemberService") private _memberService: MemberService
+    ) { }
 
     private verifyCallback = (req: IAuthorizeRequest, res: IResponse, resolve: any) => async (err: string, user: User, info: any) => {
-      
+
         if (err || info || !user)
             return res.composer.unauthorized(UNAUTHENTICATED);
 
@@ -33,5 +37,19 @@ export class Authenticate {
             .then(() => next())
             .catch((err) => next(err));
     };
+
+    public courseAuthentication = (...requiredRights) => async (req: IAuthorizeRequest, res: IResponse, next: INextFunction) => {
+        const userId = req.currentUser!.id;
+        const courseId = +req.params.courseId;
+        const role = await this._memberService.getRoleMember(userId, courseId);
+
+
+        const userRights = roleRights.get(role);
+        const hasRequiredRights = requiredRights.every((requiredRight) => userRights.includes(requiredRight));
+        if (!hasRequiredRights) {
+           return res.composer.forbidden();
+        }
+
+    }
 }
 

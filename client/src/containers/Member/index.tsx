@@ -6,8 +6,12 @@ import {
     Add,
     MoreVert
 } from "@material-ui/icons";
-import React from "react";
+import React, { useEffect } from "react";
 import { Helmet } from "react-helmet";
+
+import {useSelector, useDispatch} from "react-redux";
+
+
 import "./index.scss";
 
 interface IMember {
@@ -56,6 +60,9 @@ const MemberDisplay = (props: { member: IMember }) => {
     function handleClick() {
 
     }
+    useEffect(() => {
+        
+    })
 
     return (
         <div className="member-main___student___content--member" >

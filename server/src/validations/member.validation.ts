@@ -24,6 +24,15 @@ export class MemberValidation {
             }
         })
     }
-
+    public getAllSummaryMember = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                )
+            }
+        })
+    }
    
 }

@@ -6,7 +6,7 @@ import { IAuthorizeRequest, IResponse } from './../interfaces';
 import { injectable, inject } from 'inversify';
 import { CourseService, MemberService } from "../services";
 import { MEMBER_EXISTS } from "../constants";
-import { IGetRoleUser, IUpsertStudentID, serializeGetRole } from '../interfaces/member.interface';
+import { IGetRoleUser, IUpsertStudentID, serializeGetRole, serializeGetSummaryMember } from '../interfaces/member.interface';
 
 @injectable()
 export class MemberController {
@@ -83,6 +83,20 @@ export class MemberController {
             if (!result) return res.composer.notFound();
 
             return res.composer.success(serializeGetRole(result));
+        } catch (err) {
+            res.composer.otherException(err);
+        }
+    }
+
+    public getAllSummaryMember = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const courseId = req.params.courseId;
+            const result = await this._memberService.getAllSummaryMember(+courseId);
+
+            return res.composer.success(serializeGetSummaryMember(result));
         } catch (err) {
             res.composer.otherException(err);
         }
