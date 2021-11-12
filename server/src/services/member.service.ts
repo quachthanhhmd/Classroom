@@ -160,5 +160,16 @@ export class MemberService {
         })
     }
 
-   
+    public isSpendingInvite = async (userId: number, courseId: number) => {
+        const member = await Member.findOne({
+            where: {
+                [Op.and]: {
+                    userId: userId,
+                    courseId: courseId,
+                    type: MEMBERSTATE.SPENDING
+                }
+            }
+        })
+        return member ? true : false;
+    }
 }

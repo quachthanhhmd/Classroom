@@ -4,7 +4,7 @@ import "reflect-metadata";
 import { IAuthorizeRequest, IResponse } from './../interfaces';
 
 import { injectable, inject } from 'inversify';
-import { CourseService, MemberService, UserService } from "../services";
+import { CourseService, MemberService, UserService, TokenService } from "../services";
 import { MEMBER_EXISTS } from "../constants";
 import { IGetRoleUser, IUpsertStudentID, serializeGetRole, serializeGetSummaryMember } from '../interfaces/member.interface';
 import { sendInviteMember } from '../config/nodemailer';
@@ -14,7 +14,8 @@ export class MemberController {
     constructor(
         @inject("MemberService") private readonly _memberService: MemberService,
         @inject("CourseService") private readonly _courseService: CourseService,
-        @inject("UserService") private readonly _userService: UserService
+        @inject("UserService") private readonly _userService: UserService,
+        @inject("TokenService") private readonly _tokenService: TokenService
     ) { }
 
     public addNewMember = async (
@@ -45,7 +46,6 @@ export class MemberController {
                 return res.composer.badRequest(MEMBER_EXISTS);
             }
             const requestJoin = await this._memberService.upsetMember(req.currentUser!.id, courseId);
-            console.log(requestJoin);
 
             return res.composer.success("Request completed!");
         } catch (err) {
@@ -120,14 +120,18 @@ export class MemberController {
             const isExistMember = await this._memberService.isExistMember(user.id, +courseId);
             if (isExistMember) return res.composer.badRequest("Member is exist");
 
-            //get code code
-            const code  = await this._courseService.getCodeById(+courseId);
-            if (!code) return  res.composer.notFound();
-            
-            await sendInviteMember(req, email, code);
+            // //get code code
+            // const code  = await this._courseService.getCodeById(+courseId);
+            // if (!code) return  res.composer.notFound();
+
+            const courseToken = await this._tokenService.generateTokenInvite(+courseId);
+            await sendInviteMember(req, email, courseToken, role, +courseId);
+
             return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);
         }
     }
+
+   
 }

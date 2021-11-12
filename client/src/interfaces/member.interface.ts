@@ -1,3 +1,8 @@
+export interface IInviteMember {
+    email: string,
+}
+
+//------------------------------------------------------------------------------
 export interface IUpsertStudentID {
     studentId: string,
 }
@@ -24,4 +29,9 @@ export interface IRoleMemberResponse {
     studentId?: string,
 }
 
-export type IMemberAction = IUpsertStudentIdState | IGetRoleMemberState;
+export interface IInviteMemberState {
+    type: string,
+    payload?: any,
+}
+
+export type IMemberAction = IUpsertStudentIdState | IGetRoleMemberState | IInviteMemberState;

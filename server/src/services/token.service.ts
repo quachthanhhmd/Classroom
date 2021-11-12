@@ -151,6 +151,24 @@ export class TokenService {
             }
         }
     }
+    /**
+     * Generate token to invite member to class 
+     * @param userId 
+     * @returns 
+     */
+    public generateTokenInvite = (userId: number) => {
+        const tokenRefreshExpire = moment().add(env.TOKEN.TOKEN_EXPIRE_DAY, 'days');
+        const newToken = this.generateToken(userId, tokenRefreshExpire, TYPETOKEN.REFRESH);
+        return newToken;
+    }
+
+    public isMatchTokenIdInvite = (tokenName: string, userId: number): boolean => {
+        const payload = jwt.verify(tokenName, env.TOKEN.TOKEN_SERCET);
+        const id = payload.sub === undefined ? -1 : +payload.sub;
+
+        if (id === -1 || id !== userId) return false;
+        return true;
+    }
 
     /**
      * REMOVE TOKEN BY TOKEN AND TYPE
@@ -159,7 +177,6 @@ export class TokenService {
      * @return {Promise<void>} 
      */
     public removeToken = async (token: string, type: string): Promise<void> => {
-
 
         await Token.destroy({
             where: {

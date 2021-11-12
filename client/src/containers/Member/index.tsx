@@ -8,14 +8,16 @@ import {
 } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-
-import { useSelector, useDispatch } from "react-redux";
-import { AppState } from "../../reducers";
 import { getAllMemberInCourse } from "../../actions";
-
-import "./index.scss";
+import InviteMember from "../../components/InviteMember";
+import { TYPEROLE } from "../../constants";
 import { IMemberSummary } from "../../interfaces";
+import { AppState } from "../../reducers";
+import "./index.scss";
+
+
 
 
 const MemberDisplay = (props: { member: IMemberSummary, isChecked?: boolean, index?: number, setIsChecked?: any }) => {
@@ -67,19 +69,25 @@ interface ParamTypes {
     courseId: string;
 }
 
+
+
+
 const Member = () => {
     const { courseId } = useParams<ParamTypes>();
     const dispatch = useDispatch();
     const course = useSelector((state: AppState) => state.course);
+    const member = useSelector((state: AppState) => state.member);
     const [checkedList, setCheckedList] = useState<boolean[]>([]);
     const [isCheckedAll, setIsCheckedAll] = useState<boolean>(false);
+    const [isOpenInviteModal, setIsOpenInviteModal] = useState<boolean>(false);
+    const [roleOpenModal, setRoleOpenModal] = useState<string>("");
 
     useEffect(() => {
         dispatch(getAllMemberInCourse(+courseId));
 
     }, []);
+
     useEffect(() => {
-        console.log(2323);
         setCheckedList(new Array(course.memberList.length).fill(false));
     }, [course.memberList])
 
@@ -94,8 +102,13 @@ const Member = () => {
             return index === idChecked ? !checked : checked;
         }))
     }
+
+    const handleCloseInviteModal = () => {
+        setIsOpenInviteModal(false);
+    }
     return (
         <div className="member-main">
+            <InviteMember role={roleOpenModal} isOpenModal={isOpenInviteModal} setIsOpenModal={handleCloseInviteModal} />
             <Helmet>
                 <title>
                     Thành viên | EClassroom
@@ -107,9 +120,14 @@ const Member = () => {
                         Giáo viên
                     </div>
                     <div className="member-main___teacher___header--add-member">
-                        <IconButton>
-                            <Add />
-                        </IconButton>
+                        {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
+                            <IconButton>
+                                <Add onClick={() => {
+                                    setRoleOpenModal(TYPEROLE.TEACHER);
+                                    setIsOpenInviteModal(true);
+                                }} />
+                            </IconButton>
+                        }
                     </div>
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
@@ -122,13 +140,18 @@ const Member = () => {
                         Trợ Giảng
                     </div>
                     <div className="member-main___assist___header--add-member">
-                        <IconButton>
-                            <Add />
-                        </IconButton>
+                        {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
+                            <IconButton>
+                                <Add onClick={() => {
+                                    setRoleOpenModal(TYPEROLE.ASSISTANT);
+                                    setIsOpenInviteModal(true);
+                                }} />
+                            </IconButton>
+                        }
                     </div>
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
-                    member.role === "assist" && <MemberDisplay member={member} />
+                    member.role === "assistant" && <MemberDisplay member={member} />
                 ))}
             </div>
             <div className="member-main___student">
@@ -137,9 +160,14 @@ const Member = () => {
                         Học Sinh
                     </div>
                     <div className="member-main___student___header--add-member">
-                        <IconButton>
-                            <Add />
-                        </IconButton>
+                        {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
+                            <IconButton>
+                                <Add onClick={() => {
+                                    setRoleOpenModal(TYPEROLE.STUDENT);
+                                    setIsOpenInviteModal(true);
+                                }} />
+                            </IconButton>
+                        }
                     </div>
                 </div>
                 <div className="member-main___student___content">
@@ -153,7 +181,7 @@ const Member = () => {
 
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary, index: number) => (
-                    member.role === "student" && <MemberDisplay member={member} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne}/>
+                    member.role === "student" && <MemberDisplay member={member} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
                 ))}
             </div>
         </div >

@@ -47,6 +47,12 @@ class CourseRoute {
             validate(this._courseValidation.joinCourseByUrl()),
             this._courseController.joinCourseByUrl
         )
+        this.router.patch(
+            "/invite/:courseId",
+            this._authenticate.authenticate(),
+            validate(this._courseValidation.joinCourseByToken()),
+            this._courseController.checkJoinCourseToken
+        )
     }
 
 }

@@ -1,16 +1,16 @@
-import { GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS } from './../constants/course.constant';
 import courseApi from "../api/course.api";
 import {
-    CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
-    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
+    CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST, GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
     ICourseInfoState, ICourseMemberState, ICreateCourse,
     ICreateCourseState,
+    IInviteMemberState,
     IJoinCodeState,
     IJoinCourseByUrlState,
     IUserCourseState
 } from "../interfaces";
+import { GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS } from './../constants/course.constant';
 
 
 
@@ -137,6 +137,23 @@ export const getAllMemberInCourse = (courseId: number) =>
         } catch (err) {
             dispatch({
                 type: GET_ALL_MEMBER_FAIL
+            })
+        }
+    }
+
+export const inviteCourseByToken = (courseId: number, token: string, role: string) =>
+    async (dispatch: (args: IInviteMemberState) => IInviteMemberState) => {
+        try {
+            const result = await courseApi.joinCourseByToken(courseId, token, role);
+            if (result.status !== 200) throw new Error();
+
+            dispatch({
+                type: JOIN_COURSE_BY_TOKEN_SUCCESS,
+            })
+
+        } catch (err) {
+            dispatch({
+                type: JOIN_COURSE_BY_TOKEN_FAIL,
             })
         }
     }

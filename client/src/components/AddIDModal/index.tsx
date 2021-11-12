@@ -37,7 +37,9 @@ const AddIDModal = () => {
         if (member.currentRole && !member.currentRole?.studentId && member.currentRole.role === TYPEROLE.STUDENT) {
             setIsAddId(true);
         }
-    }, [member])
+        else setIsAddId(false);
+    }, [member.currentRole?.studentId])
+    
     const handleClose = () => {
         setIsAddId(false);
     }
@@ -45,6 +47,7 @@ const AddIDModal = () => {
     const handleCreateID = (data: ICreateID) => {
         handleClose();
         dispatch(upsertStudentId(+courseId, data.studentId));
+
     }
     return (
         <>

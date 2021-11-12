@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import Joi from 'joi';
 import "reflect-metadata";
+import { MEMBERSTATE } from "../constants";
 
 
 @injectable()
@@ -43,6 +44,20 @@ export class CourseValidation {
             },
             query: {
                 give: Joi.string().required(),
+            }
+        })
+    }
+    public joinCourseByToken = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                )
+            },
+            query: {
+                token: Joi.string().required(),
+                role: Joi.string().valid(MEMBERSTATE).required(),
             }
         })
     }

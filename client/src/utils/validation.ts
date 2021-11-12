@@ -63,3 +63,8 @@ export const ChangeCourseInfoValidate = yup.object({
 export const AddStudentIDValidate = yup.object({
     studentId: yup.string().max(100, "Mã số sinh viên chỉ tối đa 100 ký tự").required("Bạn phải nhập mã số sinh viên khi vào lớp"),
 })
+
+
+export const InviteByEmailValidate = yup.object({
+    email: yup.string().email("Bạn phải nhập theo định dạng email").required("Bạn phải nhập email để mời người khác vào lớp"),
+})

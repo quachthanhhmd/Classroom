@@ -9,6 +9,7 @@ import AuthenticatePage from "../pages/Authenticate";
 import HomePage from "../pages/Home";
 import Loading from "../components/Loading";
 import AddIDModal from "../components/AddIDModal";
+import InviteByToken from "../components/InviteByToken";
 
 import env from "./env";
 
@@ -130,6 +131,12 @@ const courseRouteList = [
         exact: false,
         auth: true,
         main: () => <Member />
+    },
+    {
+        path: ROUTES.inviteMember,
+        exact: false,
+        auth: true,
+        main: () => <InviteByToken/>
     }
 ]
 

@@ -1,7 +1,17 @@
 import memberApi from "../api/member.api";
-import { GET_ROLE_MEMBER_FAIL, GET_ROLE_MEMBER_SUCCESS, UPSERT_STUDENT_ID_FAIL, UPSERT_STUDENT_ID_REQUEST, UPSERT_STUDENT_ID_SUCCESS } from "../constants/member.constant";
 import {
-    IMemberAction, IUpsertStudentIDBody
+    GET_ROLE_MEMBER_FAIL,
+    GET_ROLE_MEMBER_SUCCESS,
+    INVITE_MEMBER_FAIL,
+    INVITE_MEMBER_REQUEST,
+    INVITE_MEMBER_SUCCESS,
+    UPSERT_STUDENT_ID_FAIL,
+    UPSERT_STUDENT_ID_REQUEST,
+    UPSERT_STUDENT_ID_SUCCESS
+} from "../constants/member.constant";
+import {
+    IInviteMemberState,
+    IMemberAction
 } from "../interfaces";
 
 export const upsertStudentId = (courseId: number, studentId: string) =>
@@ -38,6 +48,26 @@ export const getRoleMember = (courseId: number) =>
         } catch (err) {
             dispatch({
                 type: GET_ROLE_MEMBER_FAIL,
+            })
+        }
+    }
+
+export const inviteMemberByEmail = (courseId: number, email: string, role: string,) =>
+    async (dispatch: (args: IInviteMemberState) => IInviteMemberState) => {
+        try {
+            dispatch({
+                type: INVITE_MEMBER_REQUEST,
+            })
+
+            const result = await memberApi.inviteMemberByEmail(courseId, email, role);
+            if (result.status !== 200) throw new Error();
+            dispatch({
+                type: INVITE_MEMBER_SUCCESS,
+            })
+
+        } catch (err) {
+            dispatch({
+                type: INVITE_MEMBER_FAIL
             })
         }
     }

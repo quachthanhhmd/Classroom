@@ -88,4 +88,9 @@ export interface ICourseMemberState {
     payload?: IMemberSummary[],
 }
 
-export type ICourseAction = ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState;
+//----------------------------------------------------------------
+export interface IInviteByTokenState {
+    type: string,
+    payload?: any,
+}
+export type ICourseAction = IInviteByTokenState | ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState;

@@ -23,9 +23,9 @@ const sendMail = async(to: string, subject: string, text: string) =>{
     await transporter.sendMail(content);
 }
 
-export const sendInviteMember = async (req: IAuthorizeRequest, userEmail: string, token: string): Promise<void> => {
+export const sendInviteMember = async (req: IAuthorizeRequest, userEmail: string, role: string, token: string, courseId: number): Promise<void> => {
 
-    const urlVerify = `${req.protocol}://${req.get('host')}/v1/course?give=${token}`;
+    const urlVerify = `${env.CLIENT_DOMAIN}/course/invite/${courseId}?give=${token}&role=${role}`;
 
     console.log(urlVerify);
 

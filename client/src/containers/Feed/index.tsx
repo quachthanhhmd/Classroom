@@ -51,7 +51,6 @@ const Feed = () => {
     const search = useLocation().search;
     const code = new URLSearchParams(search).get('give');
 
-
     const courseState = useSelector((state: AppState) => state.course!);
 
     const role = useSelector((state: AppState) => state.member);

@@ -20,6 +20,7 @@ const envSchema: Joi.ObjectPropertiesSchema = Joi.object()
         EMAIL_USERNAME: Joi.string().required(),
         EMAIL_HOST: Joi.string().required(),
         EMAIL_PASSWORD: Joi.string().required(),
+        CLIENT_DOMAIN: Joi.string().required(),
     })
     .unknown();
 
@@ -49,5 +50,6 @@ export default {
         HOST: env.EMAIL_HOST,
         USERNAME: env.EMAIL_USERNAME,
         PASSWORD: env.EMAIL_PASSWORD,
-    }
+    },
+    CLIENT_DOMAIN: env.CLIENT_DOMAIN,
 }
