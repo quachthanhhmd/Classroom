@@ -29,6 +29,11 @@ export class CourseService {
         return newCourse;
     }
 
+    /**
+     * Get detail information of course
+     * @param {number} id 
+     * @returns 
+     */
     public getCourseDetail = async (id: number): Promise<Course | null> => {
         return await Course.findByPk(id);
     }
@@ -63,5 +68,8 @@ export class CourseService {
         return false;
     }
 
-    
+    public getCodeById = async (courseId: number): Promise<string | undefined> => {
+        const course =  await this.getCourseDetail(courseId);
+        return course?.code;
+    }
 }

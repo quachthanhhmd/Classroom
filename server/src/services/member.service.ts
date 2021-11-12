@@ -6,11 +6,17 @@ import { Op } from "sequelize";
 import { Course, Member, User } from "../models";
 import { MEMBERSTATE } from "../constants";
 import { TYPEROLE } from './../constants/role.constant';
+import { UserService, CourseService } from "./";
 
 @injectable()
 export class MemberService {
-    constructor() { }
+    constructor(
+    ) { }
 
+    public isExistMember = async (userId: number, courseId: number) => {
+        const member = await this.findMemberByUserAndCourseId(userId, courseId);
+        return member ? true : false;
+    }
     /**
      * Find member by UserId and CourseId.
      * @param {number} userId 
@@ -67,7 +73,8 @@ export class MemberService {
      * @param {string} state 
      * @returns 
      */
-    public upsetMember = async (userId: number, courseId: number, state = MEMBERSTATE.SPENDING, role = TYPEROLE.STUDENT) => {
+    public upsetMember = async (userId: number, courseId: number, state?: string, role?: string) => {
+
         return await Member.upsert({
             userId: userId,
             courseId: courseId,
@@ -141,14 +148,17 @@ export class MemberService {
         return Member.findAll({
             attributes: ["id", "studentId", "type", "role"],
             where: {
-                courseId: courseId
+                courseId: courseId,
+                type: MEMBERSTATE.ACCEPT
             },
             include: [{
                 model: User,
-                attributes: ["firstName", "lastName", "id", "avatarUrl"]
+                attributes: ["firstName", "lastName", "id", "avatarUrl"],
             }],
             raw: false,
             nest: true,
         })
     }
+
+   
 }

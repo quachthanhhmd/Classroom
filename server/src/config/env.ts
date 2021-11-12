@@ -17,6 +17,9 @@ const envSchema: Joi.ObjectPropertiesSchema = Joi.object()
         TOKEN_SERCET: Joi.string().required(),
         TOKEN_EXPIRE_DAY: Joi.number().required(),
         TOKEN_EXPIRE_MINUTES: Joi.number().required(),
+        EMAIL_USERNAME: Joi.string().required(),
+        EMAIL_HOST: Joi.string().required(),
+        EMAIL_PASSWORD: Joi.string().required(),
     })
     .unknown();
 
@@ -42,4 +45,9 @@ export default {
         TOKEN_EXPIRE_DAY: env.TOKEN_EXPIRE_DAY,
         TOKEN_EXPIRE_MINUTES: env.TOKEN_EXPIRE_MINUTES
     },
+    EMAIL: {
+        HOST: env.EMAIL_HOST,
+        USERNAME: env.EMAIL_USERNAME,
+        PASSWORD: env.EMAIL_PASSWORD,
+    }
 }

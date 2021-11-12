@@ -4,6 +4,7 @@ import { injectable, inject } from "inversify";
 
 import { INextFunction, IRequest, IResponse, IAuthorizeRequest, serializeCourseSummary, serializeCourseDetail } from './../interfaces';
 import { CourseService, MemberService, UserService } from "../services";
+import { MEMBERSTATE } from '../constants';
 
 
 @injectable()
@@ -60,7 +61,7 @@ export class CourseController {
             if (!course)
                 return res.composer.notFound();
 
-            await this._memberService.upsetMember(userId!, course.id);
+            await this._memberService.upsetMember(userId!, course.id, MEMBERSTATE.ACCEPT);
             return res.composer.success(serializeCourseDetail(course));
         } catch (err) {
             res.composer.otherException(err);
@@ -81,7 +82,7 @@ export class CourseController {
                 return res.composer.notFound();
             }
 
-            await this._memberService.upsetMember(userId, +courseId);
+            await this._memberService.upsetMember(userId, +courseId, MEMBERSTATE.ACCEPT);
             return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);

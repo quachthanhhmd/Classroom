@@ -4,6 +4,7 @@ import { MemberController } from "../../controllers";
 import { inject, injectable } from "inversify";
 import { MemberValidation } from "../../validations";
 import { Authenticate, validate } from "../../middlewares";
+import { TYPEROLE } from "../../constants";
 
 @injectable()
 class MemberRoute {
@@ -38,6 +39,13 @@ class MemberRoute {
             this._authenticate.authenticate(),
             validate(this._memberValidation.getAllSummaryMember()),
             this._memberController.getAllSummaryMember
+        );
+        this.router.post(
+            "/invite/:courseId",
+            this._authenticate.authenticate(),
+            validate(this._memberValidation.inviteMemberByEmail()),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            this._memberController.inviteMemberByEmail
         )
     }
 }

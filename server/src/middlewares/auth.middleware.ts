@@ -8,7 +8,7 @@ import { inject, injectable } from 'inversify';
 import { IResponse, INextFunction, IAuthorizeRequest } from './../interfaces';
 import { User } from "../models";
 import { MemberService } from "../services";
-import { roleRights } from "../config/role";
+import { roleRights, roles } from "../config/role";
 
 @injectable()
 export class Authenticate {
@@ -39,17 +39,17 @@ export class Authenticate {
     };
 
     public courseAuthentication = (...requiredRights) => async (req: IAuthorizeRequest, res: IResponse, next: INextFunction) => {
+        console.log(requiredRights);
         const userId = req.currentUser!.id;
         const courseId = +req.params.courseId;
-        const role = await this._memberService.getRoleMember(userId, courseId);
+        console.log(userId, courseId);
+        const member = await this._memberService.getRoleMember(userId, courseId);
 
-
-        const userRights = roleRights.get(role);
-        const hasRequiredRights = requiredRights.every((requiredRight) => userRights.includes(requiredRight));
-        if (!hasRequiredRights) {
+        const isPermit = roles.includes(member!.role);
+        if (!isPermit) {
            return res.composer.forbidden();
         }
-
+        next();
     }
 }
 

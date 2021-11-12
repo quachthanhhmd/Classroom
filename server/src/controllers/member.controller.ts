@@ -4,15 +4,17 @@ import "reflect-metadata";
 import { IAuthorizeRequest, IResponse } from './../interfaces';
 
 import { injectable, inject } from 'inversify';
-import { CourseService, MemberService } from "../services";
+import { CourseService, MemberService, UserService } from "../services";
 import { MEMBER_EXISTS } from "../constants";
 import { IGetRoleUser, IUpsertStudentID, serializeGetRole, serializeGetSummaryMember } from '../interfaces/member.interface';
+import { sendInviteMember } from '../config/nodemailer';
 
 @injectable()
 export class MemberController {
     constructor(
         @inject("MemberService") private readonly _memberService: MemberService,
-        @inject("CourseService") private readonly _courseService: CourseService
+        @inject("CourseService") private readonly _courseService: CourseService,
+        @inject("UserService") private readonly _userService: UserService
     ) { }
 
     public addNewMember = async (
@@ -80,7 +82,7 @@ export class MemberController {
             const courseId = req.params.courseId;
 
             const result = await this._memberService.getRoleMember(userId!, +courseId);
-           
+
             if (!result) return res.composer.notFound();
 
             return res.composer.success(serializeGetRole(result));
@@ -96,10 +98,36 @@ export class MemberController {
         try {
             const courseId = req.params.courseId;
             const result = await this._memberService.getAllSummaryMember(+courseId);
-        
+
             return res.composer.success(serializeGetSummaryMember(result));
         } catch (err) {
             res.composer.otherException(err);
+        }
+    }
+    public inviteMemberByEmail = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = req.params.courseId;
+            const { email, role } = req.body;
+
+            //Check user exist
+            const user = await this._userService.findUserbyEmail(email);
+            if (!user) return  res.composer.notFound();
+            
+            //Check member exist
+            const isExistMember = await this._memberService.isExistMember(user.id, +courseId);
+            if (isExistMember) return res.composer.badRequest("Member is exist");
+
+            //get code code
+            const code  = await this._courseService.getCodeById(+courseId);
+            if (!code) return  res.composer.notFound();
+            
+            await sendInviteMember(req, email, code);
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
         }
     }
 }

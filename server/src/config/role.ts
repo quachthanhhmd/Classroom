@@ -5,6 +5,6 @@ export const roles = [ TYPEROLE.STUDENT,TYPEROLE.ASSISTANT, TYPEROLE.TEACHER];
 const roleRight = new Map();
 roleRight.set(roles[0], []);
 roleRight.set(roles[1], []);
-roleRight.set(roles[2], []);
+roleRight.set(roles[2], ["inviteMemberByEmail"]);
 
 export const roleRights = roleRight;
