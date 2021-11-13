@@ -1,3 +1,5 @@
+import { DELETE_MEMBER_FAIL } from './../messages/member.message';
+import { UPDATE_MEMBER_STATE_SUCCESS, UPDATE_MEMBER_STATE_FAIL } from './../constants/member.constant';
 import { IMemberAction } from './../interfaces/member.interface';
 import { IRoleMemberResponse } from "../interfaces"
 import { GET_ROLE_MEMBER_FAIL, GET_ROLE_MEMBER_SUCCESS, INVITE_MEMBER_REQUEST, INVITE_MEMBER_SUCCESS, INVITE_MEMBER_FAIL } from '../constants/member.constant';
@@ -6,12 +8,13 @@ interface IInitState {
     currentRole: IRoleMemberResponse | null,
     isLoading: boolean,
     errorMessage: string
-
+    isSuccess: boolean
 }
 const initState: IInitState = {
     currentRole: null,
     isLoading: false,
-    errorMessage: ""
+    errorMessage: "",
+    isSuccess: false,
 }
 
 const memberReducer = (state = initState, action: IMemberAction): IInitState => {
@@ -45,6 +48,7 @@ const memberReducer = (state = initState, action: IMemberAction): IInitState => 
                 isLoading: false,
                 errorMessage: ""
             }
+        
         default:
             return {
                 ...state,

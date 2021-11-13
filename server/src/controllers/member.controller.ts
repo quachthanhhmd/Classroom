@@ -8,6 +8,7 @@ import { CourseService, MemberService, UserService, TokenService } from "../serv
 import { MEMBER_EXISTS } from "../constants";
 import { IGetRoleUser, IUpsertStudentID, serializeGetRole, serializeGetSummaryMember } from '../interfaces/member.interface';
 import { sendInviteMember } from '../config/nodemailer';
+import { resolveCaa } from 'dns';
 
 @injectable()
 export class MemberController {
@@ -114,15 +115,15 @@ export class MemberController {
 
             //Check user exist
             const user = await this._userService.findUserbyEmail(email);
-            if (!user) return  res.composer.notFound();
-            
+            if (!user) return res.composer.notFound();
+
             //Check member exist
             const isExistMember = await this._memberService.isExistMember(user.id, +courseId);
             if (isExistMember) return res.composer.badRequest("Member is exist");
 
             //get code code
             const spendingMember = await this._memberService.addMember(user.id, +courseId, role, MEMBERSTATE.SPENDING);
-            if (!spendingMember) return  res.composer.internalServerError();
+            if (!spendingMember) return res.composer.internalServerError();
 
             const courseToken = await this._tokenService.generateTokenInvite(+courseId);
             await sendInviteMember(req, email, courseToken, role, +courseId);
@@ -133,10 +134,23 @@ export class MemberController {
         }
     }
 
-   public updateStateMember = async (
-       req: IAuthorizeRequest,
-       res: IResponse,
-   ): Promise<void> => {
+    public updateStateMember = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const courseId = req.params.courseId;
+            const userId = req.params.userId;
+            const state = req.body.state;
 
-   }
+            const isUserExist = await this._userService.isUserExist(+userId);
+            if (!isUserExist) return res.composer.badRequest();
+
+            await this._memberService.updateMember(+userId, +courseId, state); 
+
+            return res.composer.success({userId: userId});
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 }

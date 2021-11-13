@@ -72,7 +72,7 @@ export class AuthController {
     ): Promise<void> => {
         try {
             const refreshToken: string = req.body.refreshToken;
-
+            console.log(refreshToken);
             const token = await this._tokenService.verifyToken(refreshToken, TYPETOKEN.REFRESH);
             if (!token) return res.composer.unauthorized(UNAUTHENTICATED);
 

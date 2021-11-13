@@ -34,4 +34,9 @@ export interface IInviteMemberState {
     payload?: any,
 }
 
-export type IMemberAction = IUpsertStudentIdState | IGetRoleMemberState | IInviteMemberState;
+export interface IUpdateMemberState {
+    type: string,
+    payload?: any,
+}
+
+export type IMemberAction = IUpdateMemberState | IUpsertStudentIdState | IGetRoleMemberState | IInviteMemberState;

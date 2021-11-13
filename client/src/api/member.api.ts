@@ -14,6 +14,10 @@ const memberApi = {
     inviteMemberByEmail: (courseId: number, email: string, role: string) => {
         const url = `/v1/member/invite/${courseId}`;
         return axiosClient.post<IHttpFormat<null>>(url, { courseId, email, role });
+    },
+    updateMemberState: (userId: number, courseId: number, state: string) => {
+        const url = `/v1/member/update/${courseId}/${userId}`;
+        return axiosClient.patch<IHttpFormat<{userId: number}>>(url, {state});
     }
 }
 export default memberApi;

@@ -1,3 +1,4 @@
+import { UPDATE_MEMBER_STATE_SUCCESS, UPDATE_MEMBER_STATE_FAIL } from './../constants/member.constant';
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
     CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
@@ -157,10 +158,29 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 isSuccess: false,
                 data: []
             }
+        case UPDATE_MEMBER_STATE_SUCCESS:
+            console.log( action.payload);
+            const newMemberList = state.memberList.filter(member => {
+                if (member.user.userId !== +action.payload.userId) return member;
+            })
+            console.log(newMemberList);
+            return {
+                ...state,
+                memberList: newMemberList,
+                isLoading: false,
+                isSuccess: true,
+
+            }
+        case UPDATE_MEMBER_STATE_FAIL:
+            return {
+                ...state,
+                isSuccess: false,
+
+            }
         default: {
             return {
                 ...state,
-           
+
             }
         }
     }

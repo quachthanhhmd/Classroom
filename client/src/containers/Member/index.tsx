@@ -1,6 +1,6 @@
 import {
     Button,
-    Checkbox, IconButton, MenuItem, Menu
+    Checkbox, IconButton, MenuItem, Menu,
 } from "@material-ui/core";
 import {
     Add,
@@ -10,9 +10,9 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { getAllMemberInCourse } from "../../actions";
+import { getAllMemberInCourse, updateStateMember } from "../../actions";
 import InviteMember from "../../components/InviteMember";
-import { TYPEROLE } from "../../constants";
+import { MEMBERSTATE, TYPEROLE } from "../../constants";
 import { IMemberSummary } from "../../interfaces";
 import { AppState } from "../../reducers";
 import "./index.scss";
@@ -20,9 +20,12 @@ import "./index.scss";
 
 
 
-const MemberDisplay = (props: { member: IMemberSummary, isChecked?: boolean, index?: number, setIsChecked?: any }) => {
-    const { member, isChecked, index, setIsChecked } = props;
+const MemberDisplay = (props: { courseId: string, userId?: number, member: IMemberSummary, isChecked?: boolean, index?: number, setIsChecked?: any }) => {
+    const { courseId, userId, member, isChecked, index, setIsChecked } = props;
     const [anchorEl, setAnchorEl] = useState(null);
+
+    const dispatch = useDispatch();
+
     function handleClick() {
 
     }
@@ -40,7 +43,11 @@ const MemberDisplay = (props: { member: IMemberSummary, isChecked?: boolean, ind
     const openInNewTab = (url) => {
         const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
         if (newWindow) newWindow.opener = null
-      }
+    }
+    const handleDelete = () => {
+        dispatch(updateStateMember(member.user.userId, +courseId, MEMBERSTATE.BLOCKED));
+        handleClose();
+    }
 
     return (
         <div className="member-main___student___content--member" >
@@ -67,15 +74,18 @@ const MemberDisplay = (props: { member: IMemberSummary, isChecked?: boolean, ind
                     </div>
                 </div>
                 <div className="member-main___teacher___content--member___util">
-                    <IconButton
-                        aria-controls="more-menu"
-                        aria-haspopup="true"
-                        onClick={(e: any) => {
-                            setAnchorEl(e.currentTarget);
-                        }}>
-                        <MoreVert />
+                    {
+                        (member.user.userId !== Number(userId)) &&
+                        <IconButton
+                            aria-controls="more-menu"
+                            aria-haspopup="true"
+                            onClick={(e: any) => {
+                                setAnchorEl(e.currentTarget);
+                            }}>
+                            <MoreVert />
 
-                    </IconButton>
+                        </IconButton>
+                    }
                     <Menu
                         id="more-menu"
                         className="member-main___teacher___content--member___util--more"
@@ -85,12 +95,15 @@ const MemberDisplay = (props: { member: IMemberSummary, isChecked?: boolean, ind
                         onClose={handleClose}
                     >
                         <MenuItem
-                            onClick={() => {openInNewTab(`https://mail.google.com/mail/u/0/?fs=1&to=${member.user.email}&tf=cm`)}}
+                            onClick={() => {
+                                openInNewTab(`https://mail.google.com/mail/u/0/?fs=1&to=${member.user.email}&tf=cm`);
+                                handleClose();
+                            }}
                         >
                             Gửi Email
                         </MenuItem>
                         <MenuItem
-
+                            onClick={handleDelete}
                         >
                             Xóa
                         </MenuItem>
@@ -172,7 +185,7 @@ const Member = () => {
                     </div>
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
-                    member.role === "teacher" && <MemberDisplay member={member} />
+                    member.role === "teacher" && <MemberDisplay courseId={courseId} userId={auth.user?.id} member={member} />
                 ))}
             </div>
             <div className="member-main___assist">
@@ -192,7 +205,7 @@ const Member = () => {
                     </div>
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
-                    member.role === "assistant" && <MemberDisplay member={member} />
+                    member.role === "assistant" && <MemberDisplay courseId={courseId} userId={auth.user?.id} member={member} />
                 ))}
             </div>
             <div className="member-main___student">
@@ -222,7 +235,7 @@ const Member = () => {
 
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary, index: number) => (
-                    member.role === "student" && <MemberDisplay member={member} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
+                    member.role === "student" && <MemberDisplay courseId={courseId} userId={auth.user?.id} member={member} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
                 ))}
             </div>
         </div >

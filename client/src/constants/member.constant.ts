@@ -9,8 +9,18 @@ export const INVITE_MEMBER_REQUEST = "INVITE_MEMBER_REQUEST";
 export const INVITE_MEMBER_SUCCESS = "INVITE_MEMBER_SUCCESS";
 export const INVITE_MEMBER_FAIL = "INVITE_MEMBER_FAIL";
 
+export const UPDATE_MEMBER_STATE_SUCCESS = "UPDATE_MEMBER_STATE_SUCCESS";
+export const UPDATE_MEMBER_STATE_FAIL = "UPDATE_MEMBER_STATE_FAIL"; 
+
 export const TYPEROLE = {
     TEACHER: "teacher",
     STUDENT: "student",
     ASSISTANT: "assistant"
+}
+
+export const MEMBERSTATE = {
+    SPENDING: "spending",
+    BLOCKED: "block",
+    ACCEPT:"accept",
+    REJECT: "reject",
 }

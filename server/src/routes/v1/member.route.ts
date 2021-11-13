@@ -46,6 +46,14 @@ class MemberRoute {
             validate(this._memberValidation.inviteMemberByEmail()),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             this._memberController.inviteMemberByEmail
+        );
+
+        this.router.patch(
+            "/update/:courseId/:userId",
+            this._authenticate.authenticate(),
+            validate(this._memberValidation.deleteMember()),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER),
+            this._memberController.updateStateMember
         )
     }
 }
