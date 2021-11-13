@@ -28,7 +28,7 @@ const courseApi = {
         return axiosClient.get<IHttpFormat<IMemberSummary[]>>(url);
     },
     joinCourseByToken: (courseId: number, token: string, role: string) => {
-        const url = `v1/course/invite/${courseId}?token=${token}&role=${role},`
+        const url = `v1/course/invite/${courseId}?token=${token}&role=${role}`
         return axiosClient.patch<IHttpFormat<null>>(url);
     }
 }

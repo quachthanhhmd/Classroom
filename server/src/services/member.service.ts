@@ -1,7 +1,7 @@
 
 import "reflect-metadata";
 import { inject, injectable } from "inversify";
-import { Op } from "sequelize";
+import { Op, where } from "sequelize";
 
 import { Course, Member, User } from "../models";
 import { MEMBERSTATE } from "../constants";
@@ -82,6 +82,22 @@ export class MemberService {
             type: state,
         })
     }
+
+    public updateMember = async (userId: number, courseId: number, state?: string, role?: string) => {
+        const newBody = JSON.parse(JSON.stringify({ type: state, role: role }));
+        console.log(newBody);
+        return await Member.update(
+            newBody,
+            {
+                where: {
+                    [Op.and]: {
+                        userId: userId,
+                        courseId: courseId,
+                    }
+                }
+            })
+    }
+
     /**
      * Add id for student if member is student
      * @param {number} userId 
@@ -153,7 +169,7 @@ export class MemberService {
             },
             include: [{
                 model: User,
-                attributes: ["firstName", "lastName", "id", "avatarUrl"],
+                attributes: ["firstName", "lastName", "id", "avatarUrl", "email"],
             }],
             raw: false,
             nest: true,

@@ -29,6 +29,7 @@ export const serializeGetSummaryMember = (model: any) => {
                 lastName: member.user.lastName,
                 userId: member.user.id,
                 avatarUrl: member.user.avatarUrl,
+                email: member.user.email
             }
         }
     })  

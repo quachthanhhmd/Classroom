@@ -147,7 +147,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
             return {
                 ...state,
                 isLoading: false,
-                isSuccess: false,
+                isSuccess: true,
                 data: []
             }
         case JOIN_COURSE_BY_TOKEN_FAIL:

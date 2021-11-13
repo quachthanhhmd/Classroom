@@ -120,9 +120,9 @@ export class MemberController {
             const isExistMember = await this._memberService.isExistMember(user.id, +courseId);
             if (isExistMember) return res.composer.badRequest("Member is exist");
 
-            // //get code code
-            // const code  = await this._courseService.getCodeById(+courseId);
-            // if (!code) return  res.composer.notFound();
+            //get code code
+            const spendingMember = await this._memberService.addMember(user.id, +courseId, role, MEMBERSTATE.SPENDING);
+            if (!spendingMember) return  res.composer.internalServerError();
 
             const courseToken = await this._tokenService.generateTokenInvite(+courseId);
             await sendInviteMember(req, email, courseToken, role, +courseId);
@@ -133,5 +133,10 @@ export class MemberController {
         }
     }
 
-   
+   public updateStateMember = async (
+       req: IAuthorizeRequest,
+       res: IResponse,
+   ): Promise<void> => {
+
+   }
 }

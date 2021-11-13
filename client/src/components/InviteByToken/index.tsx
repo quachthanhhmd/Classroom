@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { inviteCourseByToken } from '../../actions';
@@ -13,18 +13,22 @@ const InviteByToken = () => {
     const token = new URLSearchParams(search).get('token');
     const role = new URLSearchParams(search).get('role');
     const dispatch = useDispatch();
-
+    console.log(course.isSuccess);
     useEffect(() => {
+        console.log(token, role);
         dispatch(inviteCourseByToken(+courseId, token!, role!))
     }, [])
 
-    useEffect(() =>{
+    useEffect(() => {
         if (!token || !role) history.push('/');
     }, [])
 
     useEffect(() => {
-        history.push(`/course/${courseId}`);
-    },[course.isSuccess])
+        if (course.isSuccess) {
+            console.log("Thanh Cong");
+            history.push(`/course/${courseId}`);
+        }
+    }, [course.isSuccess, history])
     return (
         <></>
     )

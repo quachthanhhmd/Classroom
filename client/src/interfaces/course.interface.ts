@@ -74,6 +74,7 @@ export interface IMemberInfoSummary {
     lastName: string,
     userId: number,
     avatarUrl: string,
+    email: string
 }
 
 export interface IMemberSummary {

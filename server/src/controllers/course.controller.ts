@@ -98,7 +98,7 @@ export class CourseController {
             const { token, role } = req.query;
             const courseId = +req.params.courseId;
             const userId = +req.currentUser!.id;
-
+   
             const isSpendingMember = await this._memberService.isSpendingInvite(userId, courseId);
             if (!isSpendingMember) {
                 return res.composer.badRequest();
@@ -108,8 +108,8 @@ export class CourseController {
             if (!isMatchToken) {
                 return res.composer.forbidden();
             }
-
-            await this._memberService.upsetMember(userId, +courseId, MEMBERSTATE.ACCEPT, role as string);
+          
+            await this._memberService.updateMember(userId, +courseId, MEMBERSTATE.ACCEPT, String(role));
             return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);

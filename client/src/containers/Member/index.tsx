@@ -1,6 +1,6 @@
 import {
     Button,
-    Checkbox, IconButton
+    Checkbox, IconButton, MenuItem, Menu
 } from "@material-ui/core";
 import {
     Add,
@@ -22,13 +22,25 @@ import "./index.scss";
 
 const MemberDisplay = (props: { member: IMemberSummary, isChecked?: boolean, index?: number, setIsChecked?: any }) => {
     const { member, isChecked, index, setIsChecked } = props;
-
+    const [anchorEl, setAnchorEl] = useState(null);
     function handleClick() {
 
     }
     const handleChecked = () => {
         setIsChecked(index);
     }
+    const handleShowMore = () => {
+
+    }
+    const handleClose = () => {
+        setAnchorEl(null);
+        //setIsOpenCourse(0);
+    };
+
+    const openInNewTab = (url) => {
+        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+        if (newWindow) newWindow.opener = null
+      }
 
     return (
         <div className="member-main___student___content--member" >
@@ -55,9 +67,36 @@ const MemberDisplay = (props: { member: IMemberSummary, isChecked?: boolean, ind
                     </div>
                 </div>
                 <div className="member-main___teacher___content--member___util">
-                    <IconButton>
+                    <IconButton
+                        aria-controls="more-menu"
+                        aria-haspopup="true"
+                        onClick={(e: any) => {
+                            setAnchorEl(e.currentTarget);
+                        }}>
                         <MoreVert />
+
                     </IconButton>
+                    <Menu
+                        id="more-menu"
+                        className="member-main___teacher___content--member___util--more"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl != null)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem
+                            onClick={() => {openInNewTab(`https://mail.google.com/mail/u/0/?fs=1&to=${member.user.email}&tf=cm`)}}
+                        >
+                            Gửi Email
+                        </MenuItem>
+                        <MenuItem
+
+                        >
+                            Xóa
+                        </MenuItem>
+                    </Menu>
+
+
                 </div>
             </Button>
             {/* </Link> */}
@@ -77,6 +116,8 @@ const Member = () => {
     const dispatch = useDispatch();
     const course = useSelector((state: AppState) => state.course);
     const member = useSelector((state: AppState) => state.member);
+    const auth = useSelector((state: AppState) => state.auth);
+
     const [checkedList, setCheckedList] = useState<boolean[]>([]);
     const [isCheckedAll, setIsCheckedAll] = useState<boolean>(false);
     const [isOpenInviteModal, setIsOpenInviteModal] = useState<boolean>(false);

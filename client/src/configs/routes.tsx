@@ -9,13 +9,12 @@ import AuthenticatePage from "../pages/Authenticate";
 import HomePage from "../pages/Home";
 import Loading from "../components/Loading";
 import AddIDModal from "../components/AddIDModal";
-import InviteByToken from "../components/InviteByToken";
-
 import env from "./env";
 
 const Feed = lazy(() => import("../containers/Feed"));
 const Member = lazy(() => import("../containers/Member"));
 const NotFound = lazy(() => import("../pages/NotFound"));
+const InviteByToken = lazy(() => import("../components/InviteByToken"));
 type IRoute = {
     path: string,
     exact?: boolean,
@@ -92,7 +91,7 @@ const CourseLayout = (component: any) => {
     return (
         <>
             <CourseHeader />
-            <AddIDModal/>
+            <AddIDModal />
             <Suspense fallback={<Loading />}>
                 {component}
             </Suspense>
@@ -122,13 +121,13 @@ const defaultRouteList = [
 const courseRouteList = [
     {
         path: ROUTES.course,
-        exact: false,
+        exact: true,
         auth: true,
         main: () => <Feed />,
     },
     {
         path: ROUTES.member,
-        exact: false,
+        exact: true,
         auth: true,
         main: () => <Member />
     },
@@ -136,28 +135,30 @@ const courseRouteList = [
         path: ROUTES.inviteMember,
         exact: false,
         auth: true,
-        main: () => <InviteByToken/>
+        main: () => <InviteByToken />
     }
 ]
 
 const renderRoutes = (defaultRoutes: IRoute[], HomeRoutes: IRoute[], CourseRoutes: IRoute[]) => {
 
     return (
-        <Switch>
-            {defaultRoutes.map((route, index) => {
-                return RouteConfig(route, index);
-            })},
-            {HomeRoutes.map((route, index) => {
-                return RouteConfig(route, index, HomeLayout);
-            })},
-            {CourseRoutes.map((route, index) => {
-                return RouteConfig(route, index, CourseLayout);
-            })},
+        <Suspense fallback={<Loading />}>
+            <Switch>
+                {defaultRoutes.map((route, index) => {
+                    return RouteConfig(route, index);
+                })},
+                {HomeRoutes.map((route, index) => {
+                    return RouteConfig(route, index, HomeLayout);
+                })},
+                {CourseRoutes.map((route, index) => {
+                    return RouteConfig(route, index, CourseLayout);
+                })},
 
-            <Route>
-                <NotFound />
-            </Route>
-        </Switch>
+                <Route>
+                    <NotFound />
+                </Route>
+            </Switch>
+        </Suspense>
     );
 };
 
