@@ -1,29 +1,29 @@
-import "reflect-metadata";
-import {Router} from "express";
-import { MemberController } from "../../controllers";
+import { Router } from "express";
 import { inject, injectable } from "inversify";
-import { MemberValidation } from "../../validations";
-import { Authenticate, validate } from "../../middlewares";
+import "reflect-metadata";
 import { TYPEROLE } from "../../constants";
+import { MemberController } from "../../controllers";
+import { validate, Authenticate } from "../../middlewares";
+import { MemberValidation } from "../../validations";
 
 @injectable()
 class MemberRoute {
-    public router: Router;    
+    public router: Router;
 
     constructor(
         @inject("MemberController") private readonly _memberController: MemberController,
         @inject("MemberValidation") private readonly _memberValidation: MemberValidation,
         @inject("Authenticate") private readonly _authenticate: Authenticate,
-    ){
+    ) {
         this.router = Router();
         this.initializeRoutes();
     }
 
     private initializeRoutes() {
         this.router.post(
-            "/upsert", 
+            "/upsert",
             this._authenticate.authenticate(),
-            validate(this._memberValidation.UpsertStudentId()), 
+            validate(this._memberValidation.UpsertStudentId()),
             this._memberController.upsertStudentId,
         )
 
@@ -33,7 +33,7 @@ class MemberRoute {
             validate(this._memberValidation.getRoleMember()),
             this._memberController.getRoleMember,
         )
-        
+
         this.router.get(
             "/all/:courseId",
             this._authenticate.authenticate(),

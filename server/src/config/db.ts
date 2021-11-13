@@ -1,8 +1,6 @@
-import { Sequelize } from 'sequelize-typescript'
-
+import { Sequelize } from "sequelize-typescript";
+import { Course, Member, OAuth, Token, User } from "../models";
 import env from "./env";
-
-import { User, Token, Member, Course, OAuth } from "../models";
 
 export const sequelize = new Sequelize({
   database: env.DB.DB_DATABASE_NAME,
@@ -10,7 +8,7 @@ export const sequelize = new Sequelize({
   dialect: env.DB.DB_DIALECT,
   username: env.DB.DB_USERNAME,
   password: env.DB.DB_PASSWORD,
-  storage: ':memory:',
+  storage: ":memory:",
   models: [User, Token, Member, Course, OAuth],
   query: {
     raw: true,
@@ -18,6 +16,6 @@ export const sequelize = new Sequelize({
 })
 
 export const connection = () => {
+  // tslint:disable-next-line:no-unused-expression
   sequelize;
-  //sequelize.sync({ force: true });
 }

@@ -1,25 +1,23 @@
-import { Router } from 'express';
-import { IRoute } from './../../interfaces/route.interface';
-import { injectable, inject } from 'inversify';
-
-import { AuthController } from '../../controllers';
-import { AuthValidation } from "../../validations";
+import { Router } from "express";
+import { inject, injectable } from "inversify";
+import { AuthController } from "../../controllers";
 import { validate } from "../../middlewares";
+import { AuthValidation } from "../../validations";
+import { IRoute } from "./../../interfaces/route.interface";
 
 @injectable()
 class AuthRoutes {
 
     public router: IRoute;
-    
+
     constructor(
         @inject("AuthController") private readonly _authController: AuthController,
         @inject("AuthValidation") private readonly _authValidation: AuthValidation,
         ) {
-            
+
             this.router = Router();
             this.initializeRoutes();
-        };
-
+        }
 
     private initializeRoutes() {
 
@@ -34,13 +32,13 @@ class AuthRoutes {
             validate(this._authValidation.SignInValidation),
             this._authController.signIn
         );
-        
+
         this.router.post(
             "/refresh-token",
             validate(this._authValidation.RefreshToken),
             this._authController.refreshToken
         );
-        
+
         this.router.post(
             "/logout",
             validate(this._authValidation.Logout),
@@ -53,10 +51,9 @@ class AuthRoutes {
             this._authController.loginByOAuth
         )
     }
-};
+}
 
 export default AuthRoutes;
-
 
 /**
  * @swagger
@@ -154,7 +151,6 @@ export default AuthRoutes;
  *
  */
 
-
 /**
  * @swagger
  * /v1/auth/logout:
@@ -175,7 +171,7 @@ export default AuthRoutes;
  *               refreshToken:
  *                 type: string
  *             example:
- *               refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZWJhYzUzNDk1NGI1NDEzOTgwNmMxMTIiLCJpYXQiOjE1ODkyOTg0ODQsImV4cCI6MTU4OTMwMDI4NH0.m1U63blB0MLej_WfB7yC2FTMnCziif9X8yzwDEfJXAg
+ *               refreshToken: hkajdhkajhdkajhdk
  *     responses:
  *       "200":
  *         description: Logout success

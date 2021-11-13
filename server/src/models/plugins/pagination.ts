@@ -6,11 +6,11 @@ export function safeParseInt(
   defaultValue = 0
 ): number {
   if (!input || typeof input === "number") {
-    return <number>Math.floor(<number>input || defaultValue);
+    return <number> Math.floor(<number> input || defaultValue);
   }
 
   try {
-    return parseInt(<string>input, 10);
+    return parseInt(<string> input, 10);
   } catch {
     return defaultValue;
   }
@@ -49,16 +49,16 @@ export function parsePaginationParams(input: any): IPagingParams {
     size: safeParseInt(input.size, PAGE_SIZE),
     order: !input.order
       ? [["id", "DESC"]]
-      : (<string>input.order).substring(0, 1) === "-"
-        ? [[(<string>input.order).substring(1), "DESC"]]
+      : (<string> input.order).substring(0, 1) === "-"
+        ? [[(<string> input.order).substring(1), "DESC"]]
         : [[input.order, "ASC"]],
   };
 }
 
 export function parseOrderParams(input: any): Order {
   function parseItem(item): OrderItem {
-    return (<string>item).substring(0, 1) === "-"
-      ? [(<string>item).substring(1), "DESC"]
+    return (<string> item).substring(0, 1) === "-"
+      ? [(<string> item).substring(1), "DESC"]
       : [item, "ASC"];
   }
   const type = typeof input;

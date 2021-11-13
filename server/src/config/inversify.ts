@@ -1,25 +1,18 @@
-import "reflect-metadata";
-
 import { Container } from "inversify";
-
+import "reflect-metadata";
 import {
-    UserService,
-    TokenService,
+    AuthController,
+    CourseController,
+    MemberController, UserController
+} from "../controllers";
+import { Authenticate } from "../middlewares";
+import {
     AuthService,
     CourseService,
     MemberService,
-    OAuthService,
+    OAuthService, TokenService, UserService
 } from "../services";
-
-import {
-    UserController,
-    AuthController,
-    CourseController,
-    MemberController,
-} from "../controllers";
-
-import { Authenticate } from "../middlewares";
-import { AuthValidation, CourseValidation, UserValidation, MemberValidation } from "../validations";
+import { AuthValidation, CourseValidation, MemberValidation, UserValidation } from "../validations";
 
 const existContainer = new Container({ defaultScope: "Singleton" });
 

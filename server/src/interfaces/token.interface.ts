@@ -1,6 +1,5 @@
 import moment from "moment";
 
-
 export interface ITokenAttributes {
     token: string,
     userId: number,
@@ -8,7 +7,7 @@ export interface ITokenAttributes {
     expires: moment.Moment
 }
 
-//payload to compress and incompress Token
+// payload to compress and incompress Token
 export interface IPayload {
     sub: number,
     iat: number,

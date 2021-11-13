@@ -1,9 +1,9 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { CourseService, UserService } from "../services";
-import { IAuthorizeRequest, IPagingRequest, IRequest, IResponse } from './../interfaces';
-import { serializeCourseList } from './../interfaces/course.interface';
-import { serializeUserProfile } from './../interfaces/user.interface';
+import { IAuthorizeRequest, IPagingRequest, IRequest, IResponse } from "./../interfaces";
+import { serializeCourseList } from "./../interfaces/course.interface";
+import { serializeUserProfile } from "./../interfaces/user.interface";
 
 @injectable()
 export class UserController {
@@ -32,7 +32,7 @@ export class UserController {
         res: IResponse,
     ): Promise<void> => {
         try {
-            const id = req.currentUser!.id;
+            const id = <number> req.currentUser?.id;
 
             const courseList = await this._userService.getListCourseUser(id, req.query);
 
@@ -47,17 +47,15 @@ export class UserController {
         res: IResponse,
     ): Promise<void> => {
         try {
-            const userId = req.currentUser!.id;
+            const userId = <number> req.currentUser?.id;
             const body = req.body;
 
             await this._userService.updateProfile(userId, body);
             const userAfterUpdate = await this._userService.findUserById(userId);
 
             return res.composer.success(serializeUserProfile(userAfterUpdate));
-        } catch(err) {
+        } catch (err) {
             return res.composer.otherException(err);
         }
     }
 }
-
-

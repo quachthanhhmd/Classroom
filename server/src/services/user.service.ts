@@ -1,14 +1,13 @@
 import { injectable } from "inversify";
-import 'reflect-metadata';
-import { FindOptions } from 'sequelize/types';
+import "reflect-metadata";
+// tslint:disable-next-line:no-submodule-imports
+import { FindOptions } from "sequelize/types";
 import { comparePasswordHash } from "../config";
 import { ICreateUser, IUpdateUser } from "../interfaces";
-import { Course, filterPagination, IPagingParams, IPagingResult, Member, User } from "../models";
+import { filterPagination, Course, IPagingParams, IPagingResult, Member, User } from "../models";
 
 @injectable()
 export class UserService {
-
-    constructor() { }
 
     /**
      * find a user by Id
@@ -16,9 +15,7 @@ export class UserService {
      * @return {Promise<User | null>}
      */
     public findUserById = async (id: number): Promise<User | null> => {
-        const user = await User.findByPk(id);
-
-        return user;
+        return User.findByPk(id);
     };
 
     /**
@@ -26,11 +23,12 @@ export class UserService {
      * @param {number} id 
      * @returns {Promise<Boolean>}
      */
-    public isUserExist = async (id: number): Promise<Boolean> => {
+    public isUserExist = async (id: number): Promise<boolean> => {
         const user = await this.findUserById(id);
 
         if (user)
             return true;
+
         return false;
     }
 
@@ -40,13 +38,11 @@ export class UserService {
      * @returns 
      */
     public findUserbyEmail = async (email: string): Promise<User | null> => {
-        const user = await User.findOne({
+        return User.findOne({
             where: {
-                email: email,
+                email,
             }
         })
-
-        return user;
     }
 
     /**
@@ -56,9 +52,9 @@ export class UserService {
      */
     public createUser = async (userBody: ICreateUser): Promise<User> => {
         console.log(userBody);
-        return await User.create(userBody);
-    }
 
+        return User.create(userBody);
+    }
 
     /**
      * Get only information of user
@@ -66,10 +62,10 @@ export class UserService {
      * @returns {Promise<User | null>} is information of user
      */
     public getInforById = async (id: number): Promise<User | null> => {
-        return await User.findOne({
+        return User.findOne({
             attributes: ["id", "firstName", "lastName", "gender", "birthDay", "email", "avatarUrl"],
             where: {
-                id: id,
+                id,
             }
         })
     }
@@ -80,28 +76,29 @@ export class UserService {
      * @param {string} inputPassword 
      * @returns {Boolean}
      */
-    public isPasswordMatch = (userPassword: string, inputPassword: string): Boolean => {
+    public isPasswordMatch = (userPassword: string, inputPassword: string): boolean => {
         if (comparePasswordHash(userPassword, inputPassword)) return true;
 
         return false;
     }
 
     /**
-    * Find list Courses
-    * @param {IPagingParams} queryBody 
-    * @returns {Promise<IPagingResult<Course>>}
-    */
+     * Find list Courses
+     * @param {IPagingParams} queryBody 
+     * @returns {Promise<IPagingResult<Course>>}
+     */
     public getListCourseUser = async (userId: number, queryBody: IPagingParams): Promise<IPagingResult<Course>> => {
         const whereCondition: FindOptions = {
             include: [{
                 model: Member,
                 where: {
-                    userId: userId,
+                    userId,
                 }
             }],
             raw: false,
         };
-        return await filterPagination(Course, whereCondition, queryBody);
+
+        return filterPagination(Course, whereCondition, queryBody);
     }
 
     /**

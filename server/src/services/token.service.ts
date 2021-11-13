@@ -1,19 +1,15 @@
+import { injectable } from "inversify";
+import jwt from "jsonwebtoken";
+import moment from "moment";
 import "reflect-metadata";
-
 import { Op } from "sequelize";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import moment, { parseTwoDigitYear } from "moment";
-import { inject, injectable } from "inversify";
-
-import  env from "../config/env";
-import { Token } from "../models";
-import { ITokenAttributes, IPayload, IResponse } from './../interfaces';
+import env from "../config/env";
 import { TYPETOKEN } from "../constants";
+import { Token } from "../models";
+import { IPayload, ITokenAttributes } from "./../interfaces";
 
 @injectable()
 export class TokenService {
-
-    constructor() { }
 
     /**
      * SAVE TOKEN IN DATABASE
@@ -22,14 +18,12 @@ export class TokenService {
      */
     public storeToken = async (token: ITokenAttributes): Promise<Token> => {
 
-        const newToken = await Token.create({
+        return Token.create({
             token: token.token,
             userId: token.userId,
             type: token.type,
             expire: token.expires.toDate(),
         });
-
-        return newToken;
     }
 
     /**
@@ -38,14 +32,13 @@ export class TokenService {
      * @returns {Promise<Token>} newToken
      */
     public saveToken = async (tokenBody: ITokenAttributes): Promise<Token> => {
-        const newToken = await Token.create({
+        return Token.create({
             token: tokenBody.token,
             userId: tokenBody.userId,
             type: tokenBody.type,
             expire: tokenBody.expires.toDate(),
         });
 
-        return newToken;
     }
 
     /**
@@ -60,7 +53,7 @@ export class TokenService {
             sub: userId,
             iat: moment().unix(),
             exp: expire.unix(),
-            type: type,
+            type,
         };
 
         return jwt.sign(payload, env.TOKEN.TOKEN_SERCET);
@@ -81,9 +74,9 @@ export class TokenService {
         const tokenDoc = await Token.findOne({
             where: {
                 [Op.and]: [
-                    { userId: userId },
+                    { userId },
                     { token: tokenName },
-                    { type: type }
+                    { type }
                 ]
             }
         });
@@ -91,35 +84,34 @@ export class TokenService {
         if (!tokenDoc)
             return null;
 
-        //After verify, we need to remove it out of DB
-        //Check again
+        // After verify, we need to remove it out of DB
+        // Check again
         await this.removeToken(tokenName, type);
 
         return tokenDoc;
     }
-
     /**
-    * Generate token to verify email or forgot password
-    * @param {numbser} userId 
-    * @returns {Promise<string>} token after generating
-    */
+     * Generate token to verify email or forgot password
+     * @param {number} userId 
+     * @param {string} role
+     * @returns {Promise<string>} 
+     */
     public generateTokenVerify = async (userId: number, type: string): Promise<string> => {
 
-        //before generateToken we need to remove token has been send before
+        // before generateToken we need to remove token has been send before
         await this.removeTokenByUserId(userId, type);
 
         const tokenExpire: moment.Moment = moment().add(env.TOKEN.TOKEN_EXPIRE_MINUTES, "minutes");
         const token = this.generateToken(userId, tokenExpire, type);
         await this.storeToken({
-            userId: userId,
-            token: token,
+            userId,
+            token,
             expires: tokenExpire,
-            type: type,
+            type,
         });
 
         return token;
     }
-
 
     /**
      * generate token to authenticate
@@ -130,11 +122,11 @@ export class TokenService {
         const tokenExpire = moment().add(env.TOKEN.TOKEN_EXPIRE_MINUTES, "minutes");
         const generateAccessToken = this.generateToken(userId, tokenExpire, TYPETOKEN.ACCESS);
 
-        const tokenRefreshExpire = moment().add(env.TOKEN.TOKEN_EXPIRE_DAY, 'days');
+        const tokenRefreshExpire = moment().add(env.TOKEN.TOKEN_EXPIRE_DAY, "days");
         const generateRefreshExpire = this.generateToken(userId, tokenRefreshExpire, TYPETOKEN.REFRESH);
 
         await this.storeToken({
-            userId: userId,
+            userId,
             token: generateRefreshExpire,
             expires: tokenRefreshExpire,
             type: TYPETOKEN.REFRESH,
@@ -157,9 +149,9 @@ export class TokenService {
      * @returns 
      */
     public generateTokenInvite = (userId: number) => {
-        const tokenRefreshExpire = moment().add(env.TOKEN.TOKEN_EXPIRE_DAY, 'days');
-        const newToken = this.generateToken(userId, tokenRefreshExpire, TYPETOKEN.REFRESH);
-        return newToken;
+        const tokenRefreshExpire = moment().add(env.TOKEN.TOKEN_EXPIRE_DAY, "days");
+
+        return this.generateToken(userId, tokenRefreshExpire, TYPETOKEN.REFRESH);
     }
 
     public isMatchTokenIdInvite = (tokenName: string, userId: number): boolean => {
@@ -167,6 +159,7 @@ export class TokenService {
         const id = payload.sub === undefined ? -1 : +payload.sub;
 
         if (id === -1 || id !== userId) return false;
+
         return true;
     }
 
@@ -181,8 +174,8 @@ export class TokenService {
         await Token.destroy({
             where: {
                 [Op.and]: {
-                    token: token,
-                    type: type,
+                    token,
+                    type,
                 }
             }
         });
@@ -198,8 +191,8 @@ export class TokenService {
         await Token.destroy({
             where: {
                 [Op.and]: {
-                    userId: userId,
-                    type: type,
+                    userId,
+                    type,
                 }
             }
         })

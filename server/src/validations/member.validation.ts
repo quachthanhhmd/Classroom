@@ -1,8 +1,7 @@
-import 'reflect-metadata';
-
+import { injectable } from "inversify";
 import Joi from "joi";
-import { injectable } from 'inversify';
-import { MEMBERSTATE, TYPEROLE } from '../constants';
+import "reflect-metadata";
+import { MEMBERSTATE, TYPEROLE } from "../constants";
 
 @injectable()
 export class MemberValidation {

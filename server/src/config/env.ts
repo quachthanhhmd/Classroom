@@ -2,11 +2,11 @@ import dotenv from "dotenv";
 import Joi from "joi";
 import path from "path";
 
-dotenv.config({ path: path.join(__dirname, '../../.env') });
+dotenv.config({ path: path.join(__dirname, "../../.env") });
 
 const envSchema: Joi.ObjectPropertiesSchema = Joi.object()
     .keys({
-        TYPE: Joi.string().valid('production', 'development', 'test').required(),
+        TYPE: Joi.string().valid("production", "development", "test").required(),
         PORT: Joi.number().default(3000),
         DB_DATABASE_HOST: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
@@ -24,7 +24,7 @@ const envSchema: Joi.ObjectPropertiesSchema = Joi.object()
     })
     .unknown();
 
-const { value: env, error } = envSchema.prefs({ errors: { label: 'key' } }).validate(process.env);
+const { value: env, error } = envSchema.prefs({ errors: { label: "key" } }).validate(process.env);
 
 if (error) {
     throw new Error(`Config validation error: ${error.message}`);

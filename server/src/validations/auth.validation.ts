@@ -1,24 +1,22 @@
-import { injectable } from 'inversify';
+import { injectable } from "inversify";
 import Joi from "joi";
-import 'reflect-metadata';
-import { GENDER, LOGINTYPE } from './../constants';
-
-
+import "reflect-metadata";
+import { GENDER, LOGINTYPE } from "./../constants";
 
 @injectable()
 export class AuthValidation {
 
     private passwordValidation = (value: string, helper: any) => {
         if (value.length < 8) {
-            return helper.message('password must be at least 8 characters');
+            return helper.message("password must be at least 8 characters");
         }
 
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-            return helper.message('password must contain at least 1 letter and 1 number');
+            return helper.message("password must contain at least 1 letter and 1 number");
         }
     }
 
-    public SignupValidation() {
+    public SignupValidation = () => {
         return {
             body: Joi.object().keys({
                 firstName: Joi.string().required(),
@@ -31,7 +29,7 @@ export class AuthValidation {
         }
     }
 
-    public SignInValidation() {
+    public SignInValidation = () => {
         return {
             body: Joi.object().keys({
                 email: Joi.string().email().required(),
@@ -40,7 +38,7 @@ export class AuthValidation {
         }
     }
 
-    public RefreshToken() {
+    public RefreshToken = () => {
         return {
             body: Joi.object().keys({
                 refreshToken: Joi.string().required(),
@@ -48,7 +46,7 @@ export class AuthValidation {
         }
     }
 
-    public Logout() {
+    public Logout = () => {
         return {
             body: Joi.object().keys({
                 refreshToken: Joi.string().required(),
@@ -56,7 +54,7 @@ export class AuthValidation {
         }
     }
 
-    public LoginOAuth() {
+    public LoginOAuth = () => {
         return {
             body: Joi.object().keys({
                 email: Joi.string().required(),

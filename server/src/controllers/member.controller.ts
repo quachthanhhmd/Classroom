@@ -1,14 +1,11 @@
-import { MEMBERSTATE } from './../constants/state.constant';
-import { TYPEROLE } from './../constants/role.constant';
+import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { IAuthorizeRequest, IResponse } from './../interfaces';
-
-import { injectable, inject } from 'inversify';
-import { CourseService, MemberService, UserService, TokenService } from "../services";
+import { sendInviteMember } from "../config/nodemailer";
 import { MEMBER_EXISTS } from "../constants";
-import { IGetRoleUser, IUpsertStudentID, serializeGetRole, serializeGetSummaryMember } from '../interfaces/member.interface';
-import { sendInviteMember } from '../config/nodemailer';
-import { resolveCaa } from 'dns';
+import { serializeGetRole, serializeGetSummaryMember, IUpsertStudentID } from "../interfaces/member.interface";
+import { CourseService, MemberService, TokenService, UserService } from "../services";
+import { MEMBERSTATE } from "./../constants/state.constant";
+import { IAuthorizeRequest, IResponse } from "./../interfaces";
 
 @injectable()
 export class MemberController {
@@ -27,7 +24,7 @@ export class MemberController {
             const courseId = +req.params.courseId;
             const memberId = req.body;
 
-            const requestJoin = await this._memberService.upsetMember(memberId, courseId, MEMBERSTATE.ACCEPT);
+            await this._memberService.upsetMember(memberId, courseId, MEMBERSTATE.ACCEPT);
 
             return res.composer.success("Request completed!");
         } catch (err) {
@@ -42,11 +39,11 @@ export class MemberController {
         try {
             const courseId = +req.params.courseId;
 
-            const getUserType: string | null = await this._memberService.findMemberState(req.currentUser!.id, courseId);
+            const getUserType: string | null = await this._memberService.findMemberState(req.currentUser?.id as number, courseId);
             if (typeof getUserType !== "string") {
                 return res.composer.badRequest(MEMBER_EXISTS);
             }
-            const requestJoin = await this._memberService.upsetMember(req.currentUser!.id, courseId);
+            await this._memberService.upsetMember(req.currentUser?.id as number, courseId);
 
             return res.composer.success("Request completed!");
         } catch (err) {
@@ -60,14 +57,15 @@ export class MemberController {
     ): Promise<void> => {
         try {
             const upsertBody: IUpsertStudentID = req.body;
-            const userId = req.currentUser!.id;
+            const userId = req.currentUser?.id;
 
-            const member = await this._memberService.findMemberByUserAndCourseId(userId, upsertBody.courseId);
+            const member = await this._memberService.findMemberByUserAndCourseId(userId as number, upsertBody.courseId);
             if (!member || member.studentId) {
                 return res.composer.unauthorized();
             }
 
-            await this._memberService.AddStudentId(userId, upsertBody.courseId, upsertBody.studentId);
+            await this._memberService.AddStudentId(userId as number, upsertBody.courseId, upsertBody.studentId);
+
             return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);
@@ -82,7 +80,7 @@ export class MemberController {
             const userId = req.currentUser?.id;
             const courseId = req.params.courseId;
 
-            const result = await this._memberService.getRoleMember(userId!, +courseId);
+            const result = await this._memberService.getRoleMember(userId as number, +courseId);
 
             if (!result) return res.composer.notFound();
 
@@ -113,15 +111,15 @@ export class MemberController {
             const courseId = req.params.courseId;
             const { email, role } = req.body;
 
-            //Check user exist
+            // Check user exist
             const user = await this._userService.findUserbyEmail(email);
             if (!user) return res.composer.notFound();
 
-            //Check member exist
+            // Check member exist
             const isExistMember = await this._memberService.isExistMember(user.id, +courseId);
             if (isExistMember) return res.composer.badRequest("Member is exist");
 
-            //get code code
+            // get code code
             const spendingMember = await this._memberService.addMember(user.id, +courseId, role, MEMBERSTATE.SPENDING);
             if (!spendingMember) return res.composer.internalServerError();
 
@@ -146,9 +144,9 @@ export class MemberController {
             const isUserExist = await this._userService.isUserExist(+userId);
             if (!isUserExist) return res.composer.badRequest();
 
-            await this._memberService.updateMember(+userId, +courseId, state); 
+            await this._memberService.updateMember(+userId, +courseId, state);
 
-            return res.composer.success({userId: userId});
+            return res.composer.success({ userId });
         } catch (err) {
             return res.composer.otherException(err);
         }

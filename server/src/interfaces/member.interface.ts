@@ -32,5 +32,5 @@ export const serializeGetSummaryMember = (model: any) => {
                 email: member.user.email
             }
         }
-    })  
+    })
 }

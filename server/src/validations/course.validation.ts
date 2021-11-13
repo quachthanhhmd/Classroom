@@ -1,13 +1,10 @@
 import { injectable } from "inversify";
-import Joi from 'joi';
+import Joi from "joi";
 import "reflect-metadata";
 import { MEMBERSTATE } from "../constants";
 
-
 @injectable()
 export class CourseValidation {
-    constructor() { }
-
     public addCourse = () => {
         return Joi.object().keys({
             body: {
@@ -36,7 +33,7 @@ export class CourseValidation {
             }
         })
     }
-    
+
     public joinCourseByUrl = () => {
         return Joi.object().keys({
             params: {

@@ -4,7 +4,7 @@ import {
 } from "sequelize-typescript";
 import { initPasswordHash } from "../config/bcrypt";
 import { Member, Token } from "./";
-import { GENDER } from './../constants/gender.constant';
+import { GENDER } from "./../constants/gender.constant";
 import { OAuth } from "./oAuth.model";
 
 interface IUser {
@@ -16,18 +16,18 @@ interface IUser {
     gender?: string,
     birthDay?: Date,
     avatarUrl?: string,
-    isVerified?: Boolean,
-    isBlocked?: Boolean,
+    isVerified?: boolean,
+    isBlocked?: boolean,
     OAuthId?: string,
 }
 
-interface UserCreationAttibutes extends Optional<IUser, "id"> { }
+interface IUserCreationAttibutes extends Optional<IUser, "id"> { }
 
 @Table({
     timestamps: true,
     paranoid: true,
 })
-export class User extends Model<IUser, UserCreationAttibutes> {
+export class User extends Model<IUser, IUserCreationAttibutes> {
 
     @PrimaryKey
     @AutoIncrement
@@ -76,24 +76,25 @@ export class User extends Model<IUser, UserCreationAttibutes> {
     set password(value: string | undefined) {
         console.log("3, ", value);
         if (typeof value === "undefined") {
-            const passwordHash: string = initPasswordHash(generateRandomPassword());
-            this.setDataValue("password", passwordHash);
+            const passwordHashString: string = initPasswordHash(generateRandomPassword());
+            this.setDataValue("password", passwordHashString);
+
             return
         }
 
         if (value.length < 8) {
-            throw new Error('password must be at least 8 characters');
+            throw new Error("password must be at least 8 characters");
         }
 
         if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
-            throw new Error('password must contain at least 1 letter and 1 number');
+            throw new Error("password must contain at least 1 letter and 1 number");
         }
 
         const passwordHash: string = initPasswordHash(value);
         this.setDataValue("password", passwordHash);
     }
     get password(): string {
-        return this.getDataValue("password") as string;
+        return <string> this.getDataValue("password");
     }
 
     @HasMany(() => Token)
@@ -104,14 +105,14 @@ export class User extends Model<IUser, UserCreationAttibutes> {
 
     @HasMany(() => OAuth)
     oAuthList?: OAuth[];
-};
-
+}
 
 const generateFromList = (strList: string, length: number): string => {
     let result: string = "";
     for (let i = 0; i < length; i++) {
         result += strList.charAt(Math.floor(Math.random() * strList.length));
     }
+
     return result;
 }
 
@@ -124,12 +125,15 @@ export const generateRandomPassword = (length = 15): string => {
     const upperCaseLength = Math.floor(Math.random() * (length - 3) + 1);
     const lowerCaseLength = Math.floor(Math.random() * (length - upperCaseLength - 1) + 1);
     const numberLength = Math.floor(Math.random() * (length - upperCaseLength - lowerCaseLength - 1) + 1);
-    console.log(upperCaseLength, lowerCaseLength, numberLength);
-    const result = generateFromList(upperCaseList, upperCaseLength) + generateFromList(lowerCaseList, lowerCaseLength) + generateFromList(numberList, numberLength);
+
+    const result =
+        generateFromList(upperCaseList, upperCaseLength) +
+        generateFromList(lowerCaseList, lowerCaseLength) +
+        generateFromList(numberList, numberLength);
     console.log(result);
-    
+
     return result
-        .split('')
-        .sort((a, b) => 0.5 - Math.random())
-        .join('');
+        .split("")
+        .sort(() => 0.5 - Math.random())
+        .join("");
 }

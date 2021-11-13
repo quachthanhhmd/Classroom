@@ -1,7 +1,7 @@
 import { TYPEROLE } from "../constants";
-export const roles = [ TYPEROLE.STUDENT,TYPEROLE.ASSISTANT, TYPEROLE.TEACHER];
+export const roles = [ TYPEROLE.STUDENT, TYPEROLE.ASSISTANT, TYPEROLE.TEACHER];
 
-//Add url need to use
+// Add url need to use
 const roleRight = new Map();
 roleRight.set(roles[0], []);
 roleRight.set(roles[1], []);

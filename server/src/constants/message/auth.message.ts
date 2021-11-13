@@ -1,3 +1,3 @@
 export const INCORRECT_LOGIN = "Incorrect email or password";
 export const USER_EXIST = "User does exist";
-export const UNAUTHENTICATED  = "Please Authenticated";
+export const UNAUTHENTICATED = "Please Authenticated";

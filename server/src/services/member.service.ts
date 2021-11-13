@@ -1,20 +1,16 @@
 
+import { injectable } from "inversify";
 import "reflect-metadata";
-import { inject, injectable } from "inversify";
-import { Op, where } from "sequelize";
-
-import { Course, Member, User } from "../models";
+import { Op } from "sequelize";
 import { MEMBERSTATE } from "../constants";
-import { TYPEROLE } from './../constants/role.constant';
-import { UserService, CourseService } from "./";
+import { Member, User } from "../models";
+import { TYPEROLE } from "./../constants/role.constant";
 
 @injectable()
 export class MemberService {
-    constructor(
-    ) { }
-
     public isExistMember = async (userId: number, courseId: number) => {
         const member = await this.findMemberByUserAndCourseId(userId, courseId);
+
         return member ? true : false;
     }
     /**
@@ -24,11 +20,11 @@ export class MemberService {
      * @returns {Promise<Member | null>}
      */
     public findMemberByUserAndCourseId = async (userId: number, courseId: number): Promise<Member | null> => {
-        return await Member.findOne({
+        return Member.findOne({
             where: {
                 [Op.and]: {
-                    userId: userId,
-                    courseId: courseId,
+                    userId,
+                    courseId,
                 }
             }
         })
@@ -56,11 +52,12 @@ export class MemberService {
      * @param {string} state 
      * @returns 
      */
-    public addMember = async (userId: number, courseId: number, role = TYPEROLE.STUDENT, state = MEMBERSTATE.SPENDING) => {
-        return await Member.create({
-            userId: userId,
-            courseId: courseId,
-            role: role,
+    public addMember = async (
+        userId: number, courseId: number, role = TYPEROLE.STUDENT, state = MEMBERSTATE.SPENDING) => {
+        return Member.create({
+            userId,
+            courseId,
+            role,
             type: state,
         })
     }
@@ -75,24 +72,25 @@ export class MemberService {
      */
     public upsetMember = async (userId: number, courseId: number, state?: string, role?: string) => {
 
-        return await Member.upsert({
-            userId: userId,
-            courseId: courseId,
-            role: role,
+         await Member.upsert({
+            userId,
+            courseId,
+            role,
             type: state,
         })
     }
 
     public updateMember = async (userId: number, courseId: number, state?: string, role?: string) => {
-        const newBody = JSON.parse(JSON.stringify({ type: state, role: role }));
+        const newBody = JSON.parse(JSON.stringify({ type: state, role }));
         console.log(newBody);
-        return await Member.update(
+
+        return Member.update(
             newBody,
             {
                 where: {
                     [Op.and]: {
-                        userId: userId,
-                        courseId: courseId,
+                        userId,
+                        courseId,
                     }
                 }
             })
@@ -106,12 +104,12 @@ export class MemberService {
      */
     public AddStudentId = async (userId: number, courseId: number, studentId: string): Promise<void> => {
         await Member.update({
-            studentId: studentId
+            studentId
         }, {
             where: {
                 [Op.and]: {
-                    userId: userId,
-                    courseId: courseId,
+                    userId,
+                    courseId,
                 }
             }
         })
@@ -127,14 +125,15 @@ export class MemberService {
         const student = await Member.findOne({
             where: {
                 [Op.and]: {
-                    userId: userId,
-                    courseId: courseId,
+                    userId,
+                    courseId,
                     role: TYPEROLE.STUDENT
                 }
             }
         })
 
         if (!student) return false;
+
         return true;
     }
 
@@ -145,12 +144,12 @@ export class MemberService {
      * @returns {Promise<Member | null>}
      */
     public getRoleMember = async (userId: number, courseId: number): Promise<Member | null> => {
-        return await Member.findOne({
+        return Member.findOne({
             attributes: ["role", "type", "studentId"],
             where: {
                 [Op.and]: {
-                    userId: userId,
-                    courseId: courseId,
+                    userId,
+                    courseId,
                 }
             }
         })
@@ -164,7 +163,7 @@ export class MemberService {
         return Member.findAll({
             attributes: ["id", "studentId", "type", "role"],
             where: {
-                courseId: courseId,
+                courseId,
                 type: MEMBERSTATE.ACCEPT
             },
             include: [{
@@ -180,12 +179,13 @@ export class MemberService {
         const member = await Member.findOne({
             where: {
                 [Op.and]: {
-                    userId: userId,
-                    courseId: courseId,
+                    userId,
+                    courseId,
                     type: MEMBERSTATE.SPENDING
                 }
             }
         })
+
         return member ? true : false;
     }
 }

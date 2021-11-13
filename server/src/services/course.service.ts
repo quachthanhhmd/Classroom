@@ -1,12 +1,9 @@
+import { inject, injectable } from "inversify";
 import "reflect-metadata";
-
-import { injectable, inject } from "inversify";
-import { ICreateCourse, ICourseInfor } from "../interfaces";
+import { MEMBERSTATE, TYPEROLE } from "../constants";
+import { ICreateCourse } from "../interfaces";
 import { Course } from "../models";
 import { MemberService } from "./";
-import { MEMBERSTATE, TYPEROLE } from "../constants";
-import { IPagingParams, filterPagination, IPagingResult } from "../models";
-import { FindOptions } from "sequelize/types";
 
 @injectable()
 export class CourseService {
@@ -26,6 +23,7 @@ export class CourseService {
         })
 
         await this._memberService.addMember(id, newCourse.id, TYPEROLE.TEACHER, MEMBERSTATE.ACCEPT);
+
         return newCourse;
     }
 
@@ -35,7 +33,7 @@ export class CourseService {
      * @returns 
      */
     public getCourseDetail = async (id: number): Promise<Course | null> => {
-        return await Course.findByPk(id);
+        return Course.findByPk(id);
     }
 
     /**
@@ -44,11 +42,11 @@ export class CourseService {
      * @returns 
      */
     public getCourseByCode = async (code: string) : Promise<Course | null> => {
-        return await Course.findOne({
+        return Course.findOne({
             where: {
-                code: code,
+                code,
             }
-        }) 
+        })
     }
 
     /**
@@ -61,15 +59,17 @@ export class CourseService {
         const course = await Course.findOne({
             where: {
                 id: courseId,
-                code: code,
+                code,
             }
         });
         if (course) return true;
+
         return false;
     }
 
     public getCodeById = async (courseId: number): Promise<string | undefined> => {
-        const course =  await this.getCourseDetail(courseId);
+        const course = await this.getCourseDetail(courseId);
+
         return course?.code;
     }
 }

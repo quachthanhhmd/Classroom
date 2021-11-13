@@ -1,11 +1,8 @@
-import express, { Router } from 'express';
-
-import { IRoute } from './../../interfaces';
+import express, { Router } from "express";
+import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { injectable, inject } from "inversify";
-
 import { CourseController } from "../../controllers";
-import { Authenticate, validate } from '../../middlewares';
+import { validate, Authenticate } from "../../middlewares";
 import { CourseValidation } from "../../validations";
 
 @injectable()
@@ -40,7 +37,7 @@ class CourseRoute {
             validate(this._courseValidation.joinCourseByCode),
             this._courseController.joinCourseByCode,
         )
-        
+
         this.router.patch(
             "/:courseId",
             this._authenticate.authenticate(),

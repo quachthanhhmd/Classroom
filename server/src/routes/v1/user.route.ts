@@ -1,10 +1,9 @@
-import { Router } from 'express';
-import { inject, injectable } from 'inversify';
-import { UserController } from '../../controllers';
-import { Authenticate, validate } from "../../middlewares";
+import { Router } from "express";
+import { inject, injectable } from "inversify";
+import { UserController } from "../../controllers";
+import { validate, Authenticate } from "../../middlewares";
 import { UserValidation } from "../../validations";
-import { IRoute } from './../../interfaces';
-
+import { IRoute } from "./../../interfaces";
 
 @injectable()
 class UserRoutes {
@@ -17,8 +16,7 @@ class UserRoutes {
 
         this.router = Router();
         this.initializeRoutes();
-    };
-    
+    }
     private initializeRoutes() {
         this.router.get(
             "/:id",
@@ -28,7 +26,7 @@ class UserRoutes {
         );
 
         this.router.get(
-            '/',
+            "/",
             this._authenticate.authenticate(),
             validate(this._userValidation.getCourseUser),
             this._userController.getCoursePaging
@@ -41,10 +39,9 @@ class UserRoutes {
             this._userController.updateProfile
         )
     }
-};
+}
 
 export default UserRoutes;
-
 
 /**
  * @swagger

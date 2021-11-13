@@ -1,19 +1,12 @@
-import { Optional } from "sequelize";
-
 import {
-    Table,
-    Column,
     AllowNull,
-    Default,
-    ForeignKey,
-    BelongsTo,
-    PrimaryKey,
+    AutoIncrement, Column,
     DataType,
+    Default, HasMany,
     Model,
-    AutoIncrement,
-    HasMany
+    PrimaryKey,
+    Table
 } from "sequelize-typescript";
-
 import { Member } from "./";
 
 // interface ICourse {
@@ -56,7 +49,6 @@ export class Course extends Model {
     @Column(DataType.TEXT)
     description?: string;
 
-
     @AllowNull(true)
     @Column(DataType.TEXT)
     topic?: string;
@@ -82,7 +74,6 @@ export class Course extends Model {
     @HasMany(() => Member)
     memberList!: Member[];
 }
-
 
 function generateClassCode(length: number) {
     const characters =

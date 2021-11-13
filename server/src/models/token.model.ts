@@ -1,26 +1,16 @@
 import { Optional } from "sequelize";
 import {
-    Table,
-    Column,
-    Model,
-    DataType,
-    AutoIncrement,
-    PrimaryKey,
-    IsEmail,
-    Default,
-    Index,
-    Unique,
     AllowNull,
-    Is,
+    AutoIncrement,
     BelongsTo,
-    ForeignKey
+    Column,
+    DataType, ForeignKey,
+    Index, Model,
+    PrimaryKey,
+    Table
 } from "sequelize-typescript";
-
-
-import { User } from "./";
 import { TYPETOKEN } from "../constants";
-
-
+import { User } from "./";
 
 interface IToken {
     id?: number,
@@ -30,14 +20,13 @@ interface IToken {
     userId: number
 }
 
-interface TokenCreationAttribute extends Optional<IToken, "id"> { };
-
+interface ITokenCreationAttribute extends Optional<IToken, "id"> { }
 
 @Table({
     timestamps: true,
     paranoid: false,
 })
-export class Token extends Model<IToken, TokenCreationAttribute> {
+export class Token extends Model<IToken, ITokenCreationAttribute> {
 
     @AllowNull(false)
     @PrimaryKey

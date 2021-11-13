@@ -1,21 +1,18 @@
 import { Optional } from "sequelize";
-
 import {
-    Table,
-    Column,
     AllowNull,
+    AutoIncrement,
+    BelongsTo,
+    Column,
+    DataType,
     Default,
     ForeignKey,
-    BelongsTo,
-    PrimaryKey,
-    DataType,
     Model,
-    AutoIncrement
+    PrimaryKey,
+    Table
 } from "sequelize-typescript";
-
-
-import { User, Course } from "./";
-import { TYPEROLE, MEMBERSTATE } from './../constants';
+import { Course, User } from "./";
+import { MEMBERSTATE, TYPEROLE } from "./../constants";
 
 interface IMember {
     id?: number;
@@ -26,13 +23,13 @@ interface IMember {
     type?: string;
 }
 
-interface MemberCreationAttributes extends Optional<IMember, "id"> { }
+interface IMemberCreationAttributes extends Optional<IMember, "id"> { }
 
 @Table({
     paranoid: true,
     timestamps: true,
 })
-export class Member extends Model<IMember, MemberCreationAttributes> {
+export class Member extends Model<IMember, IMemberCreationAttributes> {
     @AllowNull(false)
     @AutoIncrement
     @PrimaryKey

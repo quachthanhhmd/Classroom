@@ -2,9 +2,6 @@ import bcrypt from "bcrypt";
 
 const saltRounds = 10;
 
-type initPasswordHash = (password: string) => string;
-type comparePasswordHash = (passwordDB: string, passwordInput: string) => Boolean;
-
 /**
  * 
  * @param password 

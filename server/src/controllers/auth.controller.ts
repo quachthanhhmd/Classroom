@@ -2,8 +2,8 @@ import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { INCORRECT_LOGIN, TYPETOKEN, USER_EXIST } from "../constants";
 import { AuthService, TokenService, UserService } from "../services";
-import { UNAUTHENTICATED } from './../constants/message/auth.message';
-import { ICreateUser, INextFunction, IRequest, IResponse, serializeUserLogin } from './../interfaces';
+import { UNAUTHENTICATED } from "./../constants/message/auth.message";
+import { serializeUserLogin, ICreateUser, IRequest, IResponse } from "./../interfaces";
 
 @injectable()
 export class AuthController {
@@ -17,7 +17,6 @@ export class AuthController {
     public signUp = async (
         req: IRequest,
         res: IResponse,
-        next: INextFunction
     ): Promise<void> => {
         try {
 
@@ -42,7 +41,6 @@ export class AuthController {
     public signIn = async (
         req: IRequest,
         res: IResponse,
-        next: INextFunction
     ): Promise<void> => {
         try {
             const { email, password } = req.body;
@@ -53,11 +51,11 @@ export class AuthController {
                 return res.composer.badRequest(INCORRECT_LOGIN);
             }
 
-            const tokenCreate = await this._tokenService.generateTokenAuth(user!.id);
+            const tokenCreate = await this._tokenService.generateTokenAuth(user.id);
 
             return res.composer.success(
                 serializeUserLogin({
-                    user: user,
+                    user,
                     token: tokenCreate,
                 })
             );
@@ -76,7 +74,7 @@ export class AuthController {
             const token = await this._tokenService.verifyToken(refreshToken, TYPETOKEN.REFRESH);
             if (!token) return res.composer.unauthorized(UNAUTHENTICATED);
 
-            const newToken = await this._tokenService.generateTokenAuth(token!.userId);
+            const newToken = await this._tokenService.generateTokenAuth(token.userId);
 
             return res.composer.success(newToken);
         } catch (err) {
@@ -91,8 +89,8 @@ export class AuthController {
         try {
             const body = req.body;
 
-            const userOAuth = await this._authService.loginOrCreateOAuth(body);  
-            const tokenCreate = await this._tokenService.generateTokenAuth(userOAuth!.id);
+            const userOAuth = await this._authService.loginOrCreateOAuth(body);
+            const tokenCreate = await this._tokenService.generateTokenAuth(userOAuth.id);
 
             return res.composer.success(
                 serializeUserLogin({

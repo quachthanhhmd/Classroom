@@ -1,14 +1,11 @@
-import 'reflect-metadata';
-
+import { injectable } from "inversify";
 import Joi from "joi";
-import { injectable } from 'inversify';
-
-import { GENDER } from './../constants';
+import "reflect-metadata";
+import { GENDER } from "./../constants";
 
 @injectable()
 export class UserValidation {
-
-    public getUser() {
+    public getUser = () => {
         return Joi.object().keys({
             params: {
                 id: Joi.number().required(),
@@ -16,7 +13,7 @@ export class UserValidation {
         })
     }
 
-    public getCourseUser() {
+    public getCourseUser = () => {
         return Joi.object().keys({
             query: {
                 page: Joi.alternatives(
@@ -33,7 +30,7 @@ export class UserValidation {
         })
     }
 
-    public UpdateProfile() {
+    public UpdateProfile = () => {
         return {
             body: Joi.object().keys({
                 firstName: Joi.string(),

@@ -34,7 +34,6 @@ export interface ILoginOAuth extends IOAuthRequest{
     avatarUrl?: string,
 }
 
-
 export const serializeUserLogin = (model: any) => {
 
     return {

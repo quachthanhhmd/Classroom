@@ -1,10 +1,9 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
-
-import { ILoginOAuth } from "../interfaces";
-import { OAuthService, TokenService, UserService } from "./";
-import { User, generateRandomPassword } from "../models";
 import { TYPETOKEN } from "../constants";
+import { ILoginOAuth } from "../interfaces";
+import { generateRandomPassword, User } from "../models";
+import { OAuthService, TokenService, UserService } from "./";
 
 @injectable()
 export class AuthService {
@@ -26,6 +25,7 @@ export class AuthService {
 
         if (!user || !this._userService.isPasswordMatch(user.password, password))
             return null;
+
         return user;
     }
 
@@ -48,6 +48,7 @@ export class AuthService {
 
         if (userExist) {
             await this._oAuthService.checkOrCreateOAuth(userExist.id, { type: bodyCreate.type, uid: bodyCreate.uid })
+
             return userExist;
         }
 

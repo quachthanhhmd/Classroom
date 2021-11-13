@@ -1,11 +1,9 @@
-import express, { Request, Response, NextFunction } from "express";
-import cors  from "cors";
+import cors from "cors";
+import express from "express";
 import passport from "passport";
-
-import { IRoute } from './interfaces';
-import { successHandler, errorHandler, connection } from './config';
+import { connection, errorHandler, jwtStrategy, successHandler } from "./config";
 import env from "./config/env";
-import { jwtStrategy } from "./config";
+import { IRoute } from "./interfaces";
 
 class App {
     public httpServer: express.Application;
@@ -15,7 +13,7 @@ class App {
     constructor(router: IRoute, middlewares: any[]) {
         this.httpServer = express()
         this.port = env.PORT || 3000;
-        this.env = env.TYPE || 'development';
+        this.env = env.TYPE || "development";
 
         this.initializeDatabase();
         this.initializeMiddlewares(middlewares);
@@ -30,11 +28,11 @@ class App {
                 () => {
                     resolve(port)
                 })
-                .on('error', (err: object) => reject(err));
+                .on("error", reject);
         })
     }
 
-    private initializeDatabase() {
+    private initializeDatabase = () => {
         connection();
     }
     private initializeRoutes(router: IRoute) {
@@ -44,8 +42,8 @@ class App {
 
     private initializeMiddlewares(middlewares: any[]) {
 
-        //log method api
-        if (env.TYPE != "test") {
+        // log method api
+        if (env.TYPE !== "test") {
             this.httpServer.use(successHandler);
             this.httpServer.use(errorHandler);
         }
@@ -57,12 +55,12 @@ class App {
         // parse urlencoded request body
         this.httpServer.use(express.urlencoded({ extended: true }));
 
-        //this.httpServer.options('*', cors());
+        // this.httpServer.options('*', cors());
 
         this.httpServer.use(passport.initialize());
-        passport.use('jwt', jwtStrategy);
+        passport.use("jwt", jwtStrategy);
 
-        middlewares.forEach(middleware => this.httpServer.use(middleware));
+        middlewares.forEach((middleware) => this.httpServer.use(middleware));
     }
 }
 

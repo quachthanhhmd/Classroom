@@ -1,12 +1,11 @@
 import { injectable } from "inversify";
 import "reflect-metadata";
+import { Op } from "sequelize";
 import { IOAuthRequest } from "../interfaces";
 import { OAuth } from "../models";
-import { Op } from "sequelize";
 
 @injectable()
 export class OAuthService {
-    constructor() { }
 
     /**
      * 
@@ -15,11 +14,11 @@ export class OAuthService {
      * @returns {Promise<OAuth | null>}
      */
     public findOAuthByUserIdAndUId = async (userId: number, uid: string): Promise<OAuth | null> => {
-        return await OAuth.findOne({
+        return OAuth.findOne({
             where: {
                 [Op.and]: {
-                    userId: userId,
-                    uid: uid,
+                    userId,
+                    uid,
                 }
             }
         })
@@ -32,8 +31,8 @@ export class OAuthService {
      * @returns {Promise<OAuth | null> }
      */
     public createNewOAuth = async (userId: number, bodyOAuth: IOAuthRequest): Promise<OAuth | null> => {
-        return await OAuth.create({
-            userId: userId,
+        return OAuth.create({
+            userId,
             ...bodyOAuth,
         })
     }
@@ -47,8 +46,9 @@ export class OAuthService {
     public checkOrCreateOAuth = async (userId: number, bodyOAuth: IOAuthRequest): Promise<OAuth | null> => {
         const oAuthExist = await this.findOAuthByUserIdAndUId(userId, bodyOAuth.uid);
         if (oAuthExist) {
-            return await this.createNewOAuth(userId, bodyOAuth);
+            return this.createNewOAuth(userId, bodyOAuth);
         }
+
         return null;
     }
 }

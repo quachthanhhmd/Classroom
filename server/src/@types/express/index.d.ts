@@ -6,6 +6,6 @@ declare global {
     interface Response {
       composer: HttpResponse;
     }
-
+    
   }
 }
