@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { MEMBERSTATE } from "../constants";
+import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { CourseService, MemberService, TokenService, UserService } from "../services";
 import { serializeCourseDetail, serializeCourseSummary, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
@@ -60,7 +60,7 @@ export class CourseController {
             if (!course)
                 return res.composer.notFound();
 
-            await this._memberService.upsetMember(<number> userId, course.id, MEMBERSTATE.ACCEPT);
+            await this._memberService.upsetMember(<number> userId, course.id, MEMBERSTATE.ACCEPT, TYPEROLE.STUDENT);
 
             return res.composer.success(serializeCourseDetail(course));
         } catch (err) {

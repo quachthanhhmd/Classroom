@@ -31,14 +31,11 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config;
     console.log(error);
     if (error.response.status === 401) {
-      console.log("loi o day ne", originalRequest)
-      if (originalRequest.url === "/v1/auth/refresh-token") {
+     
+      if (originalRequest.url === "/v1/auth/refresh-token" || !localStorage.getItem(env.REACT_APP_REFRESH_TOKEN)) {
         localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
         localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
         return;
-      }
-      if (!localStorage.getItem(env.REACT_APP_REFRESH_TOKEN)) {
-        axiosClient(originalRequest);
       }
       axiosClient
         .post("/v1/auth/refresh-token", {

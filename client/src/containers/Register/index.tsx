@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { signUp } from "../../actions";
@@ -60,6 +61,11 @@ const Register = () => {
     return (
 
         <form onSubmit={handleSubmit(registerAccount)}>
+            <Helmet>
+                <title>
+                    Đăng Ký | EClassroom
+                </title>
+            </Helmet>
             <CardHeader className={classes.header} title="Đăng Ký" />
 
             <CardContent>
@@ -148,7 +154,7 @@ const Register = () => {
                         <Select
                             id="signup_gender"
                             native
-                       
+
                             defaultValue="male"
                             {...register("gender")}
                         >

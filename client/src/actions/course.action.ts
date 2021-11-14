@@ -19,7 +19,6 @@ export const createCourse = (data: ICreateCourse) =>
     async (dispatch: (args: ICreateCourseState) => ICreateCourseState) => {
         try {
             const result = await courseApi.createCourse(data);
-            console.log(result);
             if (result.status !== 200) throw new Error();
 
             dispatch({
@@ -68,7 +67,6 @@ export const getAllCourseInfo = (id: number) =>
             const result = await courseApi.getAllInfor(id);
 
             if (result.status !== 200) throw new Error();
-            console.log(result.data);
             dispatch({
                 type: GET_ALL_INFO_COURSE_SUCCESS,
                 payload: result.data.payload,

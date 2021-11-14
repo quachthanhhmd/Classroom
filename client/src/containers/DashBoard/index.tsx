@@ -3,6 +3,7 @@ import {
     CardHeader
 } from "@material-ui/core";
 import React, { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { getUserCouseList } from "../../actions/course.action";
@@ -21,7 +22,7 @@ const CourseHeader = (course: ICourseSummary) => {
                 {course.topic}
             </div>
             <div className="dashboard-main___courses___component--avatar">
-                <img src={course.avatarUrl ? course.avatarUrl: "/none-avt.png"} alt="ownver" />
+                <img src={course.avatarUrl ? course.avatarUrl: "/none-avt.png"} alt="owner" />
             </div>
         </div>
     )
@@ -36,11 +37,17 @@ const DashBoard = () => {
     const courseState = useSelector((state: AppState) => state.course);
 
     useEffect(() => {
+        console.log(courseState);
         dispatch(getUserCouseList());
-    }, [courseState.data]);
+    }, [JSON.stringify(courseState.data)]);
 
     return (
         <div className="dashboard-main">
+             <Helmet>
+                <title>
+                    Trang Chủ | EClassroom
+                </title>
+            </Helmet>
             <div className="dashboard-main--title">
                 Tất cả khóa học
             </div>

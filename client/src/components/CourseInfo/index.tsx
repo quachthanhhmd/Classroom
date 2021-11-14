@@ -39,7 +39,7 @@ const CourseInfo = (props: IPropType) => {
 
     const [preview, setPreview] = useState<string>("");
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm<IChangeCourse>({
+    const { register, handleSubmit, formState: { errors }, reset, setError, clearErrors } = useForm<IChangeCourse>({
         resolver: yupResolver(ChangeCourseInfoValidate),
         defaultValues: useMemo(() => {
             return {
@@ -50,7 +50,7 @@ const CourseInfo = (props: IPropType) => {
             }
         }, [course])
     });
-
+    const { onChange, ...rest } = register("studentLimit");
 
     const handleUpload = async () => {
         const uploadTask = storage.ref(`course-images/${selectedFile!.name}`).put(selectedFile!);
@@ -70,7 +70,7 @@ const CourseInfo = (props: IPropType) => {
                     .child(selectedFile!.name)
                     .getDownloadURL()
                     .then((url: string) => {
-                        dispatch(updateCourseInfo(+courseId, {avatarUrl: url}));
+                        dispatch(updateCourseInfo(+courseId, { avatarUrl: url }));
                         setPreview(url);
                     });
             }
@@ -108,7 +108,7 @@ const CourseInfo = (props: IPropType) => {
         handleClose();
 
         if (selectedFile && preview) {
-           handleUpload(); 
+            handleUpload();
         }
 
         const newData = objectFieldChange(course, data);
@@ -205,6 +205,19 @@ const CourseInfo = (props: IPropType) => {
                                         fullWidth
                                         {...register("studentLimit")}
                                         label="Số lượng học sinh"
+                                        onChange={(e) => {
+                            
+                                            if (course && +e.target.value < course?.studentExist) {
+                                                setError("studentLimit", {
+                                                    message: "Không thể bé hơn số học sinh hiện tại.",
+                                                });
+                                                onChange(e);
+                                            }
+                                            else {
+                                                clearErrors("studentLimit");
+                                                onChange(e);
+                                            }
+                                        }}
                                     />
                                     <Box>
                                         {errors.studentLimit && <p style={{ color: "red" }}>{errors.studentLimit.message}</p>}
