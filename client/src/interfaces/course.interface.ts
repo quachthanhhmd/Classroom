@@ -17,6 +17,7 @@ export interface ICourseSummary {
     name: number,
     topic: number,
     avatarUrl: string,
+    ownerId: number,
 }
 
 
@@ -30,6 +31,7 @@ export interface ICourseInfo {
     code: string,
     studentExist: number,
     studentLimit: number,
+    ownerId: number,
 }
 
 //-------------------------------------

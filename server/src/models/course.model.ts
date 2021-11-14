@@ -62,6 +62,10 @@ export class Course extends Model {
     @Column(DataType.INTEGER.UNSIGNED)
     studentExist!: number;
 
+    @AllowNull(false)
+    @Column(DataType.INTEGER.UNSIGNED)
+    ownerId!: number;
+    
     @AllowNull(true)
     @Column(DataType.STRING)
     avatarUrl?: string;

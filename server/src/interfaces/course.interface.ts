@@ -23,6 +23,7 @@ export interface ICourseInfor {
     topic: string,
     avatarUrl: string,
     backgroundUrl: string,
+    ownerId: number
 }
 
 export interface ICourseSummary {
@@ -30,6 +31,7 @@ export interface ICourseSummary {
     name: string,
     topic: string,
     avatarUrl: string,
+    ownerId: number,
 }
 
 export const serializeCourseSummary = (model: any): ICourseSummary | null => {
@@ -39,7 +41,8 @@ export const serializeCourseSummary = (model: any): ICourseSummary | null => {
         id: model.id,
         name: model.name,
         topic: model.topic,
-        avatarUrl: model.avatarUrl
+        avatarUrl: model.avatarUrl,
+        ownerId: model.ownerId
     }
 }
 
@@ -53,6 +56,7 @@ export const serializeCourseInfor = (model: any): ICourseInfor | null => {
         topic: model.topic,
         avatarUrl: model.avatarUrl,
         backgroundUrl: model.backgroundUrl,
+        ownerId: model.ownerId
     }
 }
 
