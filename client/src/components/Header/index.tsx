@@ -66,7 +66,9 @@ const Header = () => {
         setTypeOpen("");
         setIsOpenModal(false);
     }
-
+    const handleGoHome = () => {
+        window.location.href = "/";
+    }
     return (
         <>
             <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 1} setIsOpenModal={handleCloseModal} />
@@ -77,6 +79,7 @@ const Header = () => {
                 <div className="header-main___left">
                     <div className="header-main___left--menu">
                         <Button variant="contained"
+                            onClick={handleGoHome}
                             style={{
                                 borderRadius: 35,
                                 backgroundColor: "#03A9F4",

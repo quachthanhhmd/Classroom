@@ -1,3 +1,4 @@
+import { IUpdateCourseInput, IUpdateCourseInfoState } from './../interfaces/course.interface';
 import courseApi from "../api/course.api";
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST, GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
@@ -10,7 +11,7 @@ import {
     IJoinCourseByUrlState,
     IUserCourseState
 } from "../interfaces";
-import { GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS } from './../constants/course.constant';
+import { GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
 
 
 
@@ -154,6 +155,27 @@ export const inviteCourseByToken = (courseId: number, token: string, role: strin
         } catch (err) {
             dispatch({
                 type: JOIN_COURSE_BY_TOKEN_FAIL,
+            })
+        }
+    }
+
+
+export const updateCourseInfo = (courseId: number, body: IUpdateCourseInput) =>
+    async (dispatch: (args: IUpdateCourseInfoState) => IUpdateCourseInfoState) => {
+        try {
+            dispatch({
+                type: UPDATE_COURSE_INFO_REQUEST
+            })
+
+            const result = await courseApi.updateCourseInfo(courseId, body);
+            if (result.status !== 200) throw new Error();
+            dispatch({
+                type: UPDATE_COURSE_INFO_SUCCESS,
+                payload: result.data.payload,
+            })
+        } catch (err) {
+            dispatch({
+                type: UPDATE_COURSE_INFO_FAIL
             })
         }
     }

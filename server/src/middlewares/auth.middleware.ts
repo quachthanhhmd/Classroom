@@ -1,14 +1,10 @@
-import { Request } from "express";
-import { UNAUTHENTICATED } from './../constants';
-import "reflect-metadata";
+import { inject, injectable } from "inversify";
 import passport from "passport";
-
-import { inject, injectable } from 'inversify';
-
-import { IResponse, INextFunction, IAuthorizeRequest } from './../interfaces';
+import "reflect-metadata";
 import { User } from "../models";
 import { MemberService } from "../services";
-import { roleRights, roles } from "../config/role";
+import { UNAUTHENTICATED } from "./../constants";
+import { IAuthorizeRequest, INextFunction, IResponse } from "./../interfaces";
 
 @injectable()
 export class Authenticate {
@@ -16,14 +12,15 @@ export class Authenticate {
         @inject("MemberService") private _memberService: MemberService
     ) { }
 
-    private verifyCallback = (req: IAuthorizeRequest, res: IResponse, resolve: any) => async (err: string, user: User, info: any) => {
+    private verifyCallback = (
+        req: IAuthorizeRequest, res: IResponse, resolve: any) => async (err: string, user: User, info: any) => {
 
-        if (err || info || !user)
-            return res.composer.unauthorized(UNAUTHENTICATED);
+            if (err || info || !user)
+                return res.composer.unauthorized(UNAUTHENTICATED);
 
-        req.currentUser = user;
-        resolve();
-    }
+            req.currentUser = user;
+            resolve();
+        }
 
     /**
      * Function to autheticate role for user when try to connect any url which must use authetication.
@@ -31,25 +28,26 @@ export class Authenticate {
      * And pass them in the head function. 
      */
     public authenticate = () => (req: IAuthorizeRequest, res: IResponse, next: INextFunction) => {
-        return new Promise((resolve, reject) => {
-            passport.authenticate('jwt', { session: false }, this.verifyCallback(req, res, resolve))(req, res, next);
+        return new Promise((resolve, _reject) => {
+            passport.authenticate("jwt", { session: false }, this.verifyCallback(req, res, resolve))(req, res, next);
         })
-            .then(() => next())
-            .catch((err) => next(err));
+            .then(next)
+            .catch(next);
     };
 
-    public courseAuthentication = (...requiredRights) => async (req: IAuthorizeRequest, res: IResponse, next: INextFunction) => {
-        console.log(requiredRights);
-        const userId = req.currentUser!.id;
-        const courseId = +req.params.courseId;
-        console.log(userId, courseId);
-        const member = await this._memberService.getRoleMember(userId, courseId);
+    public courseAuthentication = (...requiredRights) =>
+        async (req: IAuthorizeRequest, res: IResponse, next: INextFunction) => {
 
-        const isPermit = roles.includes(member!.role);
-        if (!isPermit) {
-           return res.composer.forbidden();
+            const userId = <number> req.currentUser?.id;
+            const courseId = +req.params.courseId;
+
+            const member = await this._memberService.getRoleMember(userId, courseId);
+
+            if (!member) { return res.composer.forbidden(); }
+            const isPermit = requiredRights.includes(member.role);
+            if (!isPermit) {
+                return res.composer.forbidden();
+            }
+            next();
         }
-        next();
-    }
 }
-

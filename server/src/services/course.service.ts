@@ -1,9 +1,11 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
+import { Op } from "sequelize";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { ICreateCourse } from "../interfaces";
 import { Course } from "../models";
 import { MemberService } from "./";
+import { IUpdateCourse } from "./../interfaces/course.interface";
 
 @injectable()
 export class CourseService {
@@ -41,7 +43,7 @@ export class CourseService {
      * @param {string} code 
      * @returns 
      */
-    public getCourseByCode = async (code: string) : Promise<Course | null> => {
+    public getCourseByCode = async (code: string): Promise<Course | null> => {
         return Course.findOne({
             where: {
                 code,
@@ -67,9 +69,50 @@ export class CourseService {
         return false;
     }
 
+    /**
+     * Get code of course by Id
+     * @param {number} courseId 
+     * @returns 
+     */
     public getCodeById = async (courseId: number): Promise<string | undefined> => {
         const course = await this.getCourseDetail(courseId);
 
         return course?.code;
+    }
+    /**
+     * Check wonder if course is own user or not
+     * @param {number} courseId 
+     * @param {number} userId 
+     * @returns 
+     */
+    public isOwnCourse = async (courseId: number, userId: number): Promise<boolean> => {
+        const course = await Course.findOne({
+            where: {
+                [Op.and]: {
+                    id: courseId,
+                    ownerId: userId,
+                }
+            }
+        })
+
+        return course ? true : false;
+    }
+
+    /**
+     * Update information of course
+     * @param {number} courseId 
+     * @param {IUpdateCourse} body 
+     * @returns 
+     */
+    public updateCourse = async (courseId: number, body: IUpdateCourse) => {
+        return Course.update(
+            body,
+            {
+                where: {
+                    id: courseId,
+                },
+                returning: true,
+            }
+        )
     }
 }

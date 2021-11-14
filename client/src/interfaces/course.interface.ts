@@ -96,4 +96,18 @@ export interface IInviteByTokenState {
     type: string,
     payload?: any,
 }
-export type ICourseAction = IInviteByTokenState | ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState;
+//----------------------------------------------------------------
+export interface IUpdateCourseInfoState {
+    type: string,
+    payload?: any
+}
+export interface IUpdateCourseInput {
+    name?: string,
+    description?: string,
+    studentLimit?: number,
+    topic?: string,
+    avatarUrl?: string,
+    backgroundUrl?: string,
+}
+
+export type ICourseAction = IUpdateCourseInfoState | IInviteByTokenState | ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState;

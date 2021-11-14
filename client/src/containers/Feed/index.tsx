@@ -85,7 +85,7 @@ const Feed = () => {
 
     return (
         <>
-            <CourseInfo isOpenModal={isChangeInfo} setIsOpenModal={handleChangeInfo} />
+            <CourseInfo course={courseState.course as ICourseInfo | null} isOpenModal={isChangeInfo} setIsOpenModal={handleChangeInfo} />
             <Dialog
                 fullWidth
                 keepMounted

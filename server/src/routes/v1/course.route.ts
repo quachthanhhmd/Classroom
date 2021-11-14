@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
+import { TYPEROLE } from "../../constants";
 import { CourseController } from "../../controllers";
 import { validate, Authenticate } from "../../middlewares";
 import { CourseValidation } from "../../validations";
@@ -49,6 +50,13 @@ class CourseRoute {
             this._authenticate.authenticate(),
             validate(this._courseValidation.joinCourseByToken()),
             this._courseController.checkJoinCourseToken
+        )
+        this.router.patch(
+            "/update/:courseId",
+            this._authenticate.authenticate(),
+            validate(this._courseValidation.updateCourse),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER),
+            this._courseController.updateCourseInfo,
         )
     }
 

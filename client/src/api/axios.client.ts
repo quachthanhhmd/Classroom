@@ -31,6 +31,7 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config;
     console.log(error);
     if (error.response.status === 401) {
+      console.log("loi o day ne", originalRequest)
       if (originalRequest.url === "/v1/auth/refresh-token") {
         localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
         localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);

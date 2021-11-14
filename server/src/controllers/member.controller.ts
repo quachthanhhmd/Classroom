@@ -39,11 +39,12 @@ export class MemberController {
         try {
             const courseId = +req.params.courseId;
 
-            const getUserType: string | null = await this._memberService.findMemberState(req.currentUser?.id as number, courseId);
+            const getUserType: string | null =
+                await this._memberService.findMemberState(<number> req.currentUser?.id, courseId);
             if (typeof getUserType !== "string") {
                 return res.composer.badRequest(MEMBER_EXISTS);
             }
-            await this._memberService.upsetMember(req.currentUser?.id as number, courseId);
+            await this._memberService.upsetMember(<number> req.currentUser?.id, courseId);
 
             return res.composer.success("Request completed!");
         } catch (err) {
@@ -59,12 +60,12 @@ export class MemberController {
             const upsertBody: IUpsertStudentID = req.body;
             const userId = req.currentUser?.id;
 
-            const member = await this._memberService.findMemberByUserAndCourseId(userId as number, upsertBody.courseId);
+            const member = await this._memberService.findMemberByUserAndCourseId(<number> userId, upsertBody.courseId);
             if (!member || member.studentId) {
                 return res.composer.unauthorized();
             }
 
-            await this._memberService.AddStudentId(userId as number, upsertBody.courseId, upsertBody.studentId);
+            await this._memberService.AddStudentId(<number> userId, upsertBody.courseId, upsertBody.studentId);
 
             return res.composer.success();
         } catch (err) {
@@ -80,7 +81,7 @@ export class MemberController {
             const userId = req.currentUser?.id;
             const courseId = req.params.courseId;
 
-            const result = await this._memberService.getRoleMember(userId as number, +courseId);
+            const result = await this._memberService.getRoleMember(<number> userId, +courseId);
 
             if (!result) return res.composer.notFound();
 

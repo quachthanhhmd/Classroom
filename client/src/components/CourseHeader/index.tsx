@@ -73,6 +73,9 @@ const Header = () => {
     const handleChangePill = (e: any, newPill: number) => {
         setTypePill(newPill);
     }
+    const handleGoHome = () => {
+        window.location.href = "/";
+    }
     return (
         <>
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
@@ -81,6 +84,7 @@ const Header = () => {
                 <div className="header-main___left">
                     <div className="header-main___left--menu">
                         <Button variant="contained"
+                            onClick={handleGoHome}
                             style={{
                                 borderRadius: 35,
                                 backgroundColor: "#03A9F4",
@@ -109,7 +113,7 @@ const Header = () => {
                         <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to="/auth" >
                             <Link to="/auth/2" />
                         </LinkTab>
-                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to= {`/member/${courseId}`} />
+                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
                     </Tabs>
 
                 </div>

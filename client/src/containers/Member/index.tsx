@@ -20,8 +20,8 @@ import "./index.scss";
 
 
 
-const MemberDisplay = (props: { courseId: string, userId?: number, member: IMemberSummary, isChecked?: boolean, index?: number, setIsChecked?: any }) => {
-    const { courseId, userId, member, isChecked, index, setIsChecked } = props;
+const MemberDisplay = (props: { course: any, courseId: string, userId?: number, member: IMemberSummary, isChecked?: boolean, index?: number, setIsChecked?: any }) => {
+    const { course, courseId, userId, member, isChecked, index, setIsChecked } = props;
     const [anchorEl, setAnchorEl] = useState(null);
 
     const dispatch = useDispatch();
@@ -102,11 +102,14 @@ const MemberDisplay = (props: { courseId: string, userId?: number, member: IMemb
                         >
                             Gửi Email
                         </MenuItem>
-                        <MenuItem
-                            onClick={handleDelete}
-                        >
-                            Xóa
-                        </MenuItem>
+                        {
+                            (course && course.ownerId !== userId) &&
+                            <MenuItem
+                                onClick={handleDelete}
+                            >
+                                Xóa
+                            </MenuItem>
+                        }
                     </Menu>
 
 
@@ -120,8 +123,6 @@ const MemberDisplay = (props: { courseId: string, userId?: number, member: IMemb
 interface ParamTypes {
     courseId: string;
 }
-
-
 
 
 const Member = () => {
@@ -174,7 +175,7 @@ const Member = () => {
                         Giáo viên
                     </div>
                     <div className="member-main___teacher___header--add-member">
-                        {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
+                        {member && (member.currentRole?.role === TYPEROLE.TEACHER) &&
                             <IconButton>
                                 <Add onClick={() => {
                                     setRoleOpenModal(TYPEROLE.TEACHER);
@@ -185,7 +186,7 @@ const Member = () => {
                     </div>
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
-                    member.role === "teacher" && <MemberDisplay courseId={courseId} userId={auth.user?.id} member={member} />
+                    member.role === "teacher" && <MemberDisplay course={course.course} courseId={courseId} userId={auth.user?.id} member={member} />
                 ))}
             </div>
             <div className="member-main___assist">
@@ -205,7 +206,7 @@ const Member = () => {
                     </div>
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
-                    member.role === "assistant" && <MemberDisplay courseId={courseId} userId={auth.user?.id} member={member} />
+                    member.role === "assistant" && <MemberDisplay course={course.course} courseId={courseId} userId={auth.user?.id} member={member} />
                 ))}
             </div>
             <div className="member-main___student">
@@ -235,7 +236,7 @@ const Member = () => {
 
                 </div>
                 {course && course.memberList && course.memberList.map((member: IMemberSummary, index: number) => (
-                    member.role === "student" && <MemberDisplay courseId={courseId} userId={auth.user?.id} member={member} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
+                    member.role === "student" && <MemberDisplay course={course.course} courseId={courseId} userId={auth.user?.id} member={member} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
                 ))}
             </div>
         </div >

@@ -22,7 +22,7 @@ export class CourseController {
         try {
             const courseBody: ICreateCourse = req.body;
             const userId = req.currentUser?.id;
-            const newClass = await this._courseService.createCourse(userId as number, courseBody);
+            const newClass = await this._courseService.createCourse(<number> userId, courseBody);
 
             return res.composer.success(serializeCourseSummary(newClass));
         } catch (err) {
@@ -60,7 +60,7 @@ export class CourseController {
             if (!course)
                 return res.composer.notFound();
 
-            await this._memberService.upsetMember(userId as number, course.id, MEMBERSTATE.ACCEPT);
+            await this._memberService.upsetMember(<number> userId, course.id, MEMBERSTATE.ACCEPT);
 
             return res.composer.success(serializeCourseDetail(course));
         } catch (err) {
@@ -82,7 +82,7 @@ export class CourseController {
                 return res.composer.notFound();
             }
 
-            await this._memberService.upsetMember(userId as number, +courseId, MEMBERSTATE.ACCEPT);
+            await this._memberService.upsetMember(<number> userId, +courseId, MEMBERSTATE.ACCEPT);
 
             return res.composer.success();
         } catch (err) {
@@ -99,19 +99,41 @@ export class CourseController {
             const courseId = +req.params.courseId;
             const userId = req.currentUser?.id;
 
-            const isSpendingMember = await this._memberService.isSpendingInvite(userId as number, courseId);
+            const isSpendingMember = await this._memberService.isSpendingInvite(<number> userId, courseId);
             if (!isSpendingMember) {
                 return res.composer.badRequest();
             }
 
-            const isMatchToken = await this._tokenService.isMatchTokenIdInvite(<string>token, userId as number);
+            const isMatchToken = await this._tokenService.isMatchTokenIdInvite(<string> token, <number> userId);
             if (!isMatchToken) {
                 return res.composer.forbidden();
             }
 
-            await this._memberService.updateMember(userId as number, +courseId, MEMBERSTATE.ACCEPT, String(role));
+            await this._memberService.updateMember(<number> userId, +courseId, MEMBERSTATE.ACCEPT, String(role));
 
             return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public updateCourseInfo = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const userId = <number> req.currentUser?.id;
+            const courseId = +req.params.courseId;
+            const body = req.body;
+
+            const isOwnCourse = await this._courseService.isOwnCourse(courseId, userId);
+
+            if (!isOwnCourse) return res.composer.forbidden();
+
+            await this._courseService.updateCourse(courseId, body);
+            const newCourse = await this._courseService.getCourseDetail(courseId);
+
+            return res.composer.success(serializeCourseDetail(newCourse))
         } catch (err) {
             return res.composer.otherException(err);
         }

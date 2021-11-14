@@ -1,3 +1,4 @@
+import { UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS, UPDATE_COURSE_INFO_FAIL } from './../constants/course.constant';
 import { UPDATE_MEMBER_STATE_SUCCESS, UPDATE_MEMBER_STATE_FAIL } from './../constants/member.constant';
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
@@ -51,6 +52,24 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 course: action.payload! as ICourseSummary,
                 isLoading: false,
+            }
+        case UPDATE_COURSE_INFO_REQUEST:
+            return {
+                ...state,
+                course: null,
+                isLoading: true,
+            }
+        case UPDATE_COURSE_INFO_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                course: action.payload! as ICourseInfo,
+            }
+        case UPDATE_COURSE_INFO_FAIL:
+            return {
+                ...state,
+                isLoading: false,
+
             }
         case CREATE_COURSE_FAIL:
             return {
@@ -159,7 +178,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 data: []
             }
         case UPDATE_MEMBER_STATE_SUCCESS:
-            console.log( action.payload);
+            console.log(action.payload);
             const newMemberList = state.memberList.filter(member => {
                 if (member.user.userId !== +action.payload.userId) return member;
             })

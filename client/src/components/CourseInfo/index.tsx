@@ -1,41 +1,132 @@
-import {
-    Button, Card, Dialog, DialogContent, DialogTitle, Grid, Box, Paper, TextField, DialogActions
-} from "@material-ui/core";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Button, Card, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TextField } from "@material-ui/core";
 import {
     PhotoCamera
 } from "@material-ui/icons";
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm } from "react-hook-form";
-import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
+import { updateCourseInfo } from '../../actions';
+import { ICourseInfo, ICourseSummary } from "../../interfaces";
+import { objectFieldChange } from '../../utils/object-solve';
 import { ChangeCourseInfoValidate } from "../../utils/validation";
-
+import { storage } from "../../configs/firebase";
 import "./index.scss";
 
-interface IOpenModal {
+
+interface IPropType {
     isOpenModal: boolean,
     setIsOpenModal: any,
+    course: ICourseInfo | null,
 }
 
 interface IChangeCourse {
+
     name: string,
     topic: string,
     studentLimit: number,
     description: string,
+    avatarUrl?: string,
 }
 
-const CourseInfo = (props: IOpenModal) => {
-    const { isOpenModal, setIsOpenModal } = props;
-    const { register, handleSubmit, formState: { errors } } = useForm<IChangeCourse>({
-        resolver: yupResolver(ChangeCourseInfoValidate),
+const CourseInfo = (props: IPropType) => {
+    const { courseId } = useParams<{ courseId: string }>();
 
+    const { isOpenModal, setIsOpenModal, course } = props;
+    const [selectedFile, setSelectedFile] = useState<File | undefined>();
+    const dispatch = useDispatch();
+
+    const [preview, setPreview] = useState<string>("");
+
+    const { register, handleSubmit, formState: { errors }, reset } = useForm<IChangeCourse>({
+        resolver: yupResolver(ChangeCourseInfoValidate),
+        defaultValues: useMemo(() => {
+            return {
+                name: course?.name,
+                topic: course?.topic,
+                description: course?.description,
+                studentLimit: course?.studentLimit,
+            }
+        }, [course])
     });
+
+
+    const handleUpload = async () => {
+        const uploadTask = storage.ref(`course-images/${selectedFile!.name}`).put(selectedFile!);
+        uploadTask.on(
+            "state_changed",
+            (snapShot) => {
+                //takes a snap shot of the process as it is happening
+                console.log(snapShot)
+            },
+            (error: any) => {
+                console.log(error);
+            },
+            () => {
+
+                storage
+                    .ref("images")
+                    .child(selectedFile!.name)
+                    .getDownloadURL()
+                    .then((url: string) => {
+                        dispatch(updateCourseInfo(+courseId, {avatarUrl: url}));
+                        setPreview(url);
+                    });
+            }
+        );
+        return true;
+    };
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreview("")
+            return
+        }
+        const objectUrl = URL.createObjectURL(selectedFile)
+        setPreview(objectUrl)
+
+        // free memory when ever this component is unmounted
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [selectedFile])
+
+    useEffect(() => {
+        setPreview(course?.avatarUrl || "");
+        reset({
+            name: course?.name,
+            topic: course?.topic,
+            description: course?.description,
+            studentLimit: course?.studentLimit,
+        });
+    }, [course]);
 
     const handleClose = () => {
         setIsOpenModal(false);
     }
 
-    const handleUpdateInfo = (data: IChangeCourse) => {
-        console.log(data);
+    const handleUpdateInfo = async (data: IChangeCourse) => {
+        handleClose();
+
+        if (selectedFile && preview) {
+           handleUpload(); 
+        }
+
+        const newData = objectFieldChange(course, data);
+        console.log(newData);
+        if (Object.keys(newData).length === 0) {
+            return;
+        }
+
+        dispatch(updateCourseInfo(+courseId, newData));
+    }
+
+    function changeImageUpload(e: any) {
+        if (!e.target.files || e.target.files.length === 0) {
+            setSelectedFile(undefined)
+            return
+        }
+
+        setSelectedFile(e.target.files[0]);
     }
 
     return (
@@ -55,7 +146,7 @@ const CourseInfo = (props: IOpenModal) => {
                                 accept="image/*"
                                 style={{ display: "none" }}
                                 id="raised-button-file"
-
+                                onChange={changeImageUpload}
                                 type="file"
                             />
                             <label htmlFor="raised-button-file">
@@ -65,7 +156,7 @@ const CourseInfo = (props: IOpenModal) => {
                                 >
                                     <div className="change-info___modal--header___course-img">
                                         <div className="change-info___modal--header___course-img--img">
-                                            <img alt="avatar" src={`${"/none-avt.png"}`} />
+                                            <img alt="avatar" src={`${preview || "/none-avt.png"}`} />
                                         </div>
                                         <PhotoCamera className="change-info___modal--header___course-img--icon-upload" />
                                     </div>
@@ -125,9 +216,9 @@ const CourseInfo = (props: IOpenModal) => {
                                 >
                                     <TextField
                                         fullWidth
-
+                                        disabled
                                         label="Số lượng học sinh hiện tại"
-                                        value={20}
+                                        value={course?.studentExist}
                                     />
                                 </Grid>
                             </Grid>
@@ -150,10 +241,7 @@ const CourseInfo = (props: IOpenModal) => {
                     </Button>
                     <Button
                         color="primary"
-                        onClick={
-                            handleSubmit(handleUpdateInfo)
-                            //handleClose(); handleUpdateProfile
-                        }>
+                        onClick={handleSubmit(handleUpdateInfo)}>
                         Cập Nhật
                     </Button>
                 </DialogActions>

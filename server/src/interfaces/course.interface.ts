@@ -72,7 +72,7 @@ export const serializeCourseDetail = (model: any) => {
         id: model.id,
         name: model.name,
         code: model.code,
-        description: model.decription,
+        description: model.description,
         topic: model.topic,
         avatarUrl: model.avatarUrl,
         backgroundUrl: model.backgroundUrl,

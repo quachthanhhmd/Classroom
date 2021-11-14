@@ -1,7 +1,6 @@
-import { IResponse, INextFunction, IRequest } from './../interfaces';
-import { Response, Request } from 'express';
-import httpStatus from 'http-status';
-
+import { Response } from "express";
+import httpStatus from "http-status";
+import { INextFunction, IResponse } from "./../interfaces";
 
 export enum HttpResponseStatusCodeEnum {
     SUCCESS = httpStatus.OK,
@@ -27,7 +26,7 @@ export class HttpResponse {
         });
     }
 
-    public success(payload?: any, message = ``,): void {
+    public success(payload?: any, message = ``): void {
         return this.json(
             HttpResponseStatusCodeEnum.SUCCESS,
             message,
@@ -78,11 +77,12 @@ export class HttpResponse {
     public otherException(error: any) {
         if (typeof error === "object") {
             const errorCode = +error.code || 404;
+
             return this.json(errorCode, error.message);
         }
 
         if (Array.isArray(error)) {
-            const errors = error.map(err => {
+            const errors = error.map((err) => {
                 return {
                     code: +err.code,
                     message: err.message
@@ -91,11 +91,13 @@ export class HttpResponse {
 
             return this.json(HttpResponseStatusCodeEnum.BAD_REQUEST, "", errors);
         }
+
+        return this.json(HttpResponseStatusCodeEnum.BAD_REQUEST, "", error);
     }
 }
 
 export function applyHttpResponseCompose(
-    req: any,
+    _req: any,
     res: IResponse,
     next: INextFunction): void {
     res.composer = new HttpResponse(res);

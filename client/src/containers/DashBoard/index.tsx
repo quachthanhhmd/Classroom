@@ -37,7 +37,7 @@ const DashBoard = () => {
 
     useEffect(() => {
         dispatch(getUserCouseList());
-    }, []);
+    }, [courseState.data]);
 
     return (
         <div className="dashboard-main">

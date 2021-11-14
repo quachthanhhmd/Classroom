@@ -1,3 +1,4 @@
+import { IUpdateCourseInput } from './../interfaces/course.interface';
 import { IMemberSummary, ICourseInfo, ICourseSummary, ICreateCourse, IHttpFormat, IUserCourse } from './../interfaces';
 import axiosClient from "./axios.client";
 
@@ -30,6 +31,10 @@ const courseApi = {
     joinCourseByToken: (courseId: number, token: string, role: string) => {
         const url = `v1/course/invite/${courseId}?token=${token}&role=${role}`
         return axiosClient.patch<IHttpFormat<null>>(url);
+    },
+    updateCourseInfo : (courseId: number, body: IUpdateCourseInput) => {
+        const url = `v1/course/update/${courseId}`;
+        return axiosClient.patch<IHttpFormat<ICourseInfo>>(url, body);
     }
 }
 

@@ -58,4 +58,23 @@ export class CourseValidation {
             }
         })
     }
+
+    public updateCourse = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            },
+            body: {
+                name: Joi.string(),
+                description: Joi.string(),
+                topic: Joi.string(),
+                studentLimit: Joi.number().min(1),
+                avatarUrl: Joi.string(),
+                backgroundUrl: Joi.string(),
+            }
+        })
+    }
 }

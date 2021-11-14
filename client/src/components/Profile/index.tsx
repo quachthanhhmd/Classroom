@@ -68,12 +68,14 @@ const ProfileUser = (props: IOpenModal) => {
         setIsOpenModal(!isOpenModal);
     };
 
+
+
     useEffect(() => {
         if (!selectedFile) {
             setPreview("")
             return
         }
-
+        
         const objectUrl = URL.createObjectURL(selectedFile)
         setPreview(objectUrl)
 
@@ -126,12 +128,9 @@ const ProfileUser = (props: IOpenModal) => {
     };
 
     const handleUpdateProfile = (data: any) => {
-        console.log(data);
         handleClose();
-
-
         if (typeof selectedFile !== "undefined") {
-           handleUpload();
+            handleUpload();
         }
         dispatchProfileAndUpdate(data);
 
@@ -163,7 +162,7 @@ const ProfileUser = (props: IOpenModal) => {
                                 style={{ padding: 0, borderRadius: "100%", width: "inherit" }}
                             >
                                 <div className="cicular">
-                                    <img className="avt-profile--image" alt="avatar" src={`${selectedFile ? preview : "/none-avt.png"}`} />
+                                    <img className="avt-profile--image" alt="avatar" src={`${preview || "/none-avt.png"}`} />
                                 </div>
                                 <PhotoCamera className="avt-profile--icon-upload" />
                             </Button>
@@ -269,14 +268,11 @@ const ProfileUser = (props: IOpenModal) => {
                     color="primary"
                     type="submit"
                     onClick={
-                        () => {
-                            handleClose();
-                            handleSubmit(handleUpdateProfile);
-                        }
+                        handleSubmit(handleUpdateProfile)
                     }>
                     Update
                 </Button>
-            </DialogActions>    
+            </DialogActions>
         </Dialog>
 
     )
