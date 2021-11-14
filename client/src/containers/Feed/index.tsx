@@ -19,6 +19,7 @@ import CourseInfo from "../../components/CourseInfo";
 import env from "../../configs/env";
 
 import "./index.scss";
+import { Helmet } from "react-helmet";
 
 const deadlineList = [
     {
@@ -56,7 +57,7 @@ const Feed = () => {
     const role = useSelector((state: AppState) => state.member);
     const dispatch = useDispatch();
     const course: ICourseInfo = courseState.course as ICourseInfo;
- 
+
 
     const [editorState, setEditorState] = useState(() =>
         EditorState.createEmpty()
@@ -67,7 +68,7 @@ const Feed = () => {
     const [isChangeInfo, setIsChangeInfo] = useState(false);
 
     useEffect(() => {
-        if (code){
+        if (code) {
             dispatch(joinCourseByUrl(+courseId, code));
         }
         dispatch(getAllCourseInfo(Number(courseId)));
@@ -85,6 +86,11 @@ const Feed = () => {
 
     return (
         <>
+            <Helmet>
+                <title>
+                    Bảng tin khóa học | EClassroom
+                </title>
+            </Helmet>
             <CourseInfo course={courseState.course as ICourseInfo | null} isOpenModal={isChangeInfo} setIsOpenModal={handleChangeInfo} />
             <Dialog
                 fullWidth

@@ -6,6 +6,7 @@ import {
 } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -37,9 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-const LoginError = (err: {message: string}) => {
+const LoginError = (err: { message: string }) => {
     return (
-        <span style={{color: "red"}}>* {err.message}</span>
+        <span style={{ color: "red" }}>* {err.message}</span>
     )
 }
 
@@ -56,7 +57,7 @@ const Login = () => {
     const classes = useStyles();
 
     function signInWithEmailePassword(data: ISigninInput) {
-        
+
         dispatch(
             signIn(data)
         );
@@ -70,6 +71,11 @@ const Login = () => {
 
     return (
         <form>
+            <Helmet>
+                <title>
+                    Đăng Nhập | EClassroom
+                </title>
+            </Helmet>
             <CardHeader className={classes.header} title="Đăng Nhập" />
             <CardContent>
                 <div>
@@ -84,7 +90,7 @@ const Login = () => {
                         {...register("email")}
                     />
                     <Box>
-                        {errors.email && (<LoginError message={errors!.email.message as string}/>)}
+                        {errors.email && (<LoginError message={errors!.email.message as string} />)}
                     </Box>
                     <TextField
                         error={Boolean(errors.password)}
@@ -95,10 +101,10 @@ const Login = () => {
                         placeholder="Mật khẩu"
                         margin="normal"
                         {...register("password")}
-                        
+
                     />
                     <Box>
-                        {errors.password && (<LoginError message={errors!.password.message as string}/>)}
+                        {errors.password && (<LoginError message={errors!.password.message as string} />)}
                     </Box>
                 </div>
             </CardContent>

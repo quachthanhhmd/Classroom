@@ -18,10 +18,23 @@ import { AppState } from "../../reducers";
 import "./index.scss";
 
 
+const openInNewTab = (url) => {
+    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
+    if (newWindow) newWindow.opener = null
+}
 
-
-const MemberDisplay = (props: { course: any, courseId: string, userId?: number, member: IMemberSummary, isChecked?: boolean, index?: number, setIsChecked?: any }) => {
-    const { course, courseId, userId, member, isChecked, index, setIsChecked } = props;
+interface IMemberDisplay {
+    course: any,
+    courseId: string,
+    userId?: number,
+    member: IMemberSummary,
+    isChecked?: boolean,
+    index?: number,
+    setIsChecked?: any,
+    ownerMember?: any
+}
+const MemberDisplay = (props: IMemberDisplay) => {
+    const { course, courseId, userId, member, isChecked, index, setIsChecked, ownerMember } = props;
     const [anchorEl, setAnchorEl] = useState(null);
 
     const dispatch = useDispatch();
@@ -40,10 +53,6 @@ const MemberDisplay = (props: { course: any, courseId: string, userId?: number, 
         //setIsOpenCourse(0);
     };
 
-    const openInNewTab = (url) => {
-        const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-        if (newWindow) newWindow.opener = null
-    }
     const handleDelete = () => {
         dispatch(updateStateMember(member.user.userId, +courseId, MEMBERSTATE.BLOCKED));
         handleClose();
@@ -57,7 +66,7 @@ const MemberDisplay = (props: { course: any, courseId: string, userId?: number, 
                 onClick={handleClick}
             >
                 <div className="member-main___teacher___content--member___information">
-                    {member.role === "student" &&
+                    {((ownerMember && ownerMember.role !== TYPEROLE.STUDENT) && (member.role === TYPEROLE.STUDENT)) &&
                         <Checkbox
                             edge="start"
                             tabIndex={-1}
@@ -140,11 +149,12 @@ const Member = () => {
     useEffect(() => {
         dispatch(getAllMemberInCourse(+courseId));
 
-    }, []);
+    }, [auth.user]);
 
     useEffect(() => {
         setCheckedList(new Array(course.memberList.length).fill(false));
     }, [course.memberList])
+
 
 
     const handleCheckedAll = () => {
@@ -160,6 +170,19 @@ const Member = () => {
 
     const handleCloseInviteModal = () => {
         setIsOpenInviteModal(false);
+    }
+
+    const handleSendMailAll = () => {
+        const memberSend = course.memberList.map((member) => {
+            if (member.role === TYPEROLE.STUDENT) return member.user.email;
+        })
+
+        const url = `https://mail.google.com/mail/u/0/?fs=1&bcc=${memberSend.filter(member => {
+            if (member) return member;
+        }).join(',')
+            }&tf=cm`;
+
+        openInNewTab(url);
     }
     return (
         <div className="member-main">
@@ -185,8 +208,8 @@ const Member = () => {
                         }
                     </div>
                 </div>
-                {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
-                    member.role === "teacher" && <MemberDisplay course={course.course} courseId={courseId} userId={auth.user?.id} member={member} />
+                {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary) => (
+                    memberInCourse.role === "teacher" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
                 ))}
             </div>
             <div className="member-main___assist">
@@ -205,8 +228,8 @@ const Member = () => {
                         }
                     </div>
                 </div>
-                {course && course.memberList && course.memberList.map((member: IMemberSummary) => (
-                    member.role === "assistant" && <MemberDisplay course={course.course} courseId={courseId} userId={auth.user?.id} member={member} />
+                {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary) => (
+                    memberInCourse.role === "assistant" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
                 ))}
             </div>
             <div className="member-main___student">
@@ -226,17 +249,20 @@ const Member = () => {
                     </div>
                 </div>
                 <div className="member-main___student___content">
-                    <div className="member-main___student___content--check-all">
+                    {
+                        member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
+                        <div className="member-main___student___content--check-all">
 
-                        <Checkbox className="member-main___student___content--check-all___check-box" onClick={handleCheckedAll} checked={isCheckedAll} />
-                        <Button>Gửi Email</Button>
-                        <Button>Xóa</Button>
-
-                    </div>
-
+                            <Checkbox className="member-main___student___content--check-all___check-box" onClick={handleCheckedAll} checked={isCheckedAll} />
+                            <Button onClick={handleSendMailAll}>Gửi Email</Button>
+                            {member.currentRole.role === TYPEROLE.TEACHER &&
+                                <Button>Xóa</Button>
+                            }
+                        </div>
+                    }
                 </div>
-                {course && course.memberList && course.memberList.map((member: IMemberSummary, index: number) => (
-                    member.role === "student" && <MemberDisplay course={course.course} courseId={courseId} userId={auth.user?.id} member={member} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
+                {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary, index: number) => (
+                    memberInCourse.role === "student" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
                 ))}
             </div>
         </div >

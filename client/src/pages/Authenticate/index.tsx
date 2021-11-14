@@ -11,6 +11,7 @@ import Register from "../../containers/Register";
 import { AppState } from "../../reducers";
 import { loginOAuth } from "../../actions";
 import "./index.scss";
+import { Helmet } from 'react-helmet';
 
 const changeToggleMode = () => {
     const toggle = document.getElementById("toggle-mode");
@@ -53,7 +54,9 @@ const Authenticate = () => {
     return (
         <div className={`authenticate${themeMode ? " dark-mode" : " light-mode"}`}>
             <ThemeMode />
-
+            <Helmet>
+                Đăng Nhập | EClassroom
+            </Helmet>
             <div className="authenticate-main">
                 <div className="authenticate-main___form">
                     <Card className="authenticate-main___from--card">
@@ -69,7 +72,7 @@ const Authenticate = () => {
                         </div>
                         <div className="login-social">
                             <GoogleButton className="login-social--google" onClick={handleSignInWithGoogle} />
-                            <FacebookButton className="login-social--facebook" onClick={() => alert("Hello")} />
+                            {/* <FacebookButton className="login-social--facebook" onClick={() => alert("Hello")} /> */}
                         </div>
 
                         <div className="authenticate-main___choose-authen">

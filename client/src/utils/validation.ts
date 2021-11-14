@@ -57,7 +57,7 @@ export const ChangeCourseInfoValidate = yup.object({
     name: yup.string().max(100, "Tối đa 100 ký tự.").required("Nhập tên lớp học của bạn"),
     topic: yup.string().max(100, "Tối đa 100 ký tự"),
     description: yup.string().max(200, "Tối đa 200 ký tự"),
-    studentLimit: yup.number().max(1000000, "Lớp học tối đa chỉ được 1 triệu học sinh"),
+    studentLimit: yup.number().max(1000000, "Lớp học tối đa chỉ được 1 triệu học sinh").min(1, "Tối thiểu phải có 1 học sinh"),
 })
 
 export const AddStudentIDValidate = yup.object({

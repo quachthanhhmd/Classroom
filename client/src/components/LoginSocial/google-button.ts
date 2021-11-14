@@ -4,7 +4,7 @@ const config = {
     text: "Đăng nhập với Google",
     icon: "google",
     iconFormat: (name: string) => `fab fa-${name}`,
-    style: { background: "#DD4B39", fontSize: "1rem", width: "200px"  },
+    style: { background: "#DD4B39", fontSize: "1rem", width: "250px"  },
     activeStyle: { background: "#E74B37" },
 
 };
