@@ -8,10 +8,31 @@ import { TYPEROLE } from "./../constants/role.constant";
 
 @injectable()
 export class MemberService {
+    /**
+     * 
+     * @param {number} userId 
+     * @param {number} courseId 
+     * @returns 
+     */
     public isExistMember = async (userId: number, courseId: number) => {
         const member = await this.findMemberByUserAndCourseId(userId, courseId);
 
         return member ? true : false;
+    }
+
+    /**
+     * Check wonder member is belong to course or not
+     * @param {number} userId 
+     * @param {number} courseId 
+     * @returns 
+     */
+    public isActiveMember = async (userId: number, courseId: number) : Promise<boolean> => {
+        const member = await this.findMemberByUserAndCourseId(userId, courseId);
+        if (!member) return false;
+
+        if (member.type === MEMBERSTATE.ACCEPT) return true;
+
+        return false;
     }
     /**
      * Find member by UserId and CourseId.
@@ -187,5 +208,21 @@ export class MemberService {
         })
 
         return member ? true : false;
+    }
+
+    public isPermitToCRUD = async (courseId: number, userId: number): Promise<boolean> => {
+        const member = await Member.findOne({
+            where: {
+                [Op.and]: {
+                    userId,
+                    courseId,
+                    role: {
+                        [Op.ne]: TYPEROLE.STUDENT
+                    }
+                }
+            }
+        });
+
+        return !!member;
     }
 }

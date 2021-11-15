@@ -5,3 +5,5 @@ export * from "./token.interface";
 export * from "./course.interface";
 export * from "./oAuth.interface";
 export * from "./member.interface";
+export * from "./exercise.interface";
+export * from "./feed.interface";

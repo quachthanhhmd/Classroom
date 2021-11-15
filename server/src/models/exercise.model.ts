@@ -9,7 +9,8 @@ interface IExercise {
     id?: number,
     title: string,
     description?: string,
-    topicId: number,
+    deadline?: Date,
+    topicId?: number,
     courseId: number,
 }
 
@@ -35,8 +36,12 @@ export class Exercise extends Model<IExercise, IExerciseCreationAttributes> {
     @Column(DataType.TEXT)
     description!: string;
 
+    @AllowNull(true)
+    @Column(DataType.DATE)
+    deadline!: Date;
+
     @ForeignKey(() => Topic)
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.INTEGER.UNSIGNED)
     topicId!: number;
 

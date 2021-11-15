@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, ForeignKey, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table
 } from "sequelize-typescript";
 import { ReferenceType } from "./comment.model";
 

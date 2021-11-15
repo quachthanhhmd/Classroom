@@ -1,8 +1,7 @@
-import {Optional} from "sequelize";
+import { Optional } from "sequelize";
 import {
     AllowNull, AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table
 } from "sequelize-typescript";
-import { Course } from "./course.model";
 import { Exercise } from "./exercise.model";
 
 interface ITopic {
