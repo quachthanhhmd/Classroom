@@ -28,6 +28,7 @@ interface IMemberCreationAttributes extends Optional<IMember, "id"> { }
 @Table({
     paranoid: true,
     timestamps: true,
+    tableName: "member"
 })
 export class Member extends Model<IMember, IMemberCreationAttributes> {
     @AllowNull(false)

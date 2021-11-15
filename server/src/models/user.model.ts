@@ -5,6 +5,8 @@ import {
 import { initPasswordHash } from "../config/bcrypt";
 import { Member, Token } from "./";
 import { GENDER } from "./../constants/gender.constant";
+import { Comment } from "./comment.model";
+import { Feed } from "./feed.model";
 import { OAuth } from "./oAuth.model";
 
 interface IUser {
@@ -26,9 +28,9 @@ interface IUserCreationAttibutes extends Optional<IUser, "id"> { }
 @Table({
     timestamps: true,
     paranoid: true,
+    tableName: "user"
 })
 export class User extends Model<IUser, IUserCreationAttibutes> {
-
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER.UNSIGNED)
@@ -105,6 +107,12 @@ export class User extends Model<IUser, IUserCreationAttibutes> {
 
     @HasMany(() => OAuth)
     oAuthList?: OAuth[];
+
+    @HasMany(() => Feed)
+    feedList?: Feed[];
+
+    @HasMany(() => Comment)
+    commentList?: Comment[];
 }
 
 const generateFromList = (strList: string, length: number): string => {

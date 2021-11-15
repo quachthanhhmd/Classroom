@@ -4,3 +4,8 @@ export * from "./token.model";
 export * from "./user.model";
 export * from "./plugins";
 export * from "./oAuth.model";
+export * from "./feed.model";
+export * from "./attachment.model";
+export * from "./topic.model";
+export * from "./exercise.model";
+export * from "./comment.model";

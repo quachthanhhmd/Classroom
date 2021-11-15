@@ -16,6 +16,7 @@ interface IOAuthCreation extends Optional<IOAuth, "id"> { }
 
 @Table({
     timestamps: true,
+    tableName: "oauth"
 })
 export class OAuth extends Model<IOAuth, IOAuthCreation> {
     @AllowNull(false)

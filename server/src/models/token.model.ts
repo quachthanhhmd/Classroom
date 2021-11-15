@@ -25,6 +25,7 @@ interface ITokenCreationAttribute extends Optional<IToken, "id"> { }
 @Table({
     timestamps: true,
     paranoid: false,
+    tableName: "token",
 })
 export class Token extends Model<IToken, ITokenCreationAttribute> {
 

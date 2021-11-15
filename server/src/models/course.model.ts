@@ -8,6 +8,8 @@ import {
     Table
 } from "sequelize-typescript";
 import { Member } from "./";
+import { Exercise } from "./exercise.model";
+import { Feed } from "./feed.model";
 
 // interface ICourse {
 //     id?: number,
@@ -27,6 +29,7 @@ import { Member } from "./";
 @Table({
     paranoid: true,
     timestamps: true,
+    tableName: "course"
 })
 export class Course extends Model {
 
@@ -77,6 +80,13 @@ export class Course extends Model {
     // Associate
     @HasMany(() => Member)
     memberList!: Member[];
+
+    @HasMany(() => Feed)
+    feedList!: Feed[];
+
+    @HasMany(() => Exercise)
+    exerciseList!: Exercise[];
+
 }
 
 function generateClassCode(length: number) {
