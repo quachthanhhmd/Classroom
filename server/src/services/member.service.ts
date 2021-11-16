@@ -103,7 +103,6 @@ export class MemberService {
 
     public updateMember = async (userId: number, courseId: number, state?: string, role?: string) => {
         const newBody = JSON.parse(JSON.stringify({ type: state, role }));
-        console.log(newBody);
 
         return Member.update(
             newBody,
@@ -123,16 +122,11 @@ export class MemberService {
      * @param {number} courseId 
      * @param {string} studentId 
      */
-    public AddStudentId = async (userId: number, courseId: number, studentId: string): Promise<void> => {
-        await Member.update({
-            studentId
-        }, {
-            where: {
-                [Op.and]: {
-                    userId,
-                    courseId,
-                }
-            }
+    public upsertStudentId = async (userId: number, courseId: number, studentId: string): Promise<void> => {
+        await Member.upsert({
+            userId,
+            courseId,
+            studentId,
         })
     }
 
@@ -158,6 +152,22 @@ export class MemberService {
         return true;
     }
 
+    /**
+     * Check wonder studentId exist in course or not
+     * @param {number} courseId 
+     * @param {string} studentId 
+     * @returns 
+     */
+    public isExistStudentId = async (courseId: number, studentId: string): Promise<boolean> => {
+        const student = await Member.findOne({
+            where: {
+                courseId,
+                studentId
+            }
+        })
+
+        return !!student;
+    }
     /**
      * Check if user is student role or not
      * @param {number} userId 
@@ -195,7 +205,12 @@ export class MemberService {
             nest: true,
         })
     }
-
+    /**
+     * 
+     * @param {number} userId 
+     * @param {number} ourseId 
+     * @returns 
+     */
     public isSpendingInvite = async (userId: number, courseId: number) => {
         const member = await Member.findOne({
             where: {
@@ -210,6 +225,12 @@ export class MemberService {
         return member ? true : false;
     }
 
+    /**
+     * Check wonder user permits to CRUD or not
+     * @param courseId 
+     * @param userId 
+     * @returns 
+     */
     public isPermitToCRUD = async (courseId: number, userId: number): Promise<boolean> => {
         const member = await Member.findOne({
             where: {

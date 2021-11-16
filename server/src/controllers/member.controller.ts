@@ -60,12 +60,17 @@ export class MemberController {
             const upsertBody: IUpsertStudentID = req.body;
             const userId = req.currentUser?.id;
 
-            const member = await this._memberService.findMemberByUserAndCourseId(<number> userId, upsertBody.courseId);
-            if (!member || member.studentId) {
-                return res.composer.unauthorized();
-            }
+            const isExistStudentId =
+                await this._memberService.isExistStudentId(upsertBody.courseId, upsertBody.studentId);
+            if (!isExistStudentId) return res.composer.badRequest();
 
-            await this._memberService.AddStudentId(<number> userId, upsertBody.courseId, upsertBody.studentId);
+            // const member = 
+            // await this._memberService.findMemberByUserAndCourseId(<number> userId, upsertBody.courseId);
+            // if (!member || member.studentId) {
+            //     return res.composer.unauthorized();
+            // }
+
+            await this._memberService.upsertStudentId(<number> userId, upsertBody.courseId, upsertBody.studentId);
 
             return res.composer.success();
         } catch (err) {
