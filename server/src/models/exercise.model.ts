@@ -1,8 +1,8 @@
-import {Optional} from "sequelize";
+import { Optional } from "sequelize";
 import {
     AllowNull, AutoIncrement, Column, DataType, ForeignKey, Model, PrimaryKey, Table
 } from "sequelize-typescript";
-import { Course } from ".";
+import { Course, ExerciseType } from ".";
 import { Topic } from "./topic.model";
 
 interface IExercise {
@@ -11,10 +11,11 @@ interface IExercise {
     description?: string,
     deadline?: Date,
     topicId?: number,
+    type?: number,
     courseId: number,
 }
 
-interface IExerciseCreationAttributes extends Optional<IExercise, "id"> {}
+interface IExerciseCreationAttributes extends Optional<IExercise, "id"> { }
 
 @Table({
     paranoid: true,
@@ -49,4 +50,9 @@ export class Exercise extends Model<IExercise, IExerciseCreationAttributes> {
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
     courseId!: number;
+
+    @ForeignKey(() => ExerciseType)
+    @AllowNull(true)
+    @Column(DataType.INTEGER.UNSIGNED)
+    typeId!: number;
 }

@@ -6,3 +6,4 @@ export * from "./exercise.validation";
 export * from "./feed.validation";
 export * from "./attachment.validation";
 export * from "./comment.validation";
+export * from "./exercise-type.validation";

@@ -5,6 +5,7 @@ import {
     CommentController,
     CourseController,
     ExerciseController,
+    ExerciseTypeController,
     FeedController, MemberController, UserController
 } from "../controllers";
 import { AttachmentController } from "../controllers/attachment.controller";
@@ -17,11 +18,13 @@ import {
     ExerciseService,
     FeedService, MemberService, OAuthService, TokenService, UserService
 } from "../services";
+import { ExerciseTypeService } from "../services/exercise-type.service";
 import {
     AttachmentValidation,
     AuthValidation,
     CommentValidation,
     CourseValidation,
+    ExerciseTypeValidation,
     ExerciseValidation,
     FeedValidation,
     MemberValidation, UserValidation } from "../validations";
@@ -64,5 +67,9 @@ existContainer.bind<AttachmentService>("AttachmentService").to(AttachmentService
 existContainer.bind<CommentService>("CommentService").to(CommentService);
 existContainer.bind<CommentController>("CommentController").to(CommentController);
 existContainer.bind<CommentValidation>("CommentValidation").to(CommentValidation);
+
+existContainer.bind<ExerciseTypeService>("ExerciseTypeService").to(ExerciseTypeService);
+existContainer.bind<ExerciseTypeValidation>("ExerciseTypeValidation").to(ExerciseTypeValidation);
+existContainer.bind<ExerciseTypeController>("ExerciseTypeController").to(ExerciseTypeController);
 
 export const container = existContainer;

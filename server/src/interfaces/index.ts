@@ -9,3 +9,4 @@ export * from "./exercise.interface";
 export * from "./feed.interface";
 export * from "./attachment.interface";
 export * from "./comment.interface";
+export * from "./exercise-type.interface";

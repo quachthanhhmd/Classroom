@@ -6,6 +6,7 @@ import AuthRoutes from "./auth.route";
 import CommentRoutes from "./comment.route";
 import CourseRoutes from "./course.route";
 import DocsRoutes from "./docs.route";
+import ExerciseTypeRoutes from "./exercise-type.route";
 import ExerciseRoutes from "./exercise.route"
 import FeedRoutes from "./feed.route";
 import MemberRoutes from "./member.route";
@@ -28,6 +29,7 @@ class IndexRoutes {
         this.router.use("/v1/feed", container.resolve<FeedRoutes>(FeedRoutes).router)
         this.router.use("/v1/attachment", container.resolve<AttachmentRoutes>(AttachmentRoutes).router);
         this.router.use("/v1/comment", container.resolve<CommentRoutes>(CommentRoutes).router);
+        this.router.use("/v1/exercise-type", container.resolve<ExerciseTypeRoutes>(ExerciseTypeRoutes).router);
 
         if (env.TYPE === "development") {
             this.router.use("/docs", DocsRoutes);
