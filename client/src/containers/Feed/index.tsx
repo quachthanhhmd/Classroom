@@ -290,6 +290,7 @@ const Feed = () => {
                     </div>
                 </Container>
             </div>
+            
         </>
     )
 }
