@@ -1,9 +1,11 @@
 import { injectable } from "inversify";
+import "reflect-metadata";
 import { Exercise } from "../models";
 import { ICreateExercise } from "./../interfaces";
 
 @injectable()
 export class ExerciseService {
+
     public findExerciseById = async (id: number) => {
         return Exercise.findByPk(id);
     }

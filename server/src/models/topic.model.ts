@@ -14,7 +14,7 @@ interface ITopicCreationAttributes extends Optional<ITopic, "id"> {}
 @Table({
     timestamps: true,
     paranoid: true,
-    tableName: "token"
+    tableName: "topic"
 })
 export class Topic extends Model<ITopic, ITopicCreationAttributes> {
     @PrimaryKey

@@ -7,6 +7,6 @@ export const serializeFeedDetail = (model: any) => {
         id: model.id,
         content: model.content,
         createdAt: model.createdAt,
-        updateAt: model.updateAt,
+        updatedAt: model.updateAt,
     }
 }

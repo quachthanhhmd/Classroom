@@ -6,16 +6,22 @@ import {
     ExerciseController,
     FeedController, MemberController, UserController
 } from "../controllers";
-
+import { AttachmentController } from "../controllers/attachment.controller";
 import { Authenticate } from "../middlewares";
 import {
+    AttachmentService,
     AuthService,
     CourseService,
     ExerciseService,
     FeedService, MemberService, OAuthService, TokenService, UserService
 } from "../services";
-
-import { AuthValidation, CourseValidation, ExerciseValidation, FeedValidation, MemberValidation, UserValidation } from "../validations";
+import {
+    AttachmentValidation,
+    AuthValidation,
+    CourseValidation,
+    ExerciseValidation,
+    FeedValidation,
+    MemberValidation, UserValidation } from "../validations";
 
 const existContainer = new Container({ defaultScope: "Singleton" });
 
@@ -47,5 +53,9 @@ existContainer.bind<ExerciseValidation>("ExerciseValidation").to(ExerciseValidat
 existContainer.bind<FeedService>("FeedService").to(FeedService);
 existContainer.bind<FeedController>("FeedController").to(FeedController);
 existContainer.bind<FeedValidation>("FeedValidation").to(FeedValidation);
+
+existContainer.bind<AttachmentController>("AttachmentController").to(AttachmentController);
+existContainer.bind<AttachmentValidation>("AttachmentValidation").to(AttachmentValidation);
+existContainer.bind<AttachmentService>("AttachmentService").to(AttachmentService);
 
 export const container = existContainer;

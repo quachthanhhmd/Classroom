@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+import "reflect-metadata";
 import { IFeedCreate } from "../interfaces";
 import { Feed } from "../models";
 
@@ -24,16 +25,21 @@ export class FeedService {
      * @returns 
      */
     public findFeedById = async (feedId: number) => {
-        return Feed.findByPk(feedId);
+        return Feed.findOne({
+            where: {
+                id: feedId
+            }
+        }
+        );
     }
 
     public isBelongsToFeed = async (feedId: number, userId: number) => {
         const feed = await this.findFeedById(feedId);
         if (!feed) return false;
 
-        if (feed.userId !== userId) return true;
+        if (feed.userId !== userId) return false;
 
-        return false;
+        return true;
     }
     /**
      * Update feed of user
@@ -61,6 +67,14 @@ export class FeedService {
             where: {
                 id
             }
+        })
+    }
+
+    public getAllInfoFeed = async (feedId: number): Promise<Feed | null> => {
+        return Feed.findOne({
+            where: {
+                id: feedId,
+            },
         })
     }
 }

@@ -13,12 +13,12 @@ export enum FileType {
 
 interface IAttachment {
     id?: number;
-    name: string;
+    name?: string;
     type: FileType;
-    extension: string;
+    extension?: string;
     url: string;
-    thumbnailUrl: string;
-    description: string;
+    thumbnailUrl?: string;
+    description?: string;
     size: number;
 
     refType: ReferenceType;

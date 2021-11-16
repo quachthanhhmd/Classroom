@@ -19,21 +19,21 @@ class ExerciseRoute {
     }
     public initializeRoutes(): void {
         this.router.post(
-            "/:courseId",
+            "/course/:courseId",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._exerciseValidation.CreateExercise()),
             this._exerciseController.createNewExercise,
         )
         this.router.patch(
-            "/:courseId/:id",
+            "/:id/course/:courseId",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._exerciseValidation.UpdateExercise()),
             this._exerciseController.updateExercise
         )
         this.router.delete(
-            "/:courseId/:id",
+            "/:id/course/:courseId/",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._exerciseValidation.DeleteExercise()),

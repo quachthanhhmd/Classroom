@@ -6,3 +6,4 @@ export * from "./token.service";
 export * from "./user.service";
 export * from "./exercise.service";
 export * from "./feed.service";
+export * from "./attachment.service";

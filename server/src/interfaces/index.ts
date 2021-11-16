@@ -7,3 +7,4 @@ export * from "./oAuth.interface";
 export * from "./member.interface";
 export * from "./exercise.interface";
 export * from "./feed.interface";
+export * from "./attachment.interface";

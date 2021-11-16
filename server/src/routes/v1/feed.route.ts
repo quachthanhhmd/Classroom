@@ -24,7 +24,7 @@ class FeedRoute {
             this._feedController.createNewFeed
         )
         this.router.patch(
-            "/:feedId/",
+            "/:feedId",
             this._authenticate.authenticate(),
             validate(this._feedValidation.UpdateFeed()),
             this._feedController.updateFeed,

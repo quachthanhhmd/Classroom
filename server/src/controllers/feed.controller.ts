@@ -18,6 +18,7 @@ export class FeedController {
             const courseId = +req.params.courseId;
 
             const isMember = await this._memberService.isActiveMember(userId, courseId);
+            console.log(isMember);
             if (!isMember) return res.composer.forbidden()
 
             const newFeed = await this._feedService.createFeed(courseId, userId, req.body);

@@ -38,6 +38,10 @@ export class FeedValidation {
                     Joi.string(),
                     Joi.number(),
                 ),
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ),
             }
         })
     }

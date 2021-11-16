@@ -1,6 +1,7 @@
 import { Router } from "express";
 import env from "../../config/env";
 import { container } from "../../config/inversify";
+import AttachmentRoutes from "./attachment.route";
 import AuthRoutes from "./auth.route";
 import CourseRoutes from "./course.route";
 import DocsRoutes from "./docs.route";
@@ -24,6 +25,7 @@ class IndexRoutes {
         this.router.use("/v1/member", container.resolve<MemberRoutes>(MemberRoutes).router);
         this.router.use("/v1/exercise", container.resolve<ExerciseRoutes>(ExerciseRoutes).router);
         this.router.use("/v1/feed", container.resolve<FeedRoutes>(FeedRoutes).router)
+        this.router.use("/v1/attachment", container.resolve<AttachmentRoutes>(AttachmentRoutes).router)
         if (env.TYPE === "development") {
             this.router.use("/docs", DocsRoutes);
         }
