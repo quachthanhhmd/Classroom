@@ -3,6 +3,16 @@ import Joi from "joi";
 
 @injectable()
 export class FeedValidation {
+    public GetOneFeed = () => {
+        return Joi.object().keys({
+            params: {
+                feedId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            }
+        })
+    }
     public CreateFeed = () => {
         return Joi.object().keys({
             body: {

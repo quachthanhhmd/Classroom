@@ -17,6 +17,12 @@ class FeedRoute {
         this.initializeRoutes();
     }
     public initializeRoutes() {
+        this.router.get(
+            "/:feedId",
+            this._authenticate.authenticate(),
+            validate(this._feedValidation.GetOneFeed()),
+            this._feedController.getOneFeed
+        )
         this.router.post(
             "/course/:courseId",
             this._authenticate.authenticate(),

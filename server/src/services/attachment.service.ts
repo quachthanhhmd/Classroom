@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+import { Op } from "sequelize";
 import { Attachment, ReferenceType } from "../models";
 import { ICreateAttachment } from "./../interfaces";
 
@@ -23,6 +24,16 @@ export class AttachmentService {
         return false;
     }
 
+    public findAllAttachment = async (refType: string, refId: number): Promise<Attachment[]> => {
+        return Attachment.findAll({
+            where: {
+                [Op.and]: {
+                    refId,
+                    refType,
+                }
+            }
+        })
+    }
     /**
      * Create new Attachment
      * @param {number}feedId 

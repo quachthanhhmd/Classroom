@@ -4,4 +4,5 @@ export * from "./course.controller";
 export * from "./member.controller";
 export * from "./exercise.controller";
 export * from "./feed.controller";
-export * from "./attachment.controller"
+export * from "./attachment.controller";
+export * from "./comment.controller";

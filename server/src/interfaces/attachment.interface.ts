@@ -9,3 +9,16 @@ export interface ICreateAttachment {
     description?: string;
     size: number;
 }
+
+export const serializeAttachment = (model: any) => {
+    return {
+        name: model.name,
+        type: model.type,
+        extension: model.extension,
+        url: model.url,
+        thumbnailUrl: model.thumbnailUrl,
+        description: model.description,
+        size: model.size,
+        createdAt: model.createdAt,
+    }
+}

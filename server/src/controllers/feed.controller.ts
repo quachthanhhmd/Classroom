@@ -1,13 +1,35 @@
 import { inject, injectable } from "inversify";
 import { serializeFeedDetail, IAuthorizeRequest, IResponse } from "../interfaces";
-import { FeedService, MemberService } from "../services";
+import { ReferenceType } from "../models";
+import { AttachmentService, CommentService, FeedService, MemberService } from "../services";
 
 @injectable()
 export class FeedController {
     constructor(
         @inject("FeedService") private readonly _feedService: FeedService,
         @inject("MemberService") private readonly _memberService: MemberService,
+        @inject("CommentService") private readonly _commentService: CommentService,
+        @inject("AttachmentService") private readonly _attachmentService: AttachmentService,
     ) { }
+
+    public getOneFeed = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const feedId = +req.params.feedId;
+
+            const feed = await this._feedService.findFeedById(feedId);
+            if (!feed) return res.composer.notFound();
+
+            const commentList = await this._commentService.findAllComment(feed.userId, ReferenceType.FEED, feedId);
+            const attachmentList = await this._attachmentService.findAllAttachment(ReferenceType.FEED, feedId);
+
+            return res.composer.success(serializeFeedDetail({...feed, commentList, attachmentList}))
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 
     public createNewFeed = async (
         req: IAuthorizeRequest,

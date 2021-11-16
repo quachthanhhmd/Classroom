@@ -2,6 +2,7 @@ import { Container } from "inversify";
 import "reflect-metadata";
 import {
     AuthController,
+    CommentController,
     CourseController,
     ExerciseController,
     FeedController, MemberController, UserController
@@ -11,6 +12,7 @@ import { Authenticate } from "../middlewares";
 import {
     AttachmentService,
     AuthService,
+    CommentService,
     CourseService,
     ExerciseService,
     FeedService, MemberService, OAuthService, TokenService, UserService
@@ -18,6 +20,7 @@ import {
 import {
     AttachmentValidation,
     AuthValidation,
+    CommentValidation,
     CourseValidation,
     ExerciseValidation,
     FeedValidation,
@@ -57,5 +60,9 @@ existContainer.bind<FeedValidation>("FeedValidation").to(FeedValidation);
 existContainer.bind<AttachmentController>("AttachmentController").to(AttachmentController);
 existContainer.bind<AttachmentValidation>("AttachmentValidation").to(AttachmentValidation);
 existContainer.bind<AttachmentService>("AttachmentService").to(AttachmentService);
+
+existContainer.bind<CommentService>("CommentService").to(CommentService);
+existContainer.bind<CommentController>("CommentController").to(CommentController);
+existContainer.bind<CommentValidation>("CommentValidation").to(CommentValidation);
 
 export const container = existContainer;

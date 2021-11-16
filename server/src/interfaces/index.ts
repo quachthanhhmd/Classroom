@@ -8,3 +8,4 @@ export * from "./member.interface";
 export * from "./exercise.interface";
 export * from "./feed.interface";
 export * from "./attachment.interface";
+export * from "./comment.interface";

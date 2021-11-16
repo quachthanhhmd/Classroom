@@ -43,7 +43,7 @@ export class Authenticate {
 
             const member = await this._memberService.getRoleMember(userId, courseId);
 
-            if (!member) { return res.composer.forbidden(); }
+            if (!member) return res.composer.forbidden();
             const isPermit = requiredRights.includes(member.role);
             if (!isPermit) {
                 return res.composer.forbidden();
