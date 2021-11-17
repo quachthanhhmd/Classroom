@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { getAllMemberInCourse, updateStateMember } from "../../actions";
 import InviteMember from "../../components/InviteMember";
 import { MEMBERSTATE, TYPEROLE } from "../../constants";
@@ -141,10 +141,16 @@ const Member = () => {
     const member = useSelector((state: AppState) => state.member);
     const auth = useSelector((state: AppState) => state.auth);
 
+    const history = useHistory();
     const [checkedList, setCheckedList] = useState<boolean[]>([]);
     const [isCheckedAll, setIsCheckedAll] = useState<boolean>(false);
     const [isOpenInviteModal, setIsOpenInviteModal] = useState<boolean>(false);
     const [roleOpenModal, setRoleOpenModal] = useState<string>("");
+
+    useEffect(() => {
+        if (!course.isSuccess && course.errorMessage === "member")
+            history.push("/");
+    }, [course, history])
 
     useEffect(() => {
         dispatch(getAllMemberInCourse(+courseId));

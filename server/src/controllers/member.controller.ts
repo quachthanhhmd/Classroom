@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { sendInviteMember } from "../config/nodemailer";
-import { MEMBER_EXISTS } from "../constants";
+import { MEMBER_EXISTS, TYPEROLE } from "../constants";
 import { serializeGetRole, serializeGetSummaryMember, IUpsertStudentID } from "../interfaces/member.interface";
 import { CourseService, MemberService, TokenService, UserService } from "../services";
 import { MEMBERSTATE } from "./../constants/state.constant";
@@ -24,7 +24,7 @@ export class MemberController {
             const courseId = +req.params.courseId;
             const memberId = req.body;
 
-            await this._memberService.upsetMember(memberId, courseId, MEMBERSTATE.ACCEPT);
+            await this._memberService.upsetMember(memberId, courseId, MEMBERSTATE.ACCEPT, TYPEROLE.STUDENT);
 
             return res.composer.success("Request completed!");
         } catch (err) {
@@ -44,7 +44,8 @@ export class MemberController {
             if (typeof getUserType !== "string") {
                 return res.composer.badRequest(MEMBER_EXISTS);
             }
-            await this._memberService.upsetMember(<number> req.currentUser?.id, courseId);
+            await this._memberService.upsetMember(
+                <number> req.currentUser?.id, courseId, MEMBERSTATE.ACCEPT, TYPEROLE.STUDENT);
 
             return res.composer.success("Request completed!");
         } catch (err) {
@@ -62,15 +63,16 @@ export class MemberController {
 
             const isExistStudentId =
                 await this._memberService.isExistStudentId(upsertBody.courseId, upsertBody.studentId);
-            if (!isExistStudentId) return res.composer.badRequest();
+            if (isExistStudentId) return res.composer.badRequest();
 
-            // const member = 
-            // await this._memberService.findMemberByUserAndCourseId(<number> userId, upsertBody.courseId);
-            // if (!member || member.studentId) {
-            //     return res.composer.unauthorized();
-            // }
-
-            await this._memberService.upsertStudentId(<number> userId, upsertBody.courseId, upsertBody.studentId);
+            const member =
+            await this._memberService.findMemberByUserAndCourseId(<number> userId, upsertBody.courseId);
+            if (!member) {
+                return res.composer.unauthorized();
+            }
+            console.log(userId, upsertBody.courseId, upsertBody.studentId)
+            await this._memberService.upsertStudentId(
+                member.id, <number> userId, upsertBody.courseId, upsertBody.studentId);
 
             return res.composer.success();
         } catch (err) {

@@ -82,7 +82,7 @@ export class CourseController {
                 return res.composer.notFound();
             }
 
-            await this._memberService.upsetMember(<number> userId, +courseId, MEMBERSTATE.ACCEPT);
+            await this._memberService.upsetMember(<number> userId, +courseId, MEMBERSTATE.ACCEPT, TYPEROLE.STUDENT);
 
             return res.composer.success();
         } catch (err) {

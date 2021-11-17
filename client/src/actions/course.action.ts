@@ -127,7 +127,8 @@ export const getAllMemberInCourse = (courseId: number) =>
             });
 
             const result = await courseApi.getAllMemberInCourse(courseId);
-            if (result.status !== 200) throw new Error();
+            console.log(result.data.code);
+            if (result.data.code !== 200) throw new Error();
 
             dispatch({
                 type: GET_ALL_MEMBER_SUCCESS,

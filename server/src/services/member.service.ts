@@ -122,11 +122,13 @@ export class MemberService {
      * @param {number} courseId 
      * @param {string} studentId 
      */
-    public upsertStudentId = async (userId: number, courseId: number, studentId: string): Promise<void> => {
+    public upsertStudentId = async (id:number, userId: number, courseId: number, studentId: string): Promise<void> => {
         await Member.upsert({
+            id,
             userId,
             courseId,
             studentId,
+            type: MEMBERSTATE.ACCEPT
         })
     }
 

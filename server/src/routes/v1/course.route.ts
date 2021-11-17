@@ -29,6 +29,7 @@ class CourseRoute {
         this.router.get(
             "/:courseId",
             this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._courseValidation.getCourse),
             this._courseController.getCourseDetail,
         );

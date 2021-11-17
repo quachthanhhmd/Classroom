@@ -3,6 +3,7 @@ import "reflect-metadata";
 // tslint:disable-next-line:no-submodule-imports
 import { FindOptions } from "sequelize/types";
 import { comparePasswordHash } from "../config";
+import { MEMBERSTATE } from "../constants";
 import { ICreateUser, IUpdateUser } from "../interfaces";
 import { filterPagination, Course, IPagingParams, IPagingResult, Member, User } from "../models";
 
@@ -93,6 +94,7 @@ export class UserService {
                 model: Member,
                 where: {
                     userId,
+                    type: MEMBERSTATE.ACCEPT
                 }
             }],
             raw: false,

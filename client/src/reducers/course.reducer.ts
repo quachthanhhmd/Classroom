@@ -1,15 +1,15 @@
-import { UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS, UPDATE_COURSE_INFO_FAIL } from './../constants/course.constant';
-import { UPDATE_MEMBER_STATE_SUCCESS, UPDATE_MEMBER_STATE_FAIL } from './../constants/member.constant';
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
     CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
     GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, GET_ALL_USER_COURSE_FAIL,
-    GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, INVITE_MEMBER_REQUEST, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
+    GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
     ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IMemberSummary, IPaginationInfo,
     IUserCourseState
 } from "../interfaces";
+import { UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
+import { UPDATE_MEMBER_STATE_FAIL, UPDATE_MEMBER_STATE_SUCCESS } from './../constants/member.constant';
 
 
 interface IInitState {
@@ -19,6 +19,7 @@ interface IInitState {
     pagination: IPaginationInfo
     memberList: IMemberSummary[],
     isSuccess: boolean,
+    errorMessage: string,
 }
 
 const initState: IInitState = {
@@ -33,6 +34,7 @@ const initState: IInitState = {
     },
     memberList: [],
     isSuccess: false,
+    errorMessage: "",
 }
 
 
@@ -52,6 +54,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 course: action.payload! as ICourseSummary,
                 isLoading: false,
+                isSuccess: true,
             }
         case UPDATE_COURSE_INFO_REQUEST:
             return {
@@ -64,18 +67,22 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: false,
                 course: action.payload! as ICourseInfo,
+                isSuccess: true,
             }
         case UPDATE_COURSE_INFO_FAIL:
             return {
                 ...state,
                 isLoading: false,
-
+                isSuccess: false,
+                errorMessage: "update",
             }
         case CREATE_COURSE_FAIL:
             return {
                 ...state,
                 course: null,
                 isLoading: false,
+                errorMessage: "create",
+                isSuccess: false,
             }
         case JOIN_COURSE_REQUEST:
             return {
@@ -93,6 +100,8 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
             return {
                 ...state,
                 isLoading: false,
+                errorMessage: "join",
+                isSuccess: false,
             }
         case GET_ALL_USER_COURSE_REQUEST:
             return {
@@ -119,12 +128,15 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 data: action.payload!.courses,
                 pagination: action.payload!.pagination,
                 isLoading: false,
+                
             }
         case GET_ALL_USER_COURSE_FAIL: {
             return {
                 ...state,
                 data: [],
                 isLoading: false,
+                errorMessage: "get_all",
+                isSuccess: false,
             }
         }
         case GET_ALL_INFO_COURSE_REQUEST:
@@ -144,12 +156,16 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: true,
                 course: null,
+                errorMessage: "info",
+                isSuccess: false,
             }
         case GET_ALL_MEMBER_FAIL:
             return {
                 ...state,
                 isLoading: false,
                 data: [],
+                errorMessage: "member",
+                isSuccess: false,
             }
         case GET_ALL_MEMBER_SUCCESS:
             return {

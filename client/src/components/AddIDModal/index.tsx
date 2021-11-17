@@ -23,7 +23,7 @@ const AddIDModal = () => {
     const member = useSelector((state: AppState) => state.member);
     const dispatch = useDispatch();
 
-    const { register, handleSubmit, formState: { errors } } = useForm<ICreateID>({
+    const { register, handleSubmit, formState: { errors }, setError, clearErrors } = useForm<ICreateID>({
         resolver: yupResolver(AddStudentIDValidate)
     })
 
@@ -39,13 +39,30 @@ const AddIDModal = () => {
         }
         else setIsAddId(false);
     }, [member.currentRole?.studentId])
-    
+
+    useEffect(() => {
+        if (!member.isSuccess && member.errorMessage === "Student ID Exist") {
+            setError(
+                "studentId", {
+                message: "Mã số sinh viên đã trùng, vui lòng kiểm tra lại."
+            }
+            )
+        }
+        else {
+            clearErrors("studentId")
+        }
+    }, [member])
     const handleClose = () => {
         setIsAddId(false);
     }
 
+    useEffect(() => {
+        if (member.isSuccess) {
+            handleClose();
+        }
+    }, [member])
     const handleCreateID = (data: ICreateID) => {
-        handleClose();
+      
         dispatch(upsertStudentId(+courseId, data.studentId));
 
     }

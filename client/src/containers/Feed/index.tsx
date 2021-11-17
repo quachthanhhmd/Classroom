@@ -1,25 +1,24 @@
 import {
-    Button, Card, CardContent, CardHeader, Container, Dialog, DialogActions, DialogContent, Grid, DialogTitle, IconButton, Paper, TextField
+    Button, Card, CardContent, CardHeader, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper
 } from "@material-ui/core";
 import {
-    CropFree, FileCopy, MoreHoriz, MoreVert, Settings, PhotoCamera
+    CropFree, FileCopy, MoreHoriz, MoreVert, Settings
 } from "@material-ui/icons";
 import { EditorState } from "draft-js";
 import React, { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
-
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
-import { AppState } from "../../reducers";
-import { ICourseInfo } from "../../interfaces";
-import { TYPEROLE } from "../../constants";
 import CourseInfo from "../../components/CourseInfo";
 import env from "../../configs/env";
-
+import { TYPEROLE } from "../../constants";
+import { ICourseInfo } from "../../interfaces";
+import { AppState } from "../../reducers";
 import "./index.scss";
-import { Helmet } from "react-helmet";
+
 
 const deadlineList = [
     {
@@ -51,6 +50,7 @@ const Feed = () => {
     const { courseId } = useParams<ParamTypes>();
     const search = useLocation().search;
     const code = new URLSearchParams(search).get('give');
+    const history = useHistory();
 
     const courseState = useSelector((state: AppState) => state.course!);
 
@@ -74,6 +74,11 @@ const Feed = () => {
         dispatch(getAllCourseInfo(Number(courseId)));
 
     }, [])
+
+    useEffect(() => {
+        if (!courseState.isSuccess && courseState.errorMessage === "info")
+            history.push("/");
+    }, [courseState, history])
 
     const handleClose = () =>
         isShowInfor && setIsShowInfor(false);
@@ -290,7 +295,7 @@ const Feed = () => {
                     </div>
                 </Container>
             </div>
-            
+
         </>
     )
 }

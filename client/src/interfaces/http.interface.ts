@@ -1,5 +1,5 @@
 export type IHttpFormat<T> =  {
-    code: string,
+    code: number,
     message: string,
     payload: T
 }

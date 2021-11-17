@@ -37,7 +37,6 @@ const DashBoard = () => {
     const courseState = useSelector((state: AppState) => state.course);
 
     useEffect(() => {
-        console.log(courseState);
         dispatch(getUserCouseList());
     }, [JSON.stringify(courseState.data)]);
 

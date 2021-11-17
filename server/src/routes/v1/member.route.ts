@@ -30,6 +30,7 @@ class MemberRoute {
         this.router.get(
               "/:courseId",
             this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._memberValidation.getRoleMember()),
             this._memberController.getRoleMember,
         )
@@ -37,6 +38,7 @@ class MemberRoute {
         this.router.get(
             "/all/:courseId",
             this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._memberValidation.getAllSummaryMember()),
             this._memberController.getAllSummaryMember
         );
