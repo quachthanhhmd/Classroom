@@ -14,6 +14,12 @@ export class AttachmentService {
         return Attachment.findByPk(attachmentId);
     }
 
+    /**
+     * 
+     * @param {number} attachmentId 
+     * @param {number} feedId 
+     * @returns 
+     */
     public isBelongsToFeed = async (attachmentId: number, feedId: number): Promise<boolean> => {
         const attachment = await this.findAttachmentById(attachmentId);
 
@@ -23,7 +29,12 @@ export class AttachmentService {
 
         return false;
     }
-
+    /**
+     * 
+     * @param {string} refType 
+     * @param {number} refId 
+     * @returns 
+     */
     public findAllAttachment = async (refType: string, refId: number): Promise<Attachment[]> => {
         return Attachment.findAll({
             where: {
@@ -48,6 +59,22 @@ export class AttachmentService {
         })
     }
 
+    /**
+     * 
+     * @param {string} refType 
+     * @param {number}refId 
+     * @param {ICreateAttachment} body
+     * @returns 
+     */
+    public createBulkAttachment = (
+        refType: ReferenceType, refId: number, body: ICreateAttachment[]) :Promise<Attachment[]> => {
+        const valueCreateBulk = body.map((v) => ({ ...v, refType, refId }));
+
+        return Attachment.bulkCreate(
+            valueCreateBulk,
+            { returning: true }
+        )
+    }
     /**
      * Delete attachment
      * @param attachmentId 

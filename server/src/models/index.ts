@@ -10,3 +10,4 @@ export * from "./topic.model";
 export * from "./exercise.model";
 export * from "./comment.model";
 export * from "./exercise-type.model";
+export * from "./submission.model";

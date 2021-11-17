@@ -3,7 +3,7 @@ import {
     AllowNull, AutoIncrement, Column, DataType, Default, HasMany, Index, IsEmail, Model, PrimaryKey, Table, Unique
 } from "sequelize-typescript";
 import { initPasswordHash } from "../config/bcrypt";
-import { Member, Token } from "./";
+import { Member, Submission, Token } from "./";
 import { GENDER } from "./../constants/gender.constant";
 import { Comment } from "./comment.model";
 import { Feed } from "./feed.model";
@@ -113,6 +113,9 @@ export class User extends Model<IUser, IUserCreationAttibutes> {
 
     @HasMany(() => Comment)
     commentList?: Comment[];
+
+    @HasMany(() => Submission)
+    submissionList?: Submission[];
 }
 
 const generateFromList = (strList: string, length: number): string => {

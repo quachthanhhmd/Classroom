@@ -9,3 +9,4 @@ export * from "./feed.service";
 export * from "./attachment.service";
 export * from "./comment.service";
 export * from "./exercise-type.service";
+export * from "./submission.service";

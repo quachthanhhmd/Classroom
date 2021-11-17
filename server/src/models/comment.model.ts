@@ -17,6 +17,7 @@ interface ICommentCreationAttributes extends Optional<IComment, "id"> { }
 export enum ReferenceType {
     FEED = "feed",
     EXERCISE = "exercise",
+    SUBMISSION = "submission",
 }
 @Table({
     timestamps: true,

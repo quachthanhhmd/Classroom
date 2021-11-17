@@ -1,7 +1,8 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table
 } from "sequelize-typescript";
+import { Exercise } from ".";
 
 interface IExerciseType {
     id?:number,
@@ -30,4 +31,7 @@ export class ExerciseType extends Model<IExerciseType, IExerciseCreationAttribut
     @AllowNull(true)
     @Column(DataType.TEXT)
     description!: string;
+
+    @HasMany(() => Exercise)
+    exerciseList?: Exercise[];
 }

@@ -181,6 +181,7 @@ export class MemberService {
                 [Op.and]: {
                     userId,
                     courseId,
+                    type: MEMBERSTATE.ACCEPT
                 }
             }
         })
