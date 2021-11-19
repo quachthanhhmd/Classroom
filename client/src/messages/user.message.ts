@@ -1,0 +1,1 @@
+export const UPDATE_PROFILE_SUCCESS_MESSAGE = "Cập nhật thông tin thành công";

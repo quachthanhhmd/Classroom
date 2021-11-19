@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useLocation, useParams } from 'react-router';
 import { inviteCourseByToken } from '../../actions';
 import { AppState } from '../../reducers';
+import { SnackBarRender } from '../SnackBar';
 
 
 const InviteByToken = () => {
@@ -13,9 +14,8 @@ const InviteByToken = () => {
     const token = new URLSearchParams(search).get('token');
     const role = new URLSearchParams(search).get('role');
     const dispatch = useDispatch();
-    console.log(course.isSuccess);
+
     useEffect(() => {
-        console.log(token, role);
         dispatch(inviteCourseByToken(+courseId, token!, role!))
     }, [])
 
@@ -25,12 +25,16 @@ const InviteByToken = () => {
 
     useEffect(() => {
         if (course.isSuccess) {
-            console.log("Thanh Cong");
             history.push(`/course/${courseId}`);
         }
-    }, [course.isSuccess, history])
+        else {
+            history.push(`/`);
+        }
+
+    }, [course, history])
     return (
-        <></>
+        <>
+        </>
     )
 }
 

@@ -5,7 +5,7 @@ import { FindOptions } from "sequelize/types";
 import { comparePasswordHash } from "../config";
 import { MEMBERSTATE } from "../constants";
 import { ICreateUser, IUpdateUser } from "../interfaces";
-import { filterPagination, Course, IPagingParams, IPagingResult, Member, User } from "../models";
+import { filterPagination, generateRandomPassword, Course, IPagingParams, IPagingResult, Member, User } from "../models";
 
 @injectable()
 export class UserService {
@@ -52,8 +52,6 @@ export class UserService {
      * @returns 
      */
     public createUser = async (userBody: ICreateUser): Promise<User> => {
-        console.log(userBody);
-
         return User.create(userBody);
     }
 
@@ -103,6 +101,14 @@ export class UserService {
         return filterPagination(Course, whereCondition, queryBody);
     }
 
+    public createNoneUser = async (email: string) => {
+        return User.create({
+            email,
+            password: generateRandomPassword(),
+            firstName: "",
+            lastName: "",
+        })
+    }
     /**
      * Update user
      * @param {number} userId 

@@ -41,7 +41,7 @@ const AddIDModal = () => {
     }, [member.currentRole?.studentId])
 
     useEffect(() => {
-        if (!member.isSuccess && member.errorMessage === "Student ID Exist") {
+        if (!member.isSuccess && member.message === "Student ID Exist") {
             setError(
                 "studentId", {
                 message: "Mã số sinh viên đã trùng, vui lòng kiểm tra lại."

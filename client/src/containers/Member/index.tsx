@@ -57,7 +57,7 @@ const MemberDisplay = (props: IMemberDisplay) => {
         dispatch(updateStateMember(member.user.userId, +courseId, MEMBERSTATE.BLOCKED));
         handleClose();
     }
-
+ 
     return (
         <div className="member-main___student___content--member" >
             {/* <Link to={`/${member.id}`}> */}
@@ -112,7 +112,7 @@ const MemberDisplay = (props: IMemberDisplay) => {
                             Gửi Email
                         </MenuItem>
                         {
-                            (course && course.ownerId !== userId) &&
+                            ((course && course.ownerId !== userId) && ownerMember.role === TYPEROLE.TEACHER) &&
                             <MenuItem
                                 onClick={handleDelete}
                             >
@@ -148,7 +148,7 @@ const Member = () => {
     const [roleOpenModal, setRoleOpenModal] = useState<string>("");
 
     useEffect(() => {
-        if (!course.isSuccess && course.errorMessage === "member")
+        if (!course.isSuccess && course.message === "member")
             history.push("/");
     }, [course, history])
 
@@ -190,6 +190,7 @@ const Member = () => {
 
         openInNewTab(url);
     }
+
     return (
         <div className="member-main">
             <InviteMember role={roleOpenModal} isOpenModal={isOpenInviteModal} setIsOpenModal={handleCloseInviteModal} />

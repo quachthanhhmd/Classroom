@@ -59,7 +59,6 @@ export class AuthService {
             avatarUrl: bodyCreate.avatarUrl,
             password: generateRandomPassword(),
         })
-        console.log(5, newUser);
         await this._oAuthService.checkOrCreateOAuth(newUser.id, { type: bodyCreate.type, uid: bodyCreate.uid })
 
         return newUser;

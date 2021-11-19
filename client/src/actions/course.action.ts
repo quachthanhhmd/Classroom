@@ -127,7 +127,7 @@ export const getAllMemberInCourse = (courseId: number) =>
             });
 
             const result = await courseApi.getAllMemberInCourse(courseId);
-            console.log(result.data.code);
+         
             if (result.data.code !== 200) throw new Error();
 
             dispatch({

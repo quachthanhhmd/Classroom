@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOut, getUserData } from "../../actions";
 import { AppState } from "../../reducers";
 import { useScrollHook } from "../../customs";
+import { SnackBarRender } from '../SnackBar';
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
@@ -35,7 +36,7 @@ const Header = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const auth = useSelector((state: AppState) => state!.auth);
-
+    const user = useSelector((state: AppState) => state!.user);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [isOpenCourse, setIsOpenCourse] = useState<number>(0);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -69,11 +70,18 @@ const Header = () => {
     const handleGoHome = () => {
         window.location.href = "/";
     }
+
     return (
         <>
             <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 1} setIsOpenModal={handleCloseModal} />
-            <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal }  setIsOpenModal={handleCloseModal} />
-            <JoinCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 2} setIsOpenModal={handleCloseModal}/>
+            <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
+            <JoinCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 2} setIsOpenModal={handleCloseModal} />
+            {
+                auth.message && <SnackBarRender message={auth.message!} isSuccess={auth.isSuccess} />
+            }
+            {
+                 user.message && <SnackBarRender message={user.message!} isSuccess={user.isSuccess} />
+            }
             <div className="header-main" style={styleScroll}>
 
                 <div className="header-main___left">

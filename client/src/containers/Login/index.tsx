@@ -11,10 +11,12 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { signIn } from "../../actions";
+import { SnackBarRender } from "../../components/SnackBar";
 import { ISigninInput } from '../../interfaces';
 import { AppState } from "../../reducers";
 import { SignInValidate } from "../../utils/validation";
 import "./index.scss";
+
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,11 +46,15 @@ const LoginError = (err: { message: string }) => {
     )
 }
 
+
+
 const Login = () => {
 
     const { register, handleSubmit, formState: { errors } } = useForm<ISigninInput>({
         resolver: yupResolver(SignInValidate),
     })
+
+    //const [stateRequest, setStateRequest] = useState<stateCode>("success");
 
     const history = useHistory();
     const dispatch = useDispatch();
@@ -68,7 +74,6 @@ const Login = () => {
         }
     }, [auth.isAuth, history]);
 
-
     return (
         <form>
             <Helmet>
@@ -76,6 +81,9 @@ const Login = () => {
                     Đăng Nhập | EClassroom
                 </title>
             </Helmet>
+            {
+                auth.message && <SnackBarRender message={auth.message!} isSuccess={auth.isSuccess} />
+            }
             <CardHeader className={classes.header} title="Đăng Nhập" />
             <CardContent>
                 <div>
@@ -119,6 +127,8 @@ const Login = () => {
                 >
                     Đăng nhập
                 </Button>
+
+
             </CardActions>
         </form>
     );

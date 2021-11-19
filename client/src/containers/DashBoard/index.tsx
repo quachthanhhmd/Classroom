@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { getUserCouseList } from "../../actions/course.action";
+import { SnackBarRender } from "../../components/SnackBar";
 import { ICourseSummary } from "../../interfaces";
 import { AppState } from "../../reducers";
 import "./index.scss";
@@ -22,7 +23,7 @@ const CourseHeader = (course: ICourseSummary) => {
                 {course.topic}
             </div>
             <div className="dashboard-main___courses___component--avatar">
-                <img src={course.avatarUrl ? course.avatarUrl: "/none-avt.png"} alt="owner" />
+                <img src={course.avatarUrl ? course.avatarUrl : "/none-avt.png"} alt="owner" />
             </div>
         </div>
     )
@@ -42,11 +43,14 @@ const DashBoard = () => {
 
     return (
         <div className="dashboard-main">
-             <Helmet>
+            <Helmet>
                 <title>
                     Trang Chủ | EClassroom
                 </title>
             </Helmet>
+            {
+                courseState.message && <SnackBarRender message={courseState.message!} isSuccess={courseState.isSuccess} />
+            }
             <div className="dashboard-main--title">
                 Tất cả khóa học
             </div>
@@ -54,12 +58,12 @@ const DashBoard = () => {
                 {
                     courseState.data.map((course: ICourseSummary) => (
                         <Link to={`/course/${course.id}`}>
-                        <Button>
-                            <Card className="dashboard-main___courses___component">
-                                <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader {...course} />}>
-                                </CardHeader>
-                            </Card>
-                        </Button>
+                            <Button>
+                                <Card className="dashboard-main___courses___component">
+                                    <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader {...course} />}>
+                                    </CardHeader>
+                                </Card>
+                            </Button>
                         </Link>
                     ))
                 }

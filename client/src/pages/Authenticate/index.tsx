@@ -12,6 +12,7 @@ import { AppState } from "../../reducers";
 import { loginOAuth } from "../../actions";
 import "./index.scss";
 import { Helmet } from 'react-helmet';
+import { SIGNUP_SUCCESS } from '../../messages';
 
 const changeToggleMode = () => {
     const toggle = document.getElementById("toggle-mode");
@@ -25,14 +26,15 @@ const Authenticate = () => {
     const auth = useSelector((state: AppState) => state.auth);
     const themeMode = useSelector((state: AppState) => state.themeMode!.toggleMode);
     const history = useHistory();
-    
+
     useEffect(() => {
         changeToggleMode();
     })
 
     useEffect(() => {
-        setIsLogin(true);
-    }, [(auth.signUpStatus === USER_REGISTER_SUCCESS)]);
+        if (auth.message === SIGNUP_SUCCESS && auth.isSuccess === true)
+            setIsLogin(true);
+    }, [auth]);
 
     useEffect(() => {
         if (auth!.isAuth) {

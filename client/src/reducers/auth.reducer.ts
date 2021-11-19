@@ -1,7 +1,8 @@
+import { SIGNUP_SUCCESS } from './../messages/auth.message';
 import env from "../configs/env";
 import {
     USER_INFO_FAIL, USER_INFO_REQUEST,
-    USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_OAUTH_FAIL,
+    USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_OAUTH_FAIL, DELETE_MESSAGE,
     USER_LOGIN_OAUTH_REQUEST,
     USER_LOGIN_OAUTH_SUCCESS, USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL,
@@ -10,39 +11,44 @@ import {
     USER_UPDATE_HEADER
 } from "../constants";
 import { IAuthenAction, ISignInType, IUserSummary } from "../interfaces";
+import { LOGIN_FAIL, SIGNUP_FAIL, UPDATE_PROFILE_SUCCESS_MESSAGE } from "../messages";
 
 
 interface IAuthState {
     isAuth: boolean,
     user: IUserSummary | null,
     isLoading: boolean,
-    error?: string,
-    signUpStatus?: string,
-
+    message?: string,
+    isSuccess: boolean,
 }
 
 const initialState: IAuthState = {
     isAuth: false,
     user: null, // object -> info
     isLoading: false,
-    error: "",
-    signUpStatus: ""
+    message: "",
+    isSuccess: false,
 };
 
 const authReducer = (state = initialState, action: IAuthenAction) => {
     switch (action.type) {
+        case DELETE_MESSAGE:
+            console.log("xoa r ne haha")
+            return {
+                ...state,
+                message: ""
+            }
         case USER_LOGIN_OAUTH_REQUEST:
         case USER_LOGIN_REQUEST:
             return {
                 ...state,
                 isLoading: true,
-                error: "",
-                signUpStatus: "",
+                message: "",
+                isSuccess: false,
             };
         case USER_LOGIN_OAUTH_SUCCESS:
         case USER_LOGIN_SUCCESS:
             action = (action as ISignInType);
-            console.log(action.payload);
             const user = action.payload!.user;
             const token = action.payload!.token.access.token;
             const refreshToken = action.payload!.token.refresh.token;
@@ -54,8 +60,8 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user,
                 isAuth: true,
                 isLoading: false,
-                error: "",
-                signUpStatus: "",
+                message: "",
+                isSuccess: true,
             };
         case USER_LOGIN_OAUTH_FAIL:
         case USER_LOGIN_FAIL:
@@ -63,14 +69,15 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 ...state,
                 isAuth: false,
                 isLoading: false,
-                error: USER_LOGIN_FAIL,
-                signUpStatus: "",
+                message: LOGIN_FAIL,
+                isSuccess: false,
             };
         case USER_INFO_REQUEST:
             return {
                 ...state,
                 isLoading: true,
-                signUpStatus: "",
+                message: "",
+                isSuccess: false,
             };
         case USER_INFO_SUCCESS:
             return {
@@ -78,7 +85,8 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: (action.payload as IUserSummary),
                 isLoading: false,
                 isAuth: true,
-                signUpStatus: "",
+                message: "",
+                isSuccess: true,
             };
         case USER_INFO_FAIL:
             return {
@@ -86,7 +94,8 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: null,
                 isLoading: false,
                 isAuth: false,
-                signUpStatus: "",
+                message: USER_INFO_FAIL,
+                isSuccess: false,
             };
         case USER_REGISTER_FAIL:
             return {
@@ -94,7 +103,8 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: null,
                 isLoading: false,
                 isAuth: false,
-                signUpStatus: USER_REGISTER_FAIL
+                message: SIGNUP_FAIL,
+                isSuccess: false,
             };
         case USER_REGISTER_REQUEST:
             return {
@@ -102,7 +112,8 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: null,
                 isLoading: true,
                 isAuth: false,
-                signUpStatus: USER_REGISTER_REQUEST,
+                message: "",
+                isSuccess: false,
             }
         case USER_REGISTER_SUCCESS:
 
@@ -111,7 +122,8 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: null,
                 isLoading: true,
                 isAuth: false,
-                signUpStatus: USER_REGISTER_SUCCESS
+                message: SIGNUP_SUCCESS,
+                isSuccess: true,
             }
         case USER_UPDATE_HEADER:
             return {
@@ -119,7 +131,6 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: (action.payload as IUserSummary),
             }
         case USER_LOGOUT:
-            console.log(env);
             localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
             localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
             return {
@@ -127,7 +138,8 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 user: null,
                 isLoading: false,
                 isAuth: false,
-                signUpStatus: ""
+                message: "",
+                isSuccess: true,
             }
 
         default:

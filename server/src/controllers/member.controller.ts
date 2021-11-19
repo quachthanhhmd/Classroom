@@ -70,7 +70,7 @@ export class MemberController {
             if (!member) {
                 return res.composer.unauthorized();
             }
-            console.log(userId, upsertBody.courseId, upsertBody.studentId)
+
             await this._memberService.upsertStudentId(
                 member.id, <number> userId, upsertBody.courseId, upsertBody.studentId);
 
@@ -120,8 +120,10 @@ export class MemberController {
             const { email, role } = req.body;
 
             // Check user exist
-            const user = await this._userService.findUserbyEmail(email);
-            if (!user) return res.composer.notFound();
+            let user = await this._userService.findUserbyEmail(email);
+            if (!user) {
+                user = await this._userService.createNoneUser(email);
+            }
 
             // Check member exist
             const isExistMember = await this._memberService.isExistMember(user.id, +courseId);

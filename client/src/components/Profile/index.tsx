@@ -6,15 +6,17 @@ import {
     Select, TextField
 } from "@material-ui/core";
 import { PhotoCamera } from "@material-ui/icons";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateUserHeader } from "../../actions";
 import { storage } from "../../configs/firebase";
 import { IProfileBody } from "../../interfaces";
 import { AppState } from "../../reducers";
+import { formatDate } from '../../utils/converter';
 import { objectFieldChange } from "../../utils/object-solve";
 import { ProfileValidate } from "../../utils/validation";
+import { SnackBarRender } from "../SnackBar";
 import "./index.scss";
 
 
@@ -49,7 +51,7 @@ const ProfileUser = (props: IOpenModal) => {
                 lastName: userProfile?.lastName,
                 birthDay: userProfile?.birthDay,
                 gender: userProfile?.gender,
-                avatarUrl: userProfile?.avatarUrl
+                //avatarUrl: userProfile?.avatarUrl
             }
         }, [userProfile])
     })
@@ -60,7 +62,7 @@ const ProfileUser = (props: IOpenModal) => {
             lastName: userProfile?.lastName,
             birthDay: userProfile?.birthDay,
             gender: userProfile?.gender,
-            avatarUrl: userProfile?.avatarUrl
+            //avatarUrl: userProfile?.avatarUrl
         });
     }, [auth]);
 
@@ -75,7 +77,7 @@ const ProfileUser = (props: IOpenModal) => {
             setPreview("")
             return
         }
-        
+
         const objectUrl = URL.createObjectURL(selectedFile)
         setPreview(objectUrl)
 
@@ -92,8 +94,11 @@ const ProfileUser = (props: IOpenModal) => {
         setSelectedFile(e.target.files[0])
     }
     function dispatchProfileAndUpdate(data: any) {
+        data.birthDay = new Date (data.birthDay).setTime(0);
 
         const newData: any = objectFieldChange(userProfile, data);
+        
+        if (!Object.keys(newData)) return;
 
         dispatch(updateProfile(newData));
 
@@ -127,7 +132,7 @@ const ProfileUser = (props: IOpenModal) => {
         );
     };
 
-    const handleUpdateProfile = (data: any) => {
+    const handleUpdateProfile = (data: IProfileBody) => {
         handleClose();
         if (typeof selectedFile !== "undefined") {
             handleUpload();
@@ -137,144 +142,129 @@ const ProfileUser = (props: IOpenModal) => {
     }
 
     return (
+        <>
+            <Dialog
+                open={isOpenModal}
+                onClose={handleClose}
+                aria-labelledby="form-profile-title"
+            >
 
-        <Dialog
-            open={isOpenModal}
-            onClose={handleClose}
-            aria-labelledby="form-profile-title"
-        >
+                <DialogTitle id="form-profile-title">Thông tin tin cá nhân</DialogTitle>
+                <DialogContent>
 
-            <DialogTitle id="form-profile-title">Thông tin tin cá nhân</DialogTitle>
-            <DialogContent>
-
-                <Grid container spacing={2}>
-                    <Grid item={true} xs={4} className="avt-profile">
-                        <input
-                            accept="image/*"
-                            style={{ display: "none" }}
-                            id="raised-button-file"
-                            onChange={changeImageUpload}
-                            type="file"
-                        />
-                        <label htmlFor="raised-button-file">
-                            <Button
-                                component="span"
-                                style={{ padding: 0, borderRadius: "100%", width: "inherit" }}
-                            >
-                                <div className="cicular">
-                                    <img className="avt-profile--image" alt="avatar" src={`${preview || "/none-avt.png"}`} />
-                                </div>
-                                <PhotoCamera className="avt-profile--icon-upload" />
-                            </Button>
-                        </label>
-                    </Grid>
-                    <Grid item={true} xs={8}>
-                        <CardContent>
-                            <div>
-                                <div className="name-input">
-                                    <div>
-                                        <TextField
-                                            error={Boolean(errors.firstName)}
-                                            id="first-name"
-                                            type="text"
-                                            label="Họ"
-                                            placeholder="Họ"
-                                            margin="normal"
-                                            {...register("firstName")}
-                                            InputLabelProps={{ shrink: true, required: true }}
-                                            required
-                                        />
-                                        <Box>
-                                            {errors.firstName && (<ProfileError message={errors!.firstName.message as string} />)}
-                                        </Box>
+                    <Grid container spacing={2}>
+                        <Grid item={true} xs={4} className="avt-profile">
+                            <input
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                id="raised-button-file"
+                                onChange={changeImageUpload}
+                                type="file"
+                            />
+                            <label htmlFor="raised-button-file">
+                                <Button
+                                    component="span"
+                                    style={{ padding: 0, borderRadius: "100%", width: "inherit" }}
+                                >
+                                    <div className="cicular">
+                                        <img className="avt-profile--image" alt="avatar" src={`${preview || "/none-avt.png"}`} />
                                     </div>
-                                    <div>
-                                        <TextField
-                                            error={Boolean(errors.lastName)}
-                                            id="last-name"
-                                            type="text"
-                                            label="Tên"
-                                            placeholder="Tên"
-                                            margin="normal"
-                                            {...register("lastName")}
-                                            InputLabelProps={{ shrink: true, required: true }}
-                                            required
-                                        />
-                                        <Box>
-                                            {errors.lastName && (<ProfileError message={errors!.lastName.message as string} />)}
-                                        </Box>
+                                    <PhotoCamera className="avt-profile--icon-upload" />
+                                </Button>
+                            </label>
+                        </Grid>
+                        <Grid item={true} xs={8}>
+                            <CardContent>
+                                <div>
+                                    <div className="name-input">
+                                        <div>
+                                            <TextField
+                                                error={Boolean(errors.firstName)}
+                                                id="first-name"
+                                                type="text"
+                                                label="Họ"
+                                                placeholder="Họ"
+                                                margin="normal"
+                                                {...register("firstName")}
+                                                InputLabelProps={{ shrink: true, required: true }}
+                                                required
+                                            />
+                                            <Box>
+                                                {errors.firstName && (<ProfileError message={errors!.firstName.message as string} />)}
+                                            </Box>
+                                        </div>
+                                        <div>
+                                            <TextField
+                                                error={Boolean(errors.lastName)}
+                                                id="last-name"
+                                                type="text"
+                                                label="Tên"
+                                                placeholder="Tên"
+                                                margin="normal"
+                                                {...register("lastName")}
+                                                InputLabelProps={{ shrink: true, required: true }}
+                                                required
+                                            />
+                                            <Box>
+                                                {errors.lastName && (<ProfileError message={errors!.lastName.message as string} />)}
+                                            </Box>
+                                        </div>
                                     </div>
-                                </div>
-                                {/* <TextField
-                                        error={Boolean(errors.password)}
+
+                                    <TextField
+                                        error={Boolean(errors.birthDay)}
                                         fullWidth
-                                        id="password"
-                                        type="password"
-                                        label="Mật khẩu"
-                                        placeholder="Mật khẩu"
-                                        margin="normal"
-                                        {...register("password")}
+                                        type="date"
+                                        label="Ngày Sinh"
+
                                         InputLabelProps={{ shrink: true, required: true }}
+                                        inputProps={{ max: new Date() }}
+                                        margin="normal"
+                                        {...register("birthDay")}
                                         required
                                     />
+
+                                    <FormControl fullWidth>
+                                        <InputLabel htmlFor="signup_gender">
+                                            Giới tính
+                                        </InputLabel>
+                                        <Select
+                                            id="signup_gender"
+                                            native
+
+                                            defaultValue="male"
+                                            {...register("gender")}
+                                        >
+                                            <option value="male" style={{ paddingLeft: "0.5rem" }}>Nam</option>
+                                            <option value="female" style={{ paddingLeft: "0.5rem" }}>Nữ</option>
+                                            <option value="other" style={{ paddingLeft: "0.5rem" }}>Khác</option>
+                                        </Select>
+                                    </FormControl>
+
+
                                     <Box>
-                                        {errors.password && (<ProfileError message={errors!.password.message as string} />)}
-                                    </Box> */}
-                                <TextField
-                                    error={Boolean(errors.birthDay)}
-                                    fullWidth
-                                    type="date"
-                                    label="Ngày Sinh"
-                                    InputLabelProps={{ shrink: true, required: true }}
-                                    inputProps={{ max: new Date() }}
-                                    margin="normal"
-                                    {...register("birthDay")}
-                                    required
-                                />
+                                        {errors.gender && (<ProfileError message={errors!.gender.message as string} />)}
+                                    </Box>
+                                </div>
+                            </CardContent>
 
-                                <FormControl fullWidth>
-                                    <InputLabel htmlFor="signup_gender">
-                                        Giới tính
-                                    </InputLabel>
-                                    <Select
-                                        id="signup_gender"
-                                        native
-
-                                        defaultValue="male"
-                                        {...register("gender")}
-                                    >
-                                        <option value="male" style={{ paddingLeft: "0.5rem" }}>Nam</option>
-                                        <option value="female" style={{ paddingLeft: "0.5rem" }}>Nữ</option>
-                                        <option value="other" style={{ paddingLeft: "0.5rem" }}>Khác</option>
-                                    </Select>
-                                </FormControl>
-
-
-                                <Box>
-                                    {errors.gender && (<ProfileError message={errors!.gender.message as string} />)}
-                                </Box>
-                            </div>
-                        </CardContent>
-
+                        </Grid>
                     </Grid>
-                </Grid>
 
-            </DialogContent>
-            <DialogActions>
-                <Button color="primary" onClick={() => handleClose()}>
-                    Cancel
-                </Button>
-                <Button
-                    color="primary"
-                    type="submit"
-                    onClick={
-                        handleSubmit(handleUpdateProfile)
-                    }>
-                    Update
-                </Button>
-            </DialogActions>
-        </Dialog>
+                </DialogContent>
+                <DialogActions>
+                    <Button color="primary" onClick={() => handleClose()}>
+                        Hủy bỏ
+                    </Button>
+                    <Button
+                        color="primary"
+                        onClick={handleSubmit(handleUpdateProfile)}>
+                        Cập Nhật
+                    </Button>
 
+                </DialogActions>
+            </Dialog>
+        </>
     )
 }
 

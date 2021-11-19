@@ -30,8 +30,6 @@ import {
   USER_LOGIN_OAUTH_FAIL,
 } from "../constants";
 
-import axiosClient from "../api/axios.client";
-
 export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInType) => (ISignInType)) => {
   try {
     dispatch({

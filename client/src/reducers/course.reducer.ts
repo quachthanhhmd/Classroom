@@ -1,13 +1,14 @@
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
     CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
-    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, GET_ALL_USER_COURSE_FAIL,
+    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, GET_ALL_USER_COURSE_FAIL, DELETE_MESSAGE,
     GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
     ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IMemberSummary, IPaginationInfo,
     IUserCourseState
 } from "../interfaces";
+import { CREATE_COURSE_FAIL_MESSAGE, CREATE_COURSE_SUCCESS_MESSAGE, JOIN_COURSE_FAIL_MESSAGE, JOIN_COURSE_SUCCESS_MESSAGE } from "../messages";
 import { UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
 import { UPDATE_MEMBER_STATE_FAIL, UPDATE_MEMBER_STATE_SUCCESS } from './../constants/member.constant';
 
@@ -19,7 +20,7 @@ interface IInitState {
     pagination: IPaginationInfo
     memberList: IMemberSummary[],
     isSuccess: boolean,
-    errorMessage: string,
+    message: string,
 }
 
 const initState: IInitState = {
@@ -34,17 +35,24 @@ const initState: IInitState = {
     },
     memberList: [],
     isSuccess: false,
-    errorMessage: "",
+    message: "",
 }
 
 
 const courseReducer = (state = initState, action: ICourseAction): IInitState => {
     switch (action.type) {
+        case DELETE_MESSAGE:
+            return {
+                ...state,
+                message: ""
+            }
         case CREATE_COURSE_REQUEST:
             return {
                 ...state,
                 course: null,
                 isLoading: true,
+                isSuccess: false,
+                message: ""
             }
         case CREATE_COURSE_SUCCESS:
             action = action as ICreateCourseState;
@@ -55,12 +63,15 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 course: action.payload! as ICourseSummary,
                 isLoading: false,
                 isSuccess: true,
+                message: CREATE_COURSE_SUCCESS_MESSAGE
             }
         case UPDATE_COURSE_INFO_REQUEST:
             return {
                 ...state,
                 course: null,
                 isLoading: true,
+                isSuccess: false,
+                message: ""
             }
         case UPDATE_COURSE_INFO_SUCCESS:
             return {
@@ -68,46 +79,53 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 isLoading: false,
                 course: action.payload! as ICourseInfo,
                 isSuccess: true,
+                message: ""
             }
         case UPDATE_COURSE_INFO_FAIL:
             return {
                 ...state,
                 isLoading: false,
                 isSuccess: false,
-                errorMessage: "update",
+                message: "update",
             }
         case CREATE_COURSE_FAIL:
             return {
                 ...state,
                 course: null,
                 isLoading: false,
-                errorMessage: "create",
                 isSuccess: false,
+                message: CREATE_COURSE_FAIL_MESSAGE,
             }
         case JOIN_COURSE_REQUEST:
             return {
                 ...state,
                 course: null,
                 isLoading: true,
+                isSuccess: false,
+                message: ""
             }
         case JOIN_COURSE_SUCCESS:
             return {
                 ...state,
                 isLoading: true,
                 course: action.payload! as ICourseInfo,
+                isSuccess: true,
+                message: JOIN_COURSE_SUCCESS_MESSAGE
             }
         case JOIN_COURSE_FAIL:
             return {
                 ...state,
                 isLoading: false,
-                errorMessage: "join",
+                message: JOIN_COURSE_FAIL_MESSAGE,
                 isSuccess: false,
             }
         case GET_ALL_USER_COURSE_REQUEST:
             return {
                 ...state,
                 data: [],
-                isLoading: true
+                isLoading: true,
+                isSuccess: false,
+                message: "",
             }
         case JOIN_COURSE_BY_URL_REQUEST:
         case JOIN_COURSE_BY_URL_FAIL:
@@ -115,6 +133,8 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: true,
                 data: [],
+                isSuccess: false,
+                message: "",
             }
         case JOIN_COURSE_BY_URL_SUCCESS:
             return {
@@ -128,14 +148,15 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 data: action.payload!.courses,
                 pagination: action.payload!.pagination,
                 isLoading: false,
-                
+                isSuccess: true,
+                message: "",
             }
         case GET_ALL_USER_COURSE_FAIL: {
             return {
                 ...state,
                 data: [],
                 isLoading: false,
-                errorMessage: "get_all",
+                message: "get_all",
                 isSuccess: false,
             }
         }
@@ -156,7 +177,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: true,
                 course: null,
-                errorMessage: "info",
+                message: "info",
                 isSuccess: false,
             }
         case GET_ALL_MEMBER_FAIL:
@@ -164,47 +185,54 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: false,
                 data: [],
-                errorMessage: "member",
+                message: "member",
                 isSuccess: false,
+
             }
         case GET_ALL_MEMBER_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 memberList: action.payload,
+                isSuccess: true,
+                message: "",
             }
         case GET_ALL_MEMBER_REQUEST:
             return {
                 ...state,
                 isLoading: true,
                 data: [],
+                isSuccess: false,
+                message: "",
             }
         case JOIN_COURSE_BY_TOKEN_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 isSuccess: true,
-                data: []
+                data: [],
+                message: JOIN_COURSE_SUCCESS_MESSAGE
             }
         case JOIN_COURSE_BY_TOKEN_FAIL:
             return {
                 ...state,
                 isLoading: false,
                 isSuccess: false,
-                data: []
+                data: [],
+                message: JOIN_COURSE_FAIL_MESSAGE
             }
         case UPDATE_MEMBER_STATE_SUCCESS:
-            console.log(action.payload);
+    
             const newMemberList = state.memberList.filter(member => {
                 if (member.user.userId !== +action.payload.userId) return member;
             })
-            console.log(newMemberList);
+
             return {
                 ...state,
                 memberList: newMemberList,
                 isLoading: false,
                 isSuccess: true,
-
+                
             }
         case UPDATE_MEMBER_STATE_FAIL:
             return {

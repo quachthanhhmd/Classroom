@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
 import CourseInfo from "../../components/CourseInfo";
+import { SnackBarRender } from "../../components/SnackBar";
 import env from "../../configs/env";
 import { TYPEROLE } from "../../constants";
 import { ICourseInfo } from "../../interfaces";
@@ -76,7 +77,7 @@ const Feed = () => {
     }, [])
 
     useEffect(() => {
-        if (!courseState.isSuccess && courseState.errorMessage === "info")
+        if (!courseState.isSuccess && courseState.message === "info")
             history.push("/");
     }, [courseState, history])
 
@@ -96,6 +97,9 @@ const Feed = () => {
                     Bảng tin khóa học | EClassroom
                 </title>
             </Helmet>
+            {
+                courseState.message && <SnackBarRender message={courseState.message!} isSuccess={courseState.isSuccess} />
+            }
             <CourseInfo course={courseState.course as ICourseInfo | null} isOpenModal={isChangeInfo} setIsOpenModal={handleChangeInfo} />
             <Dialog
                 fullWidth

@@ -8,9 +8,9 @@ import {
     TextField
 } from "@material-ui/core";
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createCourse } from "../../actions/course.action";
-// import { AppState } from "../../reducers";
+import { AppState } from "../../reducers";
 // import { createCourseModal } from "../../actions";
 import { LENGTH_TEXT_CREATE_COURSE, STUDENT_IN_COURSE } from "../../constants";
 import { ICreateCourse } from "../../interfaces";
@@ -23,6 +23,7 @@ interface IOpenModal {
 
 function CreateCourse(props: IOpenModal) {
     const { isOpenModal, setIsOpenModal } = props;
+    const course = useSelector((state: AppState) => state.course);
 
     const [numberInput, setNumberInput] = React.useState("");
     const [nameCourse, setNameCourse] = React.useState("");

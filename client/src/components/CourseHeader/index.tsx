@@ -15,6 +15,7 @@ import Profile from "../Profile";
 import ThemeMode from '../ThemeMode';
 import { useScrollHook } from "../../customs";
 import "./index.scss";
+import { SnackBarRender } from "../SnackBar";
 
 const LinkTab: React.ComponentType<TabProps & LinkProps> = Tab as React.ComponentType<TabProps & LinkProps>;
 
@@ -34,6 +35,7 @@ const Header = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const auth = useSelector((state: AppState) => state!.auth);
+    const user = useSelector((state: AppState) => state!.user);
 
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -78,6 +80,12 @@ const Header = () => {
     }
     return (
         <>
+            {
+                auth.message && <SnackBarRender message={auth.message!} isSuccess={auth.isSuccess} />
+            }
+            {
+                user.message && <SnackBarRender message={user.message!} isSuccess={user.isSuccess} />
+            }
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
             <div className="header-main" style={styleScroll}>
 

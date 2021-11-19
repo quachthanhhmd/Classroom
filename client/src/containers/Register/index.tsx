@@ -8,10 +8,12 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signUp } from "../../actions";
 import { ISignUpInput } from "../../interfaces";
 import { SignUpValidate } from "../../utils/validation";
+import { SnackBarRender } from '../../components/SnackBar';
+import { AppState } from "../../reducers";
 import "./index.scss";
 
 
@@ -50,6 +52,7 @@ const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<ISignUpInput>({
         resolver: yupResolver(SignUpValidate),
     })
+    const auth = useSelector((state: AppState) => state.auth);
 
     const dispatch = useDispatch();
     const classes = useStyles();
@@ -59,13 +62,15 @@ const Register = () => {
     }
 
     return (
-
         <form onSubmit={handleSubmit(registerAccount)}>
             <Helmet>
                 <title>
                     Đăng Ký | EClassroom
                 </title>
             </Helmet>
+            {
+                auth.message && <SnackBarRender message={auth.message!} isSuccess={auth.isSuccess} />
+            }
             <CardHeader className={classes.header} title="Đăng Ký" />
 
             <CardContent>

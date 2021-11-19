@@ -17,14 +17,10 @@ export const SignUpValidate = yup.object({
 }).required();
 
 export const SignInValidate = yup.object({
-    email: yup.string().email().required("Nhập email của bạn"),
+    email: yup.string().required("Nhập email của bạn"),
     password: yup
         .string()
         .required("Nhập mật khẩu của bạn")
-        .matches(
-            /^(?=.*[A-Z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-            "Mật khẩu phải bao gồm ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và số",
-        )
 })
 
 export const ProfileValidate = yup.object({
