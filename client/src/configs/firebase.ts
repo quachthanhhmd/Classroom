@@ -40,9 +40,9 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
 const signInWithGoogle = async () => {
     try {
         const response = await auth.signInWithPopup(googleProvider);
-        console.log(response.user);
+     
         const user = response.user;
-        console.log(`User ID - ${user?.uid}`);
+    
         const querySnapshot = await db
             .collection("users")
             .where("uid", "==", user!.uid)
