@@ -12,8 +12,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { getAllMemberInCourse, updateStateMember } from "../../actions";
 import InviteMember from "../../components/InviteMember";
+import CircularLoading from "../../components/Loading";
 import { MEMBERSTATE, TYPEROLE } from "../../constants";
 import { IMemberSummary } from "../../interfaces";
+import { FORBIDDEN_MESSAGE } from "../../messages";
 import { AppState } from "../../reducers";
 import "./index.scss";
 
@@ -57,7 +59,7 @@ const MemberDisplay = (props: IMemberDisplay) => {
         dispatch(updateStateMember(member.user.userId, +courseId, MEMBERSTATE.BLOCKED));
         handleClose();
     }
- 
+
     return (
         <div className="member-main___student___content--member" >
             {/* <Link to={`/${member.id}`}> */}
@@ -148,7 +150,7 @@ const Member = () => {
     const [roleOpenModal, setRoleOpenModal] = useState<string>("");
 
     useEffect(() => {
-        if (!course.isSuccess && course.message === "member")
+        if (!course.isSuccess && course.message === FORBIDDEN_MESSAGE)
             history.push("/");
     }, [course, history])
 
@@ -192,87 +194,93 @@ const Member = () => {
     }
 
     return (
-        <div className="member-main">
-            <InviteMember role={roleOpenModal} isOpenModal={isOpenInviteModal} setIsOpenModal={handleCloseInviteModal} />
-            <Helmet>
-                <title>
-                    Thành viên | EClassroom
-                </title>
-            </Helmet>
-            <div className="member-main___teacher">
-                <div className="member-main___teacher___header">
-                    <div className="member-main___teacher___header--title">
-                        Giáo viên
+        <>{
+            course && !course.isLoading ?
+                <div className="member-main">
+                    <InviteMember role={roleOpenModal} isOpenModal={isOpenInviteModal} setIsOpenModal={handleCloseInviteModal} />
+                    <Helmet>
+                        <title>
+                            Thành viên | EClassroom
+                        </title>
+                    </Helmet>
+                    <div className="member-main___teacher">
+                        <div className="member-main___teacher___header">
+                            <div className="member-main___teacher___header--title">
+                                Giáo viên
+                            </div>
+                            <div className="member-main___teacher___header--add-member">
+                                {member && (member.currentRole?.role === TYPEROLE.TEACHER) &&
+                                    <IconButton>
+                                        <Add onClick={() => {
+                                            setRoleOpenModal(TYPEROLE.TEACHER);
+                                            setIsOpenInviteModal(true);
+                                        }} />
+                                    </IconButton>
+                                }
+                            </div>
+                        </div>
+                        {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary) => (
+                            memberInCourse.role === "teacher" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
+                        ))}
                     </div>
-                    <div className="member-main___teacher___header--add-member">
-                        {member && (member.currentRole?.role === TYPEROLE.TEACHER) &&
-                            <IconButton>
-                                <Add onClick={() => {
-                                    setRoleOpenModal(TYPEROLE.TEACHER);
-                                    setIsOpenInviteModal(true);
-                                }} />
-                            </IconButton>
-                        }
+                    <div className="member-main___assist">
+                        <div className="member-main___assist___header">
+                            <div className="member-main___assist___header--title">
+                                Trợ Giảng
+                            </div>
+                            <div className="member-main___assist___header--add-member">
+                                {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
+                                    <IconButton>
+                                        <Add onClick={() => {
+                                            setRoleOpenModal(TYPEROLE.ASSISTANT);
+                                            setIsOpenInviteModal(true);
+                                        }} />
+                                    </IconButton>
+                                }
+                            </div>
+                        </div>
+                        {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary) => (
+                            memberInCourse.role === "assistant" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
+                        ))}
                     </div>
-                </div>
-                {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary) => (
-                    memberInCourse.role === "teacher" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
-                ))}
-            </div>
-            <div className="member-main___assist">
-                <div className="member-main___assist___header">
-                    <div className="member-main___assist___header--title">
-                        Trợ Giảng
-                    </div>
-                    <div className="member-main___assist___header--add-member">
-                        {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
-                            <IconButton>
-                                <Add onClick={() => {
-                                    setRoleOpenModal(TYPEROLE.ASSISTANT);
-                                    setIsOpenInviteModal(true);
-                                }} />
-                            </IconButton>
-                        }
-                    </div>
-                </div>
-                {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary) => (
-                    memberInCourse.role === "assistant" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
-                ))}
-            </div>
-            <div className="member-main___student">
-                <div className="member-main___student___header">
-                    <div className="member-main___student___header--title">
-                        Học Sinh
-                    </div>
-                    <div className="member-main___student___header--add-member">
-                        {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
-                            <IconButton>
-                                <Add onClick={() => {
-                                    setRoleOpenModal(TYPEROLE.STUDENT);
-                                    setIsOpenInviteModal(true);
-                                }} />
-                            </IconButton>
-                        }
-                    </div>
-                </div>
-                <div className="member-main___student___content">
-                    {
-                        member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
-                        <div className="member-main___student___content--check-all">
+                    <div className="member-main___student">
+                        <div className="member-main___student___header">
+                            <div className="member-main___student___header--title">
+                                Học Sinh
+                            </div>
+                            <div className="member-main___student___header--add-member">
+                                {member && (member.currentRole?.role === TYPEROLE.ASSISTANT || member.currentRole?.role === TYPEROLE.TEACHER) &&
+                                    <IconButton>
+                                        <Add onClick={() => {
+                                            setRoleOpenModal(TYPEROLE.STUDENT);
+                                            setIsOpenInviteModal(true);
+                                        }} />
+                                    </IconButton>
+                                }
+                            </div>
+                        </div>
+                        <div className="member-main___student___content">
+                            {
+                                member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
+                                <div className="member-main___student___content--check-all">
 
-                            <Checkbox className="member-main___student___content--check-all___check-box" onClick={handleCheckedAll} checked={isCheckedAll} />
-                            <Button onClick={handleSendMailAll}>Gửi Email</Button>
-                            {member.currentRole.role === TYPEROLE.TEACHER &&
-                                <Button>Xóa</Button>
+                                    <Checkbox className="member-main___student___content--check-all___check-box" onClick={handleCheckedAll} checked={isCheckedAll} />
+                                    <Button onClick={handleSendMailAll}>Gửi Email</Button>
+                                    {member.currentRole.role === TYPEROLE.TEACHER &&
+                                        <Button>Xóa</Button>
+                                    }
+                                </div>
                             }
                         </div>
-                    }
-                </div>
-                {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary, index: number) => (
-                    memberInCourse.role === "student" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
-                ))}
-            </div>
-        </div >
+                        {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary, index: number) => (
+                            memberInCourse.role === "student" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} isChecked={checkedList[index]} index={index} setIsChecked={handleCheckedOne} />
+                        ))}
+                    </div>
+                </div >
+                :
+                <CircularLoading />
+        }
+        </>
     )
 }
 

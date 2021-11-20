@@ -1,14 +1,13 @@
 import {
     CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST,
-    CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
-    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, GET_ALL_USER_COURSE_FAIL, DELETE_MESSAGE,
-    GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
+    CREATE_COURSE_SUCCESS, DELETE_MESSAGE, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
+    GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
     ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IMemberSummary, IPaginationInfo,
     IUserCourseState
 } from "../interfaces";
-import { CREATE_COURSE_FAIL_MESSAGE, CREATE_COURSE_SUCCESS_MESSAGE, JOIN_COURSE_FAIL_MESSAGE, JOIN_COURSE_SUCCESS_MESSAGE } from "../messages";
+import { CREATE_COURSE_FAIL_MESSAGE, CREATE_COURSE_SUCCESS_MESSAGE, FORBIDDEN_MESSAGE, JOIN_COURSE_FAIL_MESSAGE, JOIN_COURSE_SUCCESS_MESSAGE } from "../messages";
 import { UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
 import { UPDATE_MEMBER_STATE_FAIL, UPDATE_MEMBER_STATE_SUCCESS } from './../constants/member.constant';
 
@@ -86,7 +85,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: false,
                 isSuccess: false,
-                message: "update",
+                message: FORBIDDEN_MESSAGE,
             }
         case CREATE_COURSE_FAIL:
             return {
@@ -156,7 +155,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 data: [],
                 isLoading: false,
-                message: "get_all",
+                message: FORBIDDEN_MESSAGE,
                 isSuccess: false,
             }
         }
@@ -169,15 +168,15 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
         case GET_ALL_INFO_COURSE_SUCCESS:
             return {
                 ...state,
-                isLoading: true,
+                isLoading: false,
                 course: action.payload! as ICourseInfo,
             }
         case GET_ALL_INFO_COURSE_FAIL:
             return {
                 ...state,
-                isLoading: true,
+                isLoading: false,
                 course: null,
-                message: "info",
+                message: FORBIDDEN_MESSAGE,
                 isSuccess: false,
             }
         case GET_ALL_MEMBER_FAIL:
@@ -185,7 +184,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 ...state,
                 isLoading: false,
                 data: [],
-                message: "member",
+                message: FORBIDDEN_MESSAGE,
                 isSuccess: false,
 
             }
@@ -238,7 +237,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
             return {
                 ...state,
                 isSuccess: false,
-
+                isLoading: false,
             }
         default: {
             return {

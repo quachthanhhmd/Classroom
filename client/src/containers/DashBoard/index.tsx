@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { getUserCouseList } from "../../actions/course.action";
+import CircularLoading from "../../components/Loading";
 import { SnackBarRender } from "../../components/SnackBar";
 import { ICourseSummary } from "../../interfaces";
 import { AppState } from "../../reducers";
@@ -42,33 +43,40 @@ const DashBoard = () => {
     }, [JSON.stringify(courseState.data)]);
 
     return (
-        <div className="dashboard-main">
+        <>
             <Helmet>
                 <title>
                     Trang Chủ | EClassroom
                 </title>
             </Helmet>
-            {
-                courseState.message && <SnackBarRender message={courseState.message!} isSuccess={courseState.isSuccess} />
+            {courseState && !courseState.isLoading ?
+                <div className="dashboard-main">
+
+                    {
+                        courseState.message && <SnackBarRender message={courseState.message!} isSuccess={courseState.isSuccess} />
+                    }
+                    <div className="dashboard-main--title">
+                        Tất cả khóa học
+                    </div>
+                    <div className="dashboard-main___courses">
+                        {
+                            courseState.data.map((course: ICourseSummary) => (
+                                <Link to={`/course/${course.id}`}>
+                                    <Button>
+                                        <Card className="dashboard-main___courses___component">
+                                            <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader {...course} />}>
+                                            </CardHeader>
+                                        </Card>
+                                    </Button>
+                                </Link>
+                            ))
+                        }
+                    </div>
+                </div >
+                :
+                <CircularLoading />
             }
-            <div className="dashboard-main--title">
-                Tất cả khóa học
-            </div>
-            <div className="dashboard-main___courses">
-                {
-                    courseState.data.map((course: ICourseSummary) => (
-                        <Link to={`/course/${course.id}`}>
-                            <Button>
-                                <Card className="dashboard-main___courses___component">
-                                    <CardHeader className="dashboard-main___courses___component--header" style={{ backgroundImage: `url("/background-course.jpg")` }} title={<CourseHeader {...course} />}>
-                                    </CardHeader>
-                                </Card>
-                            </Button>
-                        </Link>
-                    ))
-                }
-            </div>
-        </div >
+        </>
     )
 }
 

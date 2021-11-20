@@ -28,11 +28,13 @@ const memberReducer = (state = initState, action: IMemberAction): IInitState => 
             return {
                 ...state,
                 currentRole: action.payload as IRoleMemberResponse,
+                isLoading: true,
             }
         case GET_ROLE_MEMBER_FAIL:
             return {
                 ...state,
-                currentRole: null
+                currentRole: null,
+                isLoading: false,
             }
         case INVITE_MEMBER_REQUEST:
             return {
@@ -71,7 +73,7 @@ const memberReducer = (state = initState, action: IMemberAction): IInitState => 
         case UPSERT_STUDENT_ID_REQUEST:
             return {
                 ...state,
-                isLoading: false,
+                isLoading: true,
                 message: "",
                 isSuccess: false,
             }
