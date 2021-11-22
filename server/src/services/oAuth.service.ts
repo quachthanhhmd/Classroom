@@ -46,6 +46,7 @@ export class OAuthService {
     public checkOrCreateOAuth = async (userId: number, bodyOAuth: IOAuthRequest): Promise<OAuth | null> => {
         const oAuthExist = await this.findOAuthByUserIdAndUId(userId, bodyOAuth.uid);
         if (oAuthExist) {
+
             return this.createNewOAuth(userId, bodyOAuth);
         }
 

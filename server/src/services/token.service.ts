@@ -156,6 +156,7 @@ export class TokenService {
 
     public isMatchTokenIdInvite = (tokenName: string, userId: number): boolean => {
         const payload = jwt.verify(tokenName, env.TOKEN.TOKEN_SERCET);
+        console.log(payload.sub, userId);
         const id = payload.sub === undefined ? -1 : +payload.sub;
 
         if (id === -1 || id !== userId) return false;

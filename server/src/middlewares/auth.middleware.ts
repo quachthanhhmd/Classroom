@@ -37,11 +37,11 @@ export class Authenticate {
 
     public courseAuthentication = (...requiredRights) =>
         async (req: IAuthorizeRequest, res: IResponse, next: INextFunction) => {
-            console.log(requiredRights);
+
             const userId = <number> req.currentUser?.id;
             const courseId = +req.params.courseId;
-
-            const member = await this._memberService.getRoleMember(userId, courseId);
+            console.log(userId, courseId);
+            const member = await this._memberService.getRole(userId, courseId);
             console.log(member);
             if (!member) return res.composer.forbidden();
             const isPermit = requiredRights.includes(member.role);

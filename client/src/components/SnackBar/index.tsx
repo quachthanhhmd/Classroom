@@ -26,7 +26,7 @@ const SnackBar = (props: IPropsType) => {
         <Snackbar
             open={open}
             onClose={() => handleClose()}
-            autoHideDuration={2000}
+            autoHideDuration={5000}
             ContentProps={{
                 'aria-describedby': 'snackbar-message-id',
             }}

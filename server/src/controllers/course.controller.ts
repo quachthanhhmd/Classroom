@@ -78,6 +78,7 @@ export class CourseController {
             const userId = req.currentUser?.id;
 
             const isMatchCodeAndId = this._courseService.isMatchCodeAndId(+courseId, String(code));
+
             if (!isMatchCodeAndId) {
                 return res.composer.notFound();
             }
@@ -99,12 +100,18 @@ export class CourseController {
             const courseId = +req.params.courseId;
             const userId = req.currentUser?.id;
 
-            const isSpendingMember = await this._memberService.isSpendingInvite(<number> userId, courseId);
-            if (!isSpendingMember) {
+            const member = await this._memberService.findMemberByUserAndCourseId(<number> userId, courseId);
+            console.log(member);
+            if (!member || member.type === MEMBERSTATE.REJECT || member.type === MEMBERSTATE.BLOCKED)  {
                 return res.composer.badRequest();
             }
 
+            if (member.type === MEMBERSTATE.ACCEPT) {
+                return res.composer.success();
+            }
+
             const isMatchToken = await this._tokenService.isMatchTokenIdInvite(<string> token, <number> userId);
+
             if (!isMatchToken) {
                 return res.composer.forbidden();
             }

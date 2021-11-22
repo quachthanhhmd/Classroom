@@ -90,7 +90,7 @@ export class AuthController {
             const body = req.body;
 
             const userOAuth = await this._authService.loginOrCreateOAuth(body);
-            const tokenCreate = await this._tokenService.generateTokenAuth(userOAuth.id);
+            const tokenCreate = await this._tokenService.generateTokenAuth(<number> userOAuth?.id);
 
             return res.composer.success(
                 serializeUserLogin({

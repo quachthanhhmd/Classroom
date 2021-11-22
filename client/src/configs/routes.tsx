@@ -116,6 +116,12 @@ const defaultRouteList = [
         exact: true,
         main: () => <AuthenticatePage />,
     },
+    {
+        path: ROUTES.inviteMember,
+        exact: false,
+        auth: true,
+        main: () => <InviteByToken />
+    }
 ]
 
 const courseRouteList = [
@@ -131,12 +137,7 @@ const courseRouteList = [
         auth: true,
         main: () => <Member />
     },
-    {
-        path: ROUTES.inviteMember,
-        exact: false,
-        auth: true,
-        main: () => <InviteByToken />
-    }
+    
 ]
 
 const renderRoutes = (defaultRoutes: IRoute[], HomeRoutes: IRoute[], CourseRoutes: IRoute[]) => {

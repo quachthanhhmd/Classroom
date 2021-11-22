@@ -50,7 +50,6 @@ interface ParamTypes {
 }
 
 const Feed = () => {
-    console.log(env);
 
     const { courseId } = useParams<ParamTypes>();
     const search = useLocation().search;
@@ -94,7 +93,7 @@ const Feed = () => {
     const handleChangeInfo = () =>
         isChangeInfo && setIsChangeInfo(false);
 
-    console.log(courseState.isLoading);
+ 
     return (
 
         <>

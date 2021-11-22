@@ -66,7 +66,7 @@ export class MemberController {
             if (isExistStudentId) return res.composer.badRequest();
 
             const member =
-            await this._memberService.findMemberByUserAndCourseId(<number> userId, upsertBody.courseId);
+                await this._memberService.findMemberByUserAndCourseId(<number> userId, upsertBody.courseId);
             if (!member) {
                 return res.composer.unauthorized();
             }
@@ -126,14 +126,24 @@ export class MemberController {
             }
 
             // Check member exist
-            const isExistMember = await this._memberService.isExistMember(user.id, +courseId);
-            if (isExistMember) return res.composer.badRequest("Member is exist");
+            const member = await this._memberService.findMemberByUserAndCourseId(user.id, +courseId);
 
-            // get code code
-            const spendingMember = await this._memberService.addMember(user.id, +courseId, role, MEMBERSTATE.SPENDING);
-            if (!spendingMember) return res.composer.internalServerError();
+            if (member) {
+                if (member.type === MEMBERSTATE.ACCEPT) return res.composer.badRequest("Member is exist");
 
-            const courseToken = await this._tokenService.generateTokenInvite(+courseId);
+                // block or reject
+                if (member.type === MEMBERSTATE.BLOCKED || member.type === MEMBERSTATE.REJECT) {
+                    await this._memberService.updateMember(user.id, +courseId, MEMBERSTATE.SPENDING, role);
+                }
+            }
+
+            if (!member) {
+                const spendingMember =
+                    await this._memberService.addMember(user.id, +courseId, role, MEMBERSTATE.SPENDING);
+
+                if (!spendingMember) return res.composer.internalServerError();
+            }
+            const courseToken = await this._tokenService.generateTokenInvite(+user.id);
             await sendInviteMember(req, email, courseToken, role, +courseId);
 
             return res.composer.success();

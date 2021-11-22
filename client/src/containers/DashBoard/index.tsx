@@ -51,7 +51,6 @@ const DashBoard = () => {
             </Helmet>
             {courseState && !courseState.isLoading ?
                 <div className="dashboard-main">
-
                     {
                         courseState.message && <SnackBarRender message={courseState.message!} isSuccess={courseState.isSuccess} />
                     }

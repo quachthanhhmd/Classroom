@@ -43,13 +43,17 @@ export class AuthService {
      * @param {ILoginOAuth} bodyCreate 
      * @returns {Promise<User> }
      */
-    public loginOrCreateOAuth = async (bodyCreate: ILoginOAuth): Promise<User> => {
+    public loginOrCreateOAuth = async (bodyCreate: ILoginOAuth): Promise<User | null> => {
         const userExist = await this._userService.findUserbyEmail(bodyCreate.email);
 
         if (userExist) {
             await this._oAuthService.checkOrCreateOAuth(userExist.id, { type: bodyCreate.type, uid: bodyCreate.uid })
 
-            return userExist;
+            if (userExist.firstName === "" && userExist.lastName === "") {
+                await this._userService.updateProfile(userExist.id, bodyCreate);
+            }
+
+            return this._userService.findUserById(userExist.id);
         }
 
         const newUser = await this._userService.createUser({

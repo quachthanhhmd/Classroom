@@ -17,7 +17,7 @@ export class MemberService {
     public isExistMember = async (userId: number, courseId: number) => {
         const member = await this.findMemberByUserAndCourseId(userId, courseId);
 
-        return member ? true : false;
+        return member && member.type === MEMBERSTATE.ACCEPT ? true : false;
     }
 
     /**
@@ -26,7 +26,7 @@ export class MemberService {
      * @param {number} courseId 
      * @returns 
      */
-    public isActiveMember = async (userId: number, courseId: number) : Promise<boolean> => {
+    public isActiveMember = async (userId: number, courseId: number): Promise<boolean> => {
         const member = await this.findMemberByUserAndCourseId(userId, courseId);
         if (!member) return false;
 
@@ -93,7 +93,7 @@ export class MemberService {
      */
     public upsetMember = async (userId: number, courseId: number, state?: string, role?: string) => {
 
-         await Member.upsert({
+        await Member.upsert({
             userId,
             courseId,
             role,
@@ -122,7 +122,7 @@ export class MemberService {
      * @param {number} courseId 
      * @param {string} studentId 
      */
-    public upsertStudentId = async (id:number, userId: number, courseId: number, studentId: string): Promise<void> => {
+    public upsertStudentId = async (id: number, userId: number, courseId: number, studentId: string): Promise<void> => {
         await Member.upsert({
             id,
             userId,
@@ -184,6 +184,24 @@ export class MemberService {
                     userId,
                     courseId,
                     type: MEMBERSTATE.ACCEPT
+                }
+            }
+        })
+    }
+
+    /**
+     * Check if user is student role or not
+     * @param {number} userId 
+     * @param {number} courseId 
+     * @returns {Promise<Member | null>}
+     */
+    public getRole = async (userId: number, courseId: number): Promise<Member | null> => {
+        return Member.findOne({
+            attributes: ["role", "type", "studentId"],
+            where: {
+                [Op.and]: {
+                    userId,
+                    courseId,
                 }
             }
         })
