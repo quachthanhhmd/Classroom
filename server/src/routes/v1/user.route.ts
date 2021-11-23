@@ -38,6 +38,13 @@ class UserRoutes {
             validate(this._userValidation.UpdateProfile),
             this._userController.updateProfile
         )
+
+        this.router.patch(
+            "/change-password",
+            this._authenticate.authenticate(),
+            validate(this._userValidation.UpdatePassword()),
+            this._userController.updatePassword
+        )
     }
 }
 

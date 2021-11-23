@@ -8,10 +8,10 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { updateCourseInfo } from '../../actions';
-import { ICourseInfo, ICourseSummary } from "../../interfaces";
+import { storage } from "../../configs/firebase";
+import { ICourseInfo } from "../../interfaces";
 import { objectFieldChange } from '../../utils/object-solve';
 import { ChangeCourseInfoValidate } from "../../utils/validation";
-import { storage } from "../../configs/firebase";
 import "./index.scss";
 
 

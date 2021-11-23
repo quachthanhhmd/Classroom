@@ -58,4 +58,28 @@ export class UserController {
             return res.composer.otherException(err);
         }
     }
+
+    public updatePassword = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const userId = <number> req.currentUser?.id;
+            const { oldPassword, newPassword } = req.body;
+
+            const user = await this._userService.findUserById(userId);
+
+            if (!user) return res.composer.badRequest();
+
+            const isMatchPassword = await this._userService.isPasswordMatch(user.password, oldPassword);
+
+            if (!isMatchPassword) return res.composer.badRequest("Password not right");
+
+            await this._userService.updatePassword(user.id, newPassword);
+
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 }

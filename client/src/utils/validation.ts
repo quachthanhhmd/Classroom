@@ -23,6 +23,26 @@ export const SignInValidate = yup.object({
         .required("Nhập mật khẩu của bạn")
 })
 
+export const PasswordChangeValidate = yup.object({
+    oldPassword: yup
+        .string()
+        .required("Please enter your password")
+        .matches(
+            /^(?=.*[A-Z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+            "Mật khẩu phải bao gồm ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và số",
+        ),
+    newPassword: yup
+        .string()
+        .required("Please enter your password")
+        .matches(
+            /^(?=.*[A-Z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+            "Mật khẩu phải bao gồm ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và số",
+        ),
+    againPassword: yup
+        .string()
+        .required("Please enter your password"),
+})
+
 export const ProfileValidate = yup.object({
     firstName: yup.string().max(30, "Tối đa 30 ký tự").required("Nhập họ của bạn"),
     lastName: yup.string().max(30, "Tối đa 30 ký tự").required("Nhập tên của bạn"),

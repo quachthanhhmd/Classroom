@@ -109,6 +109,21 @@ export class UserService {
             lastName: "",
         })
     }
+
+    /**
+     * update password of user
+     * @param id 
+     * @param password 
+     */
+    public updatePassword = async (id: number, password: string) => {
+        await User.update({
+            password
+        }, {
+            where: {
+                id
+            }
+        })
+    }
     /**
      * Update user
      * @param {number} userId 

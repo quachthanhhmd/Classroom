@@ -16,6 +16,7 @@ import { AppState } from "../../reducers";
 import { formatDate } from '../../utils/converter';
 import { objectFieldChange } from "../../utils/object-solve";
 import { ProfileValidate } from "../../utils/validation";
+import PasswordManage from '../PasswordManage';
 import { SnackBarRender } from "../SnackBar";
 import "./index.scss";
 
@@ -37,6 +38,7 @@ const ProfileUser = (props: IOpenModal) => {
     const { isOpenModal, setIsOpenModal } = props;
     const [selectedFile, setSelectedFile] = useState<File | undefined>();
     const [preview, setPreview] = useState<string>("");
+    const [isOpenPassword, setIsOpenPassword] = useState<boolean>(false);
 
     const auth = useSelector((state: AppState) => state.auth);
     const userProfile = auth.user;
@@ -94,10 +96,10 @@ const ProfileUser = (props: IOpenModal) => {
         setSelectedFile(e.target.files[0])
     }
     function dispatchProfileAndUpdate(data: any) {
-        data.birthDay = new Date (data.birthDay).setTime(0);
+        data.birthDay = new Date(data.birthDay).setTime(0);
 
         const newData: any = objectFieldChange(userProfile, data);
-        
+
         if (!Object.keys(newData)) return;
 
         dispatch(updateProfile(newData));
@@ -143,6 +145,7 @@ const ProfileUser = (props: IOpenModal) => {
 
     return (
         <>
+            <PasswordManage isOpenModal={isOpenPassword} setIsOpenModal={setIsOpenPassword} />
             <Dialog
                 open={isOpenModal}
                 onClose={handleClose}
@@ -223,7 +226,14 @@ const ProfileUser = (props: IOpenModal) => {
                                         {...register("birthDay")}
                                         required
                                     />
-
+                                    <div>
+                                        <Button
+                                            color="secondary"
+                                            onClick={() => {setIsOpenPassword(true)}}
+                                        >
+                                            Đổi mật khẩu
+                                        </Button>
+                                    </div>
                                     <FormControl fullWidth>
                                         <InputLabel htmlFor="signup_gender">
                                             Giới tính

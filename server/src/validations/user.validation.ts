@@ -41,4 +41,13 @@ export class UserValidation {
             })
         }
     }
+
+    public UpdatePassword = () => {
+        return {
+            body: Joi.object().keys({
+                oldPassword: Joi.string().required(),
+                newPassword: Joi.string().required(),
+            })
+        }
+    }
 }

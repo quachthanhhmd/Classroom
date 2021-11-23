@@ -13,6 +13,16 @@ export interface IProfileState {
     payload?: IProfileBody,
 }
 
-export type IUserAction = IProfileState;
+export interface IChangePassword {
+    newPassword: string,
+    oldPassword: string,
+}
+
+export interface IPasswordState {
+    type: string,
+    payload?: any
+}
+
+export type IUserAction = IProfileState | IPasswordState;
 
 
