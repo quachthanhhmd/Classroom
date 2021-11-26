@@ -78,5 +78,6 @@ export const serializeCourseDetail = (model: any) => {
         backgroundUrl: model.backgroundUrl,
         studentExist: model.studentExist,
         studentLimit: model.studentLimit,
+        exerciseTypeList: model.exerciseTypeList,
     }
 }

@@ -1,6 +1,7 @@
 export interface ICreateType {
     name: string;
     description?: string;
+    grade: number;
 }
 
 export const serializeExerciseTypeDetail = (model: any) => {
@@ -8,5 +9,6 @@ export const serializeExerciseTypeDetail = (model: any) => {
         id: model.id,
         name: model.name,
         description: model.description,
+        grade: model.grade
     }
 }

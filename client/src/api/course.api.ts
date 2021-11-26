@@ -6,7 +6,7 @@ import axiosClient from "./axios.client";
 const courseApi = {
     createCourse: (body: ICreateCourse) => {
         const url = "v1/course/";
-        return axiosClient.post<IHttpFormat<ICourseSummary>>(url, body);
+        return axiosClient.post<IHttpFormat<ICourseInfo>>(url, body);
     },
     joinCourse: (code: string) => { 
         const url = `v1/course/join/${code}`;

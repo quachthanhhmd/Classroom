@@ -13,8 +13,6 @@ import {
 } from "../interfaces";
 import { GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
 
-
-
 export const createCourse = (data: ICreateCourse) =>
     async (dispatch: (args: ICreateCourseState) => ICreateCourseState) => {
         try {

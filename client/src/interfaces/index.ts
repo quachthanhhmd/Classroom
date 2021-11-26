@@ -9,3 +9,4 @@ export * from "./user.interface";
 export * from "./oAuth.interface";
 export * from "./member.interface";
 export * from "./state.interface";
+export * from "./exercise.interface";

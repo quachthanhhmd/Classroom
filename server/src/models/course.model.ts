@@ -8,6 +8,7 @@ import {
     Table
 } from "sequelize-typescript";
 import { Member } from "./";
+import { ExerciseType } from "./exercise-type.model";
 import { Exercise } from "./exercise.model";
 import { Feed } from "./feed.model";
 
@@ -87,6 +88,8 @@ export class Course extends Model {
     @HasMany(() => Exercise)
     exerciseList!: Exercise[];
 
+    @HasMany(() => ExerciseType)
+    exerciseTypeList!: ExerciseType[];
 }
 
 function generateClassCode(length: number) {

@@ -41,16 +41,18 @@ export class ExerciseTypeController {
             return res.composer.otherException(err);
         }
     }
-    // public deleteExerciseType = async (
-    //     _req: IAuthorizeRequest,
-    //     res: IResponse
-    // ): Promise<void> => {
-    //     try {
-    //         // const id = req.params.id;
+    public deleteExerciseType = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const id = +req.params.id;
 
-    //         // Need to check logic
-    //     } catch (err) {
-    //         return res.composer.otherException(err);
-    //     }
-    // }
+            await this._exerciseTypeService.deleteExerciseType(id);
+
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 }

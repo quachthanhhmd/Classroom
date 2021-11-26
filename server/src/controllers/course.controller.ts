@@ -24,7 +24,7 @@ export class CourseController {
             const userId = req.currentUser?.id;
             const newClass = await this._courseService.createCourse(<number> userId, courseBody);
 
-            return res.composer.success(serializeCourseSummary(newClass));
+            return res.composer.success(serializeCourseDetail(newClass));
         } catch (err) {
             return res.composer.otherException(err);
         }

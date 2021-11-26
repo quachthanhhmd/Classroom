@@ -33,6 +33,14 @@ class ExerciseTypeRoute {
             validate(this._validation.CreateExerciseType),
             this._controller.updateExerciseType
         )
+
+        this.router.delete(
+            "/:id/course/:courseId",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            validate(this._validation.DeleteExerciseType),
+            this._controller.deleteExerciseType
+        )
     }
 }
 

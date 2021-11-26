@@ -14,6 +14,22 @@ export class ExerciseTypeValidation {
             body: {
                 name: Joi.string().required(),
                 description: Joi.string(),
+                grade: Joi.number().min(0),
+            }
+        })
+    }
+
+    public DeleteExerciseType = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ),
+                typeId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
             }
         })
     }

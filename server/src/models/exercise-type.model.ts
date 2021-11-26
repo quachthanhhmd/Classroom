@@ -1,13 +1,15 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, HasMany, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, Column, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table
 } from "sequelize-typescript";
-import { Exercise } from ".";
+import { Course, Exercise } from ".";
 
 interface IExerciseType {
     id?:number,
     name: string,
+    grade: number,
     description?: string,
+    courseId?: number,
 }
 
 interface IExerciseCreationAttributes extends Optional<IExerciseType, "id"> { }
@@ -32,6 +34,15 @@ export class ExerciseType extends Model<IExerciseType, IExerciseCreationAttribut
     @Column(DataType.TEXT)
     description!: string;
 
+    @AllowNull(false)
+    @Column(DataType.INTEGER.UNSIGNED)
+    grade!: number;
+
     @HasMany(() => Exercise)
     exerciseList?: Exercise[];
+
+    @ForeignKey(() => Course)
+    @AllowNull(false)
+    @Column(DataType.INTEGER.UNSIGNED)
+    courseId!: string;
 }

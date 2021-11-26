@@ -4,6 +4,7 @@ import authReducer from "./auth.reducer";
 import userReducer from "./user.reducer";
 import courseReducer from "./course.reducer";
 import memberReducer from "./member.reducer";
+import exerciseReducer from "./exercise.reducer";
 
 import { combineReducers } from "redux";
 
@@ -14,6 +15,7 @@ export const reducer = combineReducers({
     course: courseReducer,
     user: userReducer,
     member: memberReducer,
+    exercise: exerciseReducer
 });
 
 

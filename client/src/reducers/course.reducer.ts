@@ -15,7 +15,7 @@ import { UPDATE_MEMBER_STATE_FAIL, UPDATE_MEMBER_STATE_SUCCESS } from './../cons
 interface IInitState {
     data: ICourseSummary[],
     isLoading: boolean,
-    course: ICourseSummary | ICourseInfo | null,
+    course: ICourseInfo | null,
     pagination: IPaginationInfo
     memberList: IMemberSummary[],
     isSuccess: boolean,
@@ -59,7 +59,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
 
             return {
                 ...state,
-                course: action.payload! as ICourseSummary,
+                course: action.payload! as ICourseInfo,
                 isLoading: false,
                 isSuccess: true,
                 message: CREATE_COURSE_SUCCESS_MESSAGE
@@ -221,7 +221,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 message: JOIN_COURSE_FAIL_MESSAGE
             }
         case UPDATE_MEMBER_STATE_SUCCESS:
-    
+
             const newMemberList = state.memberList.filter(member => {
                 if (member.user.userId !== +action.payload.userId) return member;
             })
@@ -231,7 +231,7 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
                 memberList: newMemberList,
                 isLoading: false,
                 isSuccess: true,
-                
+
             }
         case UPDATE_MEMBER_STATE_FAIL:
             return {

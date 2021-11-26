@@ -1,4 +1,5 @@
 import { IPaginationInfo } from './';
+import { IExerciseTypeDetail } from './exercise.interface';
 
 
 export interface IUserCourse {
@@ -32,6 +33,7 @@ export interface ICourseInfo {
     studentExist: number,
     studentLimit: number,
     ownerId: number,
+    exerciseTypeList?: IExerciseTypeDetail[]
 }
 
 //-------------------------------------
@@ -45,7 +47,7 @@ export interface ICreateCourse {
 
 export interface ICreateCourseState {
     type: string,
-    payload?: ICourseSummary,
+    payload?: ICourseInfo,
 }
 
 export interface ICourseInfoState {
