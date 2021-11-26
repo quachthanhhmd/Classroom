@@ -78,7 +78,7 @@ export class AuthController {
 
             return res.composer.success(newToken);
         } catch (err) {
-            return res.composer.otherException(err);
+            return res.composer.unauthorized(UNAUTHENTICATED);
         }
     };
 

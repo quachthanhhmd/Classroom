@@ -36,6 +36,7 @@ const Header = () => {
     const history = useHistory();
     const auth = useSelector((state: AppState) => state!.auth);
     const user = useSelector((state: AppState) => state!.user);
+    const course = useSelector((state: AppState) => state!.course);
 
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
@@ -44,7 +45,8 @@ const Header = () => {
     useEffect(() => {
         window.location.pathname.includes("course") && setTypePill(0);
         //window.location.pathname.includes("exam") && setTypePill(1);
-        window.location.pathname.includes("member") && setTypePill(2);
+        window.location.pathname.includes("structure") && setTypePill(2);
+        window.location.pathname.includes("member") && setTypePill(3);
     }, [window.location.pathname])
 
     useEffect(() => {
@@ -101,7 +103,7 @@ const Header = () => {
                         </Button>
                     </div>
                     <div className="header-main___left--logo-name">
-                        <p>LTUDW - Lap trinh ung dung web </p>
+                        <p>{course.course?.name}</p>
                     </div>
                 </div>
                 <div className="header-main___middle">
@@ -121,7 +123,8 @@ const Header = () => {
                         <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to="/auth" >
                             <Link to="/auth/2" />
                         </LinkTab>
-                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
+                        <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
                     </Tabs>
 
                 </div>

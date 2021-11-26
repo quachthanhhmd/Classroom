@@ -12,9 +12,12 @@ import AddIDModal from "../components/AddIDModal";
 import env from "./env";
 
 const Feed = lazy(() => import("../containers/Feed"));
+const GradeStructure = lazy(() => import("../containers/GradeStructure"));
 const Member = lazy(() => import("../containers/Member"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const InviteByToken = lazy(() => import("../components/InviteByToken"));
+
+
 type IRoute = {
     path: string,
     exact?: boolean,
@@ -137,7 +140,12 @@ const courseRouteList = [
         auth: true,
         main: () => <Member />
     },
-    
+    {
+        path: ROUTES.structure,
+        exact: false,
+        auth: true,
+        main: () => <GradeStructure/>
+    }
 ]
 
 const renderRoutes = (defaultRoutes: IRoute[], HomeRoutes: IRoute[], CourseRoutes: IRoute[]) => {
