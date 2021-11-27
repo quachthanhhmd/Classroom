@@ -75,7 +75,7 @@ const Feed = () => {
         if (code) {
             dispatch(joinCourseByUrl(+courseId, code));
         }
-        dispatch(getAllCourseInfo(Number(courseId)));
+        //dispatch(getAllCourseInfo(Number(courseId)));
 
     }, [])
 

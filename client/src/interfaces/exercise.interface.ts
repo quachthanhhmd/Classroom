@@ -22,9 +22,9 @@ export interface ICreateExerciseTypeState {
     payload?: IExerciseTypeDetail
 }
 
-export interface IUpdateExerciseType {
+export interface IUpdateExerciseTypeState {
     type: string,
-    payload?: IUpdateExerciseType
+    payload?: IExerciseTypeDetail
 }
 
-export type IExerciseAction = ICreateExerciseTypeState | IUpdateExerciseType;
+export type IExerciseAction = ICreateExerciseTypeState | IUpdateExerciseTypeState;

@@ -6,16 +6,16 @@ import {
     Event, Menu as MenuIcon
 } from "@material-ui/icons";
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router"
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
 import { Link, LinkProps, useHistory } from "react-router-dom";
-import { signOut, getUserData } from "../../actions";
+import { getAllCourseInfo, getUserData, signOut } from "../../actions";
+import { useScrollHook } from "../../customs";
 import { AppState } from "../../reducers";
 import Profile from "../Profile";
-import ThemeMode from '../ThemeMode';
-import { useScrollHook } from "../../customs";
-import "./index.scss";
 import { SnackBarRender } from "../SnackBar";
+import ThemeMode from '../ThemeMode';
+import "./index.scss";
 
 const LinkTab: React.ComponentType<TabProps & LinkProps> = Tab as React.ComponentType<TabProps & LinkProps>;
 
@@ -53,6 +53,11 @@ const Header = () => {
         if (!auth.user) {
             dispatch(getUserData())
         }
+    }, [])
+
+    useEffect(() => {
+        console.log(course.course);
+        dispatch(getAllCourseInfo(Number(courseId)))
     }, [])
 
     const handleClick = (e: any, type: string) => {

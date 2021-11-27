@@ -1,5 +1,5 @@
 import { IPaginationInfo } from './';
-import { IExerciseTypeDetail } from './exercise.interface';
+import { ICreateExerciseType, ICreateExerciseTypeState, IExerciseTypeDetail, IUpdateExerciseTypeState } from './exercise.interface';
 
 
 export interface IUserCourse {
@@ -112,4 +112,4 @@ export interface IUpdateCourseInput {
     backgroundUrl?: string,
 }
 
-export type ICourseAction = IUpdateCourseInfoState | IInviteByTokenState | ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState;
+export type ICourseAction = IUpdateCourseInfoState | IInviteByTokenState | ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState | ICreateExerciseTypeState | IUpdateExerciseTypeState;

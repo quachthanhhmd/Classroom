@@ -10,6 +10,7 @@ interface IExerciseType {
     grade: number,
     description?: string,
     courseId?: number,
+    orderIndex?: number,
 }
 
 interface IExerciseCreationAttributes extends Optional<IExerciseType, "id"> { }
@@ -33,6 +34,10 @@ export class ExerciseType extends Model<IExerciseType, IExerciseCreationAttribut
     @AllowNull(true)
     @Column(DataType.TEXT)
     description!: string;
+
+    @AllowNull(false)
+    @Column(DataType.INTEGER.UNSIGNED)
+    orderIndex!: number;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)

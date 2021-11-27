@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { CourseService, MemberService, TokenService, UserService } from "../services";
-import { serializeCourseDetail, serializeCourseSummary, IAuthorizeRequest, IResponse } from "./../interfaces";
+import { serializeCourseDetail, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
 
 @injectable()
@@ -38,11 +38,13 @@ export class CourseController {
             const courseId: number = +req.params.courseId;
 
             const course = await this._courseService.getCourseDetail(courseId);
-            if (!course) {
+
+            if (!course || course.length !== 1) {
                 return res.composer.notFound();
             }
+            console.log(course[0].exerciseTypeList);
 
-            return res.composer.success(serializeCourseDetail(course));
+            return res.composer.success(serializeCourseDetail(course[0]));
         } catch (err) {
             return res.composer.otherException(err);
         }

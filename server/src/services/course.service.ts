@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { Op } from "sequelize";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { ICreateCourse } from "../interfaces";
-import { Course } from "../models";
+import { Course, ExerciseType } from "../models";
 import { MemberService } from "./";
 import { IUpdateCourse } from "./../interfaces/course.interface";
 
@@ -34,8 +34,15 @@ export class CourseService {
      * @param {number} id 
      * @returns 
      */
-    public getCourseDetail = async (id: number): Promise<Course | null> => {
-        return Course.findByPk(id);
+    public getCourseDetail = async (id: number): Promise<Course[]> => {
+        return Course.findAll({
+            where: {
+                id
+            },
+            include: [ExerciseType],
+            raw: false,
+            nest: true,
+        });
     }
 
     /**
@@ -77,7 +84,7 @@ export class CourseService {
     public getCodeById = async (courseId: number): Promise<string | undefined> => {
         const course = await this.getCourseDetail(courseId);
 
-        return course?.code;
+        return  course[0].code;
     }
     /**
      * Check wonder if course is own user or not

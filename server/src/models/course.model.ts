@@ -80,16 +80,16 @@ export class Course extends Model {
 
     // Associate
     @HasMany(() => Member)
-    memberList!: Member[];
+    memberList?: Member[];
 
     @HasMany(() => Feed)
-    feedList!: Feed[];
+    feedList?: Feed[];
 
     @HasMany(() => Exercise)
-    exerciseList!: Exercise[];
+    exerciseList?: Exercise[];
 
     @HasMany(() => ExerciseType)
-    exerciseTypeList!: ExerciseType[];
+    exerciseTypeList?: ExerciseType[];
 }
 
 function generateClassCode(length: number) {

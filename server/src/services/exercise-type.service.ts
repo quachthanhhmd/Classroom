@@ -15,13 +15,29 @@ export class ExerciseTypeService {
     }
 
     /**
+     * generate new index Id
+     * @param courseId 
+     * @returns 
+     */
+    public generateNewOrderIndex = async (courseId: number) => {
+
+        const numOfRow = await ExerciseType.count({
+            where: {
+                courseId,
+            }
+        })
+
+        return numOfRow + 1;
+    }
+    /**
      * Create Exercise Type
      * @param {ICreateType} body 
      * @returns 
      */
-    public createExerciseType = async (body: ICreateType): Promise<ExerciseType> => {
+    public createExerciseType = async (courseId: number, body: ICreateType): Promise<ExerciseType> => {
         return ExerciseType.create({
             ...body,
+            courseId
         })
     }
     /**

@@ -12,3 +12,9 @@ export const formatDate = (date: Date | undefined) => {
 
     return [year, month, day].join('-');
 }
+
+
+export const isRatherZero = (n: string) => {
+    if (Number(n) && Number(n) > 0) return true;
+    return false; 
+}

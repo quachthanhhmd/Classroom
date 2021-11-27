@@ -14,8 +14,11 @@ export class ExerciseTypeController {
     ): Promise<void> => {
         try {
             const body = req.body;
+            const courseId = +req.params.courseId;
 
-            const newType = await this._exerciseTypeService.createExerciseType(body);
+            const newOrderIndex = await this._exerciseTypeService.generateNewOrderIndex(courseId);
+            const newType =
+                await this._exerciseTypeService.createExerciseType(courseId, { ...body, orderIndex: newOrderIndex });
 
             return res.composer.success(serializeExerciseTypeDetail(newType));
         } catch (err) {
@@ -53,6 +56,19 @@ export class ExerciseTypeController {
             return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);
+        }
+    }
+
+    public changeOrderIndex = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = +req.params.courseId;
+            const body = req.body;
+
+        } catch (err) {
+            res.composer.otherException(err);
         }
     }
 }
