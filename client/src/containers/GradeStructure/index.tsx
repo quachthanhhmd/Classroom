@@ -14,7 +14,7 @@ interface IDrageAttribute {
     dragId: string;
     content: string;
     description?: string;
-    grade: number;
+    grade?: number;
 }
 
 const serializeDataType = (item: IExerciseTypeDetail, count: number) => {
@@ -32,23 +32,17 @@ const fakeData = (count: number): IDrageAttribute => {
         id: count,
         dragId: `item-${count}`,
         content: "",
-        grade: 0,
+        grade: undefined,
         description: ""
     }
 }
+
 
 // fake data generator
 const serializeExerciseType = (data: IExerciseTypeDetail[]): IDrageAttribute[] => {
     return Array.from({ length: data.length }, (v, k) => k).map(k => (serializeDataType(data[k], k)));
 }
-// a little function to help us with reordering the result
-const reorder = (list: IDrageAttribute[], startIndex: number, endIndex: number): IDrageAttribute[] => {
-    const result = Array.from(list);
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
 
-    return result;
-};
 
 const getDisableList = (count: number): boolean[] => {
     return new Array(count).fill(true);
@@ -79,6 +73,20 @@ const GradeStructure = () => {
         }
     }, [itemList, chooseIndex])
 
+    // a little function to help us with reordering the result
+    const reorder = (list: IDrageAttribute[], startIndex: number, endIndex: number): IDrageAttribute[] => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+
+        // update choose index
+        if (chooseIndex === startIndex) {
+            setChooseIndex(endIndex);
+        }
+
+        return result;
+    };
+
     const onDragEnd = (result) => {
         // dropped outside the list
         if (!result.destination) {
@@ -101,6 +109,10 @@ const GradeStructure = () => {
         newDisableList[chooseIndex] = !newDisableList[chooseIndex];
         setIsDisableList(newDisableList);
     }
+    const handleSubmit = (index: number) => {
+
+        console.log(itemList[index]);
+    }
 
     const handleAddDrag = () => {
         let newItemList = [...itemList];
@@ -112,6 +124,20 @@ const GradeStructure = () => {
         setIsDisableList(newDisableList);
 
         setChooseIndex(itemList.length);
+    }
+
+    const updateListItem = (index: number, data: IDrageAttribute) => {
+        let newItemList = [...itemList];
+        newItemList[index] = data;
+        setItemList(newItemList);
+    }
+    const handleDelete = (indexValue: number) => {
+        let newItemList = [...itemList].filter((item, index) => {
+            return indexValue !== index
+        })
+        console.log(newItemList);
+        setItemList(newItemList);
+        setChooseIndex(newItemList.length === 0 ? -1 : 0);
     }
 
     return (
@@ -143,7 +169,7 @@ const GradeStructure = () => {
 
                     </Grid>
                     <div className="structure-main___content--structure--total" >
-                        Tổng cộng: {itemList.reduce((a, b) => a + b.grade, 0)} điểm
+                        Tổng cộng: {itemList.reduce((a, b) => a + (b?.grade ? b.grade : 0), 0)} điểm
                     </div>
                 </CardContent>
             </Card>
@@ -166,8 +192,8 @@ const GradeStructure = () => {
                                                     fullWidth
                                                     style={{ padding: '0px' }}
                                                     onClick={() => {
-                                                        console.log(item.dragId.split('-')[1])
-                                                        setChooseIndex(Number(item.dragId.split('-')[1]));
+
+                                                        setChooseIndex(index);
                                                     }}
                                                 >
                                                     <Draggable
@@ -178,7 +204,7 @@ const GradeStructure = () => {
                                                                 ref={provided.innerRef}
                                                                 {...provided.draggableProps}
                                                                 {...provided.dragHandleProps}
-                                                                className={`structure-main___drag___list-show--item${`item-${chooseIndex}` === item.dragId ? " structure-main___drag___list-show--item--click" : ""}`}
+                                                                className={`structure-main___drag___list-show--item${chooseIndex === index ? " structure-main___drag___list-show--item--click" : ""}`}
 
                                                             >
                                                                 {item.content ? item.content : "Thang điểm mới"}
@@ -194,11 +220,14 @@ const GradeStructure = () => {
 
                                 </Droppable>
                             }
+
                             <Button className="structure-main___drag--add-more"
                                 style={{ backgroundColor: "rgb(151, 151, 151)" }}
                                 onClick={handleAddDrag}>
                                 <Add />
                             </Button>
+
+
                         </DragDropContext>
                     </Grid>
                     <Grid item xs={8}>
@@ -210,27 +239,50 @@ const GradeStructure = () => {
                                 </Typography>
                                 <TextField
                                     fullWidth
+                                    error={itemList[chooseIndex].content === "" ? true : false}
+                                    helperText={itemList[chooseIndex].content === "" ? 'Hãy nhập tên loại điểm' : ' '}
                                     label="Tên loại điểm"
-                                    defaultValue={itemList[chooseIndex].content}
+                                    value={itemList[chooseIndex].content}
+                                    onChange={(e) => {
+                                        let changeItemContent = itemList[chooseIndex];
+                                        changeItemContent.content = e.target.value;
+                                        updateListItem(chooseIndex, changeItemContent);
+                                    }}
                                     disabled={isDisableList[chooseIndex]}
                                     variant={`${!isDisableList[chooseIndex] ? "standard" : "filled"}`}
                                 />
                                 <TextField
                                     fullWidth
                                     label="Số điểm"
-                                    defaultValue={itemList[chooseIndex].grade}
+                                    error={typeof itemList[chooseIndex].grade === "undefined" ? true : false}
+                                    helperText={typeof itemList[chooseIndex].grade === "undefined" ? 'Hãy nhập số điểm bạn muốn điểm' : ' '}
+                                    value={itemList[chooseIndex].grade}
+                                    InputProps={{ inputProps: { min: 0 } }}
+                                    type="number"
+                                    onChange={(e) => {
+                                        let changeItemGrade = itemList[chooseIndex];
+                                        changeItemGrade.grade = +e.target.value;
+                                        updateListItem(chooseIndex, changeItemGrade);
+                                    }}
                                     disabled={isDisableList[chooseIndex]}
                                     variant={`${!isDisableList[chooseIndex] ? "standard" : "filled"}`}
                                 />
                                 <TextField
                                     fullWidth
                                     label="Mô tả về loại điểm này"
-                                    defaultValue={itemList[chooseIndex].description}
+                                    value={itemList[chooseIndex]?.description}
+                                    onChange={(e) => {
+                                        let changeItem = itemList[chooseIndex];
+                                        changeItem.description = e.target.value;
+                                        updateListItem(chooseIndex, changeItem);
+                                    }}
                                     disabled={isDisableList[chooseIndex]}
                                     variant={`${!isDisableList[chooseIndex] ? "standard" : "filled"}`}
                                 />
                                 <div className="structure-main___drag___description--update">
-                                    <Button variant="outlined" startIcon={<Delete />} style={{ color: "white", backgroundColor: "rgb(248, 44, 44)" }}>
+                                    <Button
+                                        onClick={() => handleDelete(chooseIndex)}
+                                        variant="outlined" startIcon={<Delete />} style={{ color: "white", backgroundColor: "rgb(248, 44, 44)" }}>
                                         Xóa
                                     </Button>
                                     {
@@ -242,7 +294,7 @@ const GradeStructure = () => {
                                             </Button>
                                             :
                                             <Button
-                                                onClick={handleChangeEvent}
+                                                onClick={() => handleSubmit(chooseIndex)}
                                                 variant="outlined" startIcon={<Save />} style={{ color: "white", backgroundColor: "blue" }}>
                                                 Lưu
                                             </Button>
@@ -258,7 +310,7 @@ const GradeStructure = () => {
                     </Grid>
                 </Grid>
             </Card>
-        </div>
+        </div >
     )
 }
 
