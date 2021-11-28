@@ -4,6 +4,16 @@ export interface ICreateExerciseType {
     grade: number,
 }
 
+export interface IChangeOrder {
+    id: number,
+    orderIndex: number,
+}
+
+export interface IChangeOrderState {
+    type: string,
+    payload?: IExerciseTypeDetail[]
+}
+
 export interface IUpdateExerciseType {
     name?: string,
     description?: string
@@ -14,7 +24,8 @@ export interface IExerciseTypeDetail {
     id: number, 
     name: string,
     description?: string,
-    grade: number
+    grade: number,
+    orderIndex: number
 }
 
 export interface ICreateExerciseTypeState {
@@ -27,4 +38,4 @@ export interface IUpdateExerciseTypeState {
     payload?: IExerciseTypeDetail
 }
 
-export type IExerciseAction = ICreateExerciseTypeState | IUpdateExerciseTypeState;
+export type IExerciseAction = ICreateExerciseTypeState | IUpdateExerciseTypeState | IChangeOrderState;

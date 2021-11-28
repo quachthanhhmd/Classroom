@@ -1,4 +1,4 @@
-import {injectable} from "inversify";
+import { injectable } from "inversify";
 import Joi from "joi";
 
 @injectable()
@@ -26,11 +26,33 @@ export class ExerciseTypeValidation {
                     Joi.string(),
                     Joi.number(),
                 ),
-                typeId: Joi.alternatives(
+                id: Joi.alternatives(
                     Joi.string(),
                     Joi.number(),
                 )
             }
+        })
+    }
+
+    public ChangeOrder = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ),
+                id: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            },
+            body: Joi.array().items(
+                Joi.object().keys({
+                    id: Joi.number().required(),
+                    orderIndex: Joi.number(),
+                })
+            )
+
         })
     }
 }

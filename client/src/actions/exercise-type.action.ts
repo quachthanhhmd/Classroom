@@ -1,6 +1,6 @@
 import exerciseApi from "../api/exercise.api";
-import { CREATE_EXERCISE_TYPE_FAIL, CREATE_EXERCISE_TYPE_REQUEST, CREATE_EXERCISE_TYPE_SUCCESS, UPDATE_EXERCISE_TYPE_REQUEST, UPDATE_EXERCISE_TYPE_SUCCESS } from "../constants";
-import { ICreateExerciseType, IExerciseAction } from "../interfaces";
+import { CREATE_EXERCISE_TYPE_FAIL, CREATE_EXERCISE_TYPE_REQUEST, CREATE_EXERCISE_TYPE_SUCCESS, UPDATE_EXERCISE_TYPE_REQUEST, UPDATE_EXERCISE_TYPE_SUCCESS, UPDATE_ORDER_CHANGE_SUCCESS } from "../constants";
+import { IChangeOrder, ICreateExerciseType, IExerciseAction } from "../interfaces";
 
 
 export const createExerciseType = (courseId: number, data: ICreateExerciseType) =>
@@ -45,5 +45,22 @@ export const updateExerciseType = (courseId: number, typeId: number, data: ICrea
             dispatch({
                 type: UPDATE_EXERCISE_TYPE_REQUEST,
             });
+        }
+    }
+
+
+export const changeOrderType = (courseId: number, data: IChangeOrder[]) =>
+    async (dispatch: (args: IExerciseAction) => (IExerciseAction)) => {
+        try {
+
+            const result = await exerciseApi.changeOrderType(courseId, data);
+            if (result.data.code !== 200) throw new Error();
+
+            dispatch({
+                type: UPDATE_ORDER_CHANGE_SUCCESS,
+                payload: result.data.payload
+            })
+        } catch (err) {
+
         }
     }

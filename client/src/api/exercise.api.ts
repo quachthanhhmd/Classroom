@@ -1,4 +1,4 @@
-import { ICreateExerciseType, IExerciseTypeDetail, IHttpFormat } from "../interfaces";
+import { IChangeOrder, ICreateExerciseType, IExerciseTypeDetail, IHttpFormat } from "../interfaces";
 import axiosClient from "./axios.client";
 
 
@@ -14,6 +14,11 @@ const exerciseApi = {
     deleteExerciseType: (typeId: number) => {
         const url = `/v1/exercise-type/${typeId}`;
         return axiosClient.delete<IHttpFormat<null>>(url);
+    },
+    changeOrderType: (courseId: number, data: IChangeOrder[]) => {
+        console.log(data);
+        const url = `/v1/exercise-type/course/${courseId}/order`;
+        return axiosClient.post<IHttpFormat<IExerciseTypeDetail[]>>(url, data);
     }
 }
 

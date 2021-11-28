@@ -2,7 +2,7 @@ import {
     AllowNull,
     AutoIncrement, Column,
     DataType,
-    Default, HasMany,
+    Default, DefaultScope, HasMany,
     Model,
     PrimaryKey,
     Table
@@ -31,6 +31,11 @@ import { Feed } from "./feed.model";
     paranoid: true,
     timestamps: true,
     tableName: "course"
+})
+@DefaultScope({
+    include: [
+        { model: () => ExerciseType, separate: true, order:[["orderIndex", "ASC"]] },
+    ]
 })
 export class Course extends Model {
 

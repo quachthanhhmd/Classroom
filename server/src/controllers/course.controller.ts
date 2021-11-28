@@ -36,16 +36,18 @@ export class CourseController {
     ): Promise<void> => {
         try {
             const courseId: number = +req.params.courseId;
-
+            console.log("Chua bug ne")
             const course = await this._courseService.getCourseDetail(courseId);
 
-            if (!course || course.length !== 1) {
+            if (!course) {
                 return res.composer.notFound();
             }
-            console.log(course[0].exerciseTypeList);
+            console.log(course.exerciseTypeList);
 
-            return res.composer.success(serializeCourseDetail(course[0]));
+            return res.composer.success(serializeCourseDetail(course));
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }
@@ -103,7 +105,7 @@ export class CourseController {
             const userId = req.currentUser?.id;
 
             const member = await this._memberService.findMemberByUserAndCourseId(<number> userId, courseId);
-            console.log(member);
+
             if (!member || member.type === MEMBERSTATE.REJECT || member.type === MEMBERSTATE.BLOCKED)  {
                 return res.composer.badRequest();
             }

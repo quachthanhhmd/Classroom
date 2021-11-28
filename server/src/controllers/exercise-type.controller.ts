@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { serializeExerciseTypeDetail, IAuthorizeRequest, IResponse } from "../interfaces";
+import { serializeExerciseTypeDetail, serializeExerciseTypeDetailList, IAuthorizeRequest, IResponse } from "../interfaces";
 import { ExerciseTypeService } from "../services";
 
 @injectable()
@@ -66,7 +66,11 @@ export class ExerciseTypeController {
         try {
             const courseId = +req.params.courseId;
             const body = req.body;
+            await this._exerciseTypeService.updateOrderIndex(body);
 
+            const typeList = await this._exerciseTypeService.findAllExerciseDetail(courseId);
+
+            return res.composer.success(serializeExerciseTypeDetailList(typeList));
         } catch (err) {
             res.composer.otherException(err);
         }

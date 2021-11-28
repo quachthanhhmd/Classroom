@@ -41,6 +41,14 @@ class ExerciseTypeRoute {
             validate(this._validation.DeleteExerciseType),
             this._controller.deleteExerciseType
         )
+
+        this.router.post(
+            "/course/:courseId/order",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            validate(this._validation.ChangeOrder),
+            this._controller.changeOrderIndex
+        )
     }
 }
 

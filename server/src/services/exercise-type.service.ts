@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
-import { ICreateType } from "../interfaces";
+import { ICreateType, IUpdateOrder } from "../interfaces";
 import { ExerciseType } from "../models";
-
 @injectable()
 export class ExerciseTypeService {
 
@@ -38,6 +37,38 @@ export class ExerciseTypeService {
         return ExerciseType.create({
             ...body,
             courseId
+        })
+    }
+
+    /**
+     * Update Order index
+     * @param updateList 
+     */
+    public updateOrderIndex = async (updateList: IUpdateOrder[]): Promise<void> => {
+        console.log(updateList);
+        await Promise.all(updateList.map(async (item) => {
+            await ExerciseType.update({
+                orderIndex: item.orderIndex,
+            }, {
+                where: {
+                    id: item.id
+                }
+            })
+        }))
+    }
+    /**
+     * Find all exercise type
+     * @param courseId 
+     * @returns 
+     */
+    public findAllExerciseDetail = async (courseId: number): Promise<ExerciseType[]> => {
+        return ExerciseType.findAll({
+            where: {
+                courseId
+            },
+            order: [
+                ["orderIndex", "ASC"],
+            ],
         })
     }
     /**

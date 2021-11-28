@@ -1,16 +1,15 @@
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@material-ui/core';
 import { Add, Delete, Edit, Save } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { getAllCourseInfo } from '../../actions';
-import { createExerciseType, updateExerciseType } from '../../actions/exercise-type.action';
+import { changeOrderType, createExerciseType, updateExerciseType } from '../../actions/exercise-type.action';
 import CircularLoading from '../../components/Loading';
 import { SnackBarRender } from '../../components/SnackBar';
-import { ICreateExerciseType, IExerciseTypeDetail } from '../../interfaces';
+import { IChangeOrder, ICreateExerciseType, IExerciseTypeDetail } from '../../interfaces';
 import { AppState } from '../../reducers';
-import { isRatherZero } from '../../utils/converter';
+import { objectArrayChange } from '../../utils/object-solve';
 import "./index.scss";
 
 
@@ -23,6 +22,7 @@ interface IDrageAttribute {
     grade: number | string;
     isDisabled: boolean;
     isFakeData: boolean;
+    orderIndex: number
 }
 
 const serializeDataType = (item: IExerciseTypeDetail, count: number) => {
@@ -34,6 +34,7 @@ const serializeDataType = (item: IExerciseTypeDetail, count: number) => {
         description: item?.description,
         isDisabled: true,
         isFakeData: false,
+        orderIndex: item.orderIndex
     }
 }
 
@@ -46,6 +47,7 @@ const fakeData = (count: number): IDrageAttribute => {
         description: "",
         isDisabled: true,
         isFakeData: true,
+        orderIndex: 0,
     }
 }
 
@@ -55,11 +57,17 @@ const serializeExerciseType = (data: IExerciseTypeDetail[]): IDrageAttribute[] =
     return Array.from({ length: data.length }, (v, k) => k).map(k => (serializeDataType(data[k], k)));
 }
 
+const getFieldToOrder = (item: any) => {
+    return {
+        id: item.id,
+        orderIndex: item.orderIndex
+    }
+}
 
 
 const GradeStructure = () => {
     const { courseId } = useParams<{ courseId: string }>();
-
+    const submitTimeOut = useRef<NodeJS.Timeout | null>(null);
     const [defaultItemList, setDefaultItemList] = useState<IDrageAttribute[]>([]);
     const [itemList, setItemList] = useState<IDrageAttribute[]>([]);
     const [chooseIndex, setChooseIndex] = useState<number>(0);
@@ -69,26 +77,34 @@ const GradeStructure = () => {
     const course = useSelector((state: AppState) => state!.course);
     const exercise = useSelector((state: AppState) => state!.exercise);
 
+
     useEffect(() => {
 
-        return () => {
+        if (submitTimeOut.current) {
+            clearTimeout(submitTimeOut.current);
+        }
+        submitTimeOut.current = setTimeout(() => {
+            const getFieldDefault = defaultItemList.map(getFieldToOrder);
+            const getFieldChange = itemList.map(getFieldToOrder);
+            const changeObject = objectArrayChange(getFieldChange, getFieldDefault);
+  
+            if (changeObject.length !== 0) {
+                //setDefaultItemList([...itemList]);
+                dispatch(changeOrderType(+courseId, changeObject as IChangeOrder[]));
+            }
+        }, 1000);
 
-        };
-    }, [])
+    }, [defaultItemList, itemList])
+
+
     useEffect(() => {
-        console.log("Vo r ne")
         if (course.course?.exerciseTypeList) {
             setItemList(serializeExerciseType(course.course?.exerciseTypeList));
             setDefaultItemList(serializeExerciseType(course.course?.exerciseTypeList));
         }
+
+
     }, [course.course, course.course?.exerciseTypeList])
-
-
-    // useEffect(() => {
-    //     if (exercise.isSuccess) {
-    //         dispatch(getAllCourseInfo(Number(courseId)));
-    //     }
-    // }, [exercise.isSuccess])
 
     useEffect(() => {
         if (itemList.length === 0) {
@@ -98,11 +114,25 @@ const GradeStructure = () => {
             setChooseIndex(chooseIndex === -1 ? 0 : chooseIndex);
         }
     }, [itemList, chooseIndex])
+
+    const updateOrderIndex = (itemOrderList: IDrageAttribute[]) => {
+        let newItemList = [...itemOrderList];
+        return newItemList.map((item, index) => {
+            item.orderIndex = index + 1;
+            return item;
+        })
+    }
     // a little function to help us with reordering the result
     const reorder = (list: IDrageAttribute[], startIndex: number, endIndex: number): IDrageAttribute[] => {
         const result = Array.from(list);
         const [removed] = result.splice(startIndex, 1);
         result.splice(endIndex, 0, removed);
+
+        //update 
+        // let newItemList = [...itemList];
+        // [itemList[startIndex].orderIndex, itemList[endIndex].orderIndex] = [itemList[endIndex].orderIndex, itemList[startIndex].orderIndex];
+        const newItemList = updateOrderIndex(result);
+        setItemList(newItemList);
 
         // update choose index
         if (chooseIndex === startIndex) {
