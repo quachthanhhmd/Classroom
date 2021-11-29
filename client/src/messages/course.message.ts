@@ -5,3 +5,7 @@ export const JOIN_COURSE_SUCCESS_MESSAGE = "Tham gia lớp thành công";
 export const UPDATE_COURSE_SUCCESS_MESSAGE = "Cập nhật thông tin lớp thành công";
 export const UPDATE_COURSE_FAIL_MESSAGE = "Cập nhật thông tin lớp thất bại";
 export const FORBIDDEN_MESSAGE = "Bạn không có quyển vào lớp này";
+
+
+export const POST_NEW_SUCCESS = "Đăng tải thành công";
+export const POST_NEW_FAIL = "Đăng tải thất bại";

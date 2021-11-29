@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { Link, LinkProps, useHistory } from "react-router-dom";
 import { getAllCourseInfo, getUserData, signOut } from "../../actions";
+import { TYPEROLE } from "../../constants";
 import { useScrollHook } from "../../customs";
 import { AppState } from "../../reducers";
 import Profile from "../Profile";
@@ -32,9 +33,9 @@ const Header = () => {
 
     const [typePill, setTypePill] = useState<number>(0);
     const dispatch = useDispatch();
-    const history = useHistory();
+    const member = useSelector((state: AppState) => state.member);
     const auth = useSelector((state: AppState) => state!.auth);
-    const user = useSelector((state: AppState) => state!.user);
+
     const course = useSelector((state: AppState) => state!.course);
 
     const [isOpenModal, setIsOpenModal] = useState(false);
@@ -55,7 +56,6 @@ const Header = () => {
     }, [])
 
     useEffect(() => {
-        console.log(course.course);
         dispatch(getAllCourseInfo(Number(courseId)))
     }, [])
 
@@ -122,7 +122,9 @@ const Header = () => {
                         <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to="/auth" >
                             <Link to="/auth/2" />
                         </LinkTab>
-                        <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+                        {member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
+                            <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+                        }
                         <LinkTab label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
                     </Tabs>
 

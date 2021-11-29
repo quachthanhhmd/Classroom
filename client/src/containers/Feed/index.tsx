@@ -4,7 +4,7 @@ import {
 import {
     CropFree, FileCopy, MoreHoriz, MoreVert, Settings
 } from "@material-ui/icons";
-import { EditorState } from "draft-js";
+import { EditorState, convertToRaw } from "draft-js";
 import React, { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -12,17 +12,23 @@ import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
+import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
+import courseApi from "../../api/course.api";
+import postApi from "../../api/feed.api";
 import CourseInfo from "../../components/CourseInfo";
 import CircularLoading from "../../components/Loading";
+import createImagePlugin from "draft-js-image-plugin";
 import Post from "../../components/Post";
-import env from "../../configs/env";
 import { TYPEROLE } from "../../constants";
 import { ICourseInfo } from "../../interfaces";
-import { FORBIDDEN_MESSAGE } from "../../messages";
+import { FORBIDDEN_MESSAGE, POST_NEW_FAIL, POST_NEW_SUCCESS } from "../../messages";
 import { AppState } from "../../reducers";
-import courseApi from "../../api/course.api";
 import "./index.scss";
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
+
+const imagePlugin = createImagePlugin();
+const plugins = [imagePlugin];
 
 
 const deadlineList = [
@@ -75,7 +81,7 @@ const Feed = () => {
 
     // Fetch API
 
-   useEffect(() => {
+    useEffect(() => {
         const postList = async () => {
             const res = await courseApi.getAllPost(+courseId);
 
@@ -84,9 +90,7 @@ const Feed = () => {
             }
 
         }
-   })
-
-
+    })
 
 
     useEffect(() => {
@@ -101,6 +105,20 @@ const Feed = () => {
             history.push("/");
     }, [courseState, history])
 
+
+    const handlePostStatus = async () => {
+        console.log(JSON.stringify(convertToRaw(editorState.getCurrentContent())));
+
+        const res = await postApi.postNew(+courseId, { content: JSON.stringify(convertToRaw(editorState.getCurrentContent())) })
+
+        if (!res || res.data.code !== 200) {
+            dispatch(showErrorNotify(POST_NEW_FAIL));
+            return;
+        }
+        dispatch(showSuccessNotify(POST_NEW_SUCCESS));
+        dispatch(getAllCourseInfo(Number(courseId)));
+    }
+
     const handleClose = () =>
         isShowInfor && setIsShowInfor(false);
 
@@ -110,7 +128,19 @@ const Feed = () => {
     const handleChangeInfo = () =>
         isChangeInfo && setIsChangeInfo(false);
 
-
+    const uploadCallback = (file) => {
+        return new Promise(
+            (resolve, reject) => {
+                if (file) {
+                    let reader = new FileReader();
+                    reader.onload = (e: any) => {
+                        resolve({ data: { link: e.target.result } })
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        );
+    }
     return (
 
         <>
@@ -178,20 +208,24 @@ const Feed = () => {
                                 </div>
                             }
                             <div className="feed-main___show-infor___modal-detail">
+                                <span className="feed-main___show-infor___modal-detail--title">Tên lớp: </span>
+                                <span className="feed-main___show-infor___modal-detail--info">{course?.name} </span>
+                            </div>
+                            <div className="feed-main___show-infor___modal-detail">
                                 <span className="feed-main___show-infor___modal-detail--title">Chủ đề: </span>
                                 <span className="feed-main___show-infor___modal-detail--info">{course?.topic} </span>
                             </div>
                             <div className="feed-main___show-infor___modal-detail">
-                                <span className="feed-main___show-infor___modal-detail--title">Phòng: </span>
-                                <span className="feed-main___show-infor___modal-detail--info">30 </span>
+                                <span className="feed-main___show-infor___modal-detail--title">Mô tả: </span>
+                                <span className="feed-main___show-infor___modal-detail--info">{course?.description} </span>
                             </div>
                             <div className="feed-main___show-infor___modal-detail">
                                 <span className="feed-main___show-infor___modal-detail--title">Số lượng sinh viên: </span>
-                                <span className="feed-main___show-infor___modal-detail--info">99 </span>
+                                <span className="feed-main___show-infor___modal-detail--info">{course?.studentLimit} </span>
                             </div>
                             <div className="feed-main___show-infor___modal-detail">
                                 <span className="feed-main___show-infor___modal-detail--title">Số lượng sinh viên hiện tại: </span>
-                                <span className="feed-main___show-infor___modal-detail--info">100 </span>
+                                <span className="feed-main___show-infor___modal-detail--info">{course?.studentExist} </span>
                             </div>
                         </DialogContent>
                         <DialogActions>
@@ -278,6 +312,28 @@ const Feed = () => {
                                                         onEditorStateChange={setEditorState}
                                                         editorClassName="editor-class"
                                                         toolbarClassName="toolbar-class"
+
+                                                        toolbar={{
+                                                            options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'],
+                                                            image: {
+                                                                uploadEnabled: true,
+                                                                uploadCallback: uploadCallback,
+                                                                previewImage: true,
+                                                                inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
+                                                                alt: { present: false, mandatory: false },
+                                                                defaultSize: {
+                                                                    height: 'auto',
+                                                                    width: '10rem',
+                                                                },
+                                                            },
+                                                            inline: { inDropdown: true },
+                                                            list: { inDropdown: true },
+                                                            textAlign: { inDropdown: true },
+                                                            link: { inDropdown: true },
+
+                                                            history: { inDropdown: true },
+
+                                                        }}
                                                     />
                                                 </div>
                                                 <div className="feed-main___body___right--write-status___expand--submit">
@@ -290,7 +346,10 @@ const Feed = () => {
                                                     <Button
                                                         variant="contained"
                                                         color="primary"
-                                                        onClick={(e) => setIsWriteStatus(false)}
+                                                        onClick={(e) => {
+                                                            setIsWriteStatus(false)
+                                                            handlePostStatus()
+                                                        }}
                                                     >Đăng Bài</Button>
                                                 </div>
                                             </CardContent>
@@ -312,7 +371,7 @@ const Feed = () => {
 
                                 </Card>
 
-                                    
+
                                 <Post />
                                 {/* <Card className="feed-main___body___right--exam">
                             <CardContent>

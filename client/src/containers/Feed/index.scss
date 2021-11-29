@@ -122,6 +122,7 @@
             width: 73%;
             flex-shrink: 1;
             &--write-status {
+                overflow: unset !important;
                 &___expand {
                     &--rich-text {
                         border: 1px solid black;
@@ -224,4 +225,7 @@
 
 .toolbar-class {
     color: black;
+    padding-right: 16%;;
+    position: relative;
+    z-index: 10;
 }
