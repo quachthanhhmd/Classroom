@@ -81,7 +81,7 @@
 
         &___left {
             width: 23%;
-
+            flex-shrink: 1;
             &--card-header {
                 font-size: 1.2rem;
                 margin: 0;
@@ -120,7 +120,7 @@
 
         &___right {
             width: 73%;
-
+            flex-shrink: 1;
             &--write-status {
                 &___expand {
                     &--rich-text {

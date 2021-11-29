@@ -175,18 +175,18 @@ const GradeStructure = () => {
         }
 
         if (itemList[index].isFakeData) {
-            dispatch(createExerciseType(Number(courseId), data));
-
             let newItemList = [...itemList];
             newItemList[index].isFakeData = false;
             setItemList(newItemList);
+            dispatch(createExerciseType(Number(courseId), data));
         }
         else {
+            console.log("Cai nay la update")
             dispatch(updateExerciseType(Number(courseId), itemList[index].id, data));
         }
         //dispatch(getAllCourseInfo(Number(courseId)));
     }
-
+    console.log(itemList);
     const handleAddDrag = () => {
         let newItemList = [...itemList];
         newItemList.push(fakeData(newItemList.length));

@@ -14,6 +14,7 @@ import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
 import CourseInfo from "../../components/CourseInfo";
 import CircularLoading from "../../components/Loading";
+import Post from "../../components/Post";
 import { SnackBarRender } from "../../components/SnackBar";
 import env from "../../configs/env";
 import { TYPEROLE } from "../../constants";
@@ -93,7 +94,7 @@ const Feed = () => {
     const handleChangeInfo = () =>
         isChangeInfo && setIsChangeInfo(false);
 
- 
+
     return (
 
         <>
@@ -297,7 +298,7 @@ const Feed = () => {
 
 
                                 </Card>
-
+                                <Post />
                                 {/* <Card className="feed-main___body___right--exam">
                             <CardContent>
 
