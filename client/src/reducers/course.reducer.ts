@@ -243,7 +243,9 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
         case UPDATE_EXERCISE_TYPE_SUCCESS:
         case CREATE_EXERCISE_TYPE_SUCCESS: {
             let newCourseUpdate = state.course;
+            console.log(action.payload);
             if (newCourseUpdate && newCourseUpdate?.exerciseTypeList) {
+                console.log(action.payload);
                 newCourseUpdate.exerciseTypeList.push(action.payload as IExerciseTypeDetail);
             }
             return {

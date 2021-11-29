@@ -9,9 +9,9 @@ export const createExerciseType = (courseId: number, data: ICreateExerciseType) 
             dispatch({
                 type: CREATE_EXERCISE_TYPE_REQUEST
             });
-
+            
             const result = await exerciseApi.createExerciseType(courseId, data);
-
+            console.log(result);
             if (result.data.code !== 200) throw new Error();
 
             dispatch({

@@ -87,7 +87,6 @@ const GradeStructure = () => {
             const getFieldDefault = defaultItemList.map(getFieldToOrder);
             const getFieldChange = itemList.map(getFieldToOrder);
             const changeObject = objectArrayChange(getFieldChange, getFieldDefault);
-  
             if (changeObject.length !== 0) {
                 //setDefaultItemList([...itemList]);
                 dispatch(changeOrderType(+courseId, changeObject as IChangeOrder[]));
@@ -99,12 +98,13 @@ const GradeStructure = () => {
 
     useEffect(() => {
         if (course.course?.exerciseTypeList) {
+            console.log("update o day")
             setItemList(serializeExerciseType(course.course?.exerciseTypeList));
             setDefaultItemList(serializeExerciseType(course.course?.exerciseTypeList));
         }
 
 
-    }, [course.course, course.course?.exerciseTypeList])
+    }, [course.course, JSON.stringify(course.course?.exerciseTypeList)])
 
     useEffect(() => {
         if (itemList.length === 0) {
@@ -175,11 +175,11 @@ const GradeStructure = () => {
         }
 
         if (itemList[index].isFakeData) {
+            dispatch(createExerciseType(Number(courseId), data));
+
             let newItemList = [...itemList];
             newItemList[index].isFakeData = false;
             setItemList(newItemList);
-
-            dispatch(createExerciseType(Number(courseId), data));
         }
         else {
             dispatch(updateExerciseType(Number(courseId), itemList[index].id, data));
@@ -200,6 +200,7 @@ const GradeStructure = () => {
         newItemList[index] = data;
         setItemList(newItemList);
     }
+
     const handleDelete = (indexValue: number) => {
         let newItemList = [...itemList].filter((item, index) => {
             return indexValue !== index

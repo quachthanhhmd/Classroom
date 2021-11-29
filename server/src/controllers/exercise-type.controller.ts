@@ -19,6 +19,7 @@ export class ExerciseTypeController {
             const newOrderIndex = await this._exerciseTypeService.generateNewOrderIndex(courseId);
             const newType =
                 await this._exerciseTypeService.createExerciseType(courseId, { ...body, orderIndex: newOrderIndex });
+            console.log(newType);
 
             return res.composer.success(serializeExerciseTypeDetail(newType));
         } catch (err) {

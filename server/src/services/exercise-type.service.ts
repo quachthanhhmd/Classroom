@@ -1,4 +1,5 @@
 import { injectable } from "inversify";
+import { col, fn } from "sequelize";
 import { ICreateType, IUpdateOrder } from "../interfaces";
 import { ExerciseType } from "../models";
 @injectable()
@@ -20,13 +21,16 @@ export class ExerciseTypeService {
      */
     public generateNewOrderIndex = async (courseId: number) => {
 
-        const numOfRow = await ExerciseType.count({
+        const numOfRow = await ExerciseType.findAll({
+            attributes: [[
+                fn("max", col("orderIndex")), "orderIndex"
+            ]],
             where: {
-                courseId,
+                courseId
             }
-        })
+        });
 
-        return numOfRow + 1;
+        return <number> numOfRow[0].orderIndex + 1;
     }
     /**
      * Create Exercise Type
@@ -45,7 +49,6 @@ export class ExerciseTypeService {
      * @param updateList 
      */
     public updateOrderIndex = async (updateList: IUpdateOrder[]): Promise<void> => {
-        console.log(updateList);
         await Promise.all(updateList.map(async (item) => {
             await ExerciseType.update({
                 orderIndex: item.orderIndex,
