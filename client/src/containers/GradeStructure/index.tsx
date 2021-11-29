@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { changeOrderType, createExerciseType, updateExerciseType } from '../../actions/exercise-type.action';
+import { changeOrderType, createExerciseType, deleteExerciseType, updateExerciseType } from '../../actions/exercise-type.action';
 import CircularLoading from '../../components/Loading';
 import { SnackBarRender } from '../../components/SnackBar';
 import { IChangeOrder, ICreateExerciseType, IExerciseTypeDetail } from '../../interfaces';
@@ -204,8 +204,13 @@ const GradeStructure = () => {
         let newItemList = [...itemList].filter((item, index) => {
             return indexValue !== index
         })
-        setItemList(newItemList);
-        setChooseIndex(newItemList.length === 0 ? -1 : 0);
+
+        if (newItemList.length < itemList.length) {
+            dispatch(deleteExerciseType(itemList[indexValue].id, +courseId));
+
+            setItemList(newItemList);
+            setChooseIndex(newItemList.length === 0 ? -1 : 0);
+        }
     }
 
     return (
@@ -226,7 +231,7 @@ const GradeStructure = () => {
                                 <Grid xs={6} >
                                     <p className="structure-main___content--structure--header">Thang điểm</p></Grid>
 
-                                {itemList.map((item) => (
+                                {itemList.map((item, index) => (
                                     <>
                                         {
                                             item.content &&

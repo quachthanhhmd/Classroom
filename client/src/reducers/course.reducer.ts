@@ -1,15 +1,14 @@
-import { CREATE_EXERCISE_TYPE_SUCCESS, UPDATE_EXERCISE_TYPE_SUCCESS } from './../constants/exercise.constant';
 import {
-    CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST, UPDATE_ORDER_CHANGE_SUCCESS,
-    CREATE_COURSE_SUCCESS, DELETE_MESSAGE, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
+    CREATE_COURSE_FAIL, CREATE_COURSE_REQUEST, CREATE_COURSE_SUCCESS, DELETE_MESSAGE, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST,
     GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_REQUEST, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
 } from "../constants";
 import {
-    ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IExerciseTypeDetail, IMemberSummary, IPaginationInfo,
+    ICourseAction, ICourseInfo, ICourseSummary, ICreateCourseState, IDeleteExerciseType, IExerciseTypeDetail, IMemberSummary, IPaginationInfo,
     IUserCourseState
 } from "../interfaces";
 import { CREATE_COURSE_FAIL_MESSAGE, CREATE_COURSE_SUCCESS_MESSAGE, FORBIDDEN_MESSAGE, JOIN_COURSE_FAIL_MESSAGE, JOIN_COURSE_SUCCESS_MESSAGE } from "../messages";
 import { UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
+import { CREATE_EXERCISE_TYPE_SUCCESS, DELETE_EXERCISE_TYPE_SUCCESS, UPDATE_EXERCISE_TYPE_SUCCESS } from './../constants/exercise.constant';
 import { UPDATE_MEMBER_STATE_FAIL, UPDATE_MEMBER_STATE_SUCCESS } from './../constants/member.constant';
 
 
@@ -266,6 +265,24 @@ const courseReducer = (state = initState, action: ICourseAction): IInitState => 
         //         message: ""
         //     }
         // }
+        case DELETE_EXERCISE_TYPE_SUCCESS: {
+            const idDelete = action.payload as IDeleteExerciseType;
+
+            let newCourse = state.course as ICourseInfo;
+
+            if (state.course && state.course.exerciseTypeList && state.course.exerciseTypeList.length > 0) {
+                newCourse.exerciseTypeList = [...state.course.exerciseTypeList];
+                newCourse.exerciseTypeList = newCourse.exerciseTypeList.filter(x => x.id !== idDelete.id);
+            }
+
+            return {
+                ...state,
+                course: newCourse,
+                message: "",
+                isLoading: false,
+                isSuccess: true
+            }
+        }
         default: {
             return {
                 ...state,
