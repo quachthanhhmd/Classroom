@@ -5,7 +5,6 @@ import { inviteCourseByToken } from '../../actions';
 import { JOIN_COURSE_FAIL_MESSAGE } from '../../messages';
 import { AppState } from '../../reducers';
 import CircularLoading from '../Loading';
-import { SnackBarRender } from '../SnackBar';
 
 
 const InviteByToken = () => {

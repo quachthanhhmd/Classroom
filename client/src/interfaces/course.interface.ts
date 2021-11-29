@@ -1,5 +1,6 @@
 import { IPaginationInfo } from './';
 import { IChangeOrderState, ICreateExerciseType, ICreateExerciseTypeState, IDeleteExerciseTypeState, IExerciseTypeDetail, IUpdateExerciseTypeState } from './exercise.interface';
+import { IPostDetail } from './post.interface';
 
 
 export interface IUserCourse {
@@ -111,5 +112,13 @@ export interface IUpdateCourseInput {
     avatarUrl?: string,
     backgroundUrl?: string,
 }
+//----------------------------------------------------------------
 
-export type ICourseAction = IChangeOrderState | IUpdateCourseInfoState | IInviteByTokenState | ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState | ICreateExerciseTypeState | IUpdateExerciseTypeState | IDeleteExerciseTypeState;
+export type IPostResponse = Array<IPostDetail>;
+
+export interface IPoseResponseState {
+    type: string;
+    payload?: IPostResponse
+}
+
+export type ICourseAction = IPoseResponseState | IChangeOrderState | IUpdateCourseInfoState | IInviteByTokenState | ICourseMemberState | ICreateCourseState | IUserCourseState | ICourseInfoState | IJoinCodeState | IJoinCourseByUrlState | ICreateExerciseTypeState | IUpdateExerciseTypeState | IDeleteExerciseTypeState;

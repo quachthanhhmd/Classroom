@@ -28,16 +28,23 @@ import {
   USER_LOGIN_OAUTH_REQUEST,
   USER_LOGIN_OAUTH_SUCCESS,
   USER_LOGIN_OAUTH_FAIL,
+  NOTIFICATION_SUCCESS
 } from "../constants";
+import { LOGIN_SUCCESS, SIGNUP_SUCCESS } from '../messages';
 
-export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInType) => (ISignInType)) => {
+export const signIn = (data: ISigninInput) => async (dispatch) => {
   try {
     dispatch({
       type: USER_LOGIN_REQUEST,
     });
 
     const result = await authApi.signIn(data);
-    
+
+    dispatch({
+      type: NOTIFICATION_SUCCESS,
+      payload: LOGIN_SUCCESS
+    })
+
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: result.data.payload,
@@ -50,7 +57,7 @@ export const signIn = (data: ISigninInput) => async (dispatch: (args: ISignInTyp
   }
 };
 
-export const signUp = (data: ISignUpInput) => async (dispatch: (args: ISignUpType) => (ISignUpType)) => {
+export const signUp = (data: ISignUpInput) => async (dispatch) => {
 
   try {
     dispatch({ type: USER_REGISTER_REQUEST });
@@ -59,6 +66,10 @@ export const signUp = (data: ISignUpInput) => async (dispatch: (args: ISignUpTyp
     if (result.status !== 200)
       throw new Error();
 
+    dispatch({
+      type: NOTIFICATION_SUCCESS,
+      payload: SIGNUP_SUCCESS
+    })
     dispatch({ type: USER_REGISTER_SUCCESS, payload: null });
 
   } catch (err) {
@@ -76,7 +87,7 @@ export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserH
     const userID: number = jwt_decode<IPayload>(token!)?.sub;
     if (!userID)
       throw new Error();
-   
+
     const result = await authApi.getInfo(userID);
 
     if (!result) {
@@ -108,7 +119,6 @@ export const signOut = () => async (dispatch: (args: ILogoutType) => (ILogoutTyp
       type: USER_LOGOUT,
     });
   } catch (error) {
-    console.log(error);
     dispatch({
       type: USER_LOGOUT,
     });
@@ -136,16 +146,18 @@ export const updateUserHeader = (data: IUserSummary) =>
   };
 
 export const loginOAuth = (data: ILoginOAuth) =>
-  async (dispatch: (args: ISignInType) => (ISignInType)) => {
+  async (dispatch) => {
     try {
       dispatch({
         type: USER_LOGIN_OAUTH_REQUEST,
       })
 
       const result = await authApi.loginOAuth(data);
-      console.log(result.data.payload);
       if (result.status !== 200) throw new Error();
-
+      dispatch({
+        type: LOGIN_SUCCESS,
+        payload: SIGNUP_SUCCESS
+      })
       dispatch({
         type: USER_LOGIN_OAUTH_SUCCESS,
         payload: result.data.payload,

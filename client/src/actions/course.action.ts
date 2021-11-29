@@ -1,8 +1,5 @@
-import { IUpdateCourseInput, IUpdateCourseInfoState } from './../interfaces/course.interface';
 import courseApi from "../api/course.api";
-import {
-    CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST, GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS
-} from "../constants";
+import { CREATE_COURSE_FAIL, CREATE_COURSE_SUCCESS, GET_ALL_INFO_COURSE_FAIL, GET_ALL_INFO_COURSE_REQUEST, GET_ALL_INFO_COURSE_SUCCESS, GET_ALL_MEMBER_FAIL, GET_ALL_USER_COURSE_FAIL, GET_ALL_USER_COURSE_SUCCESS, JOIN_COURSE_BY_TOKEN_FAIL, JOIN_COURSE_BY_TOKEN_SUCCESS, JOIN_COURSE_BY_URL_FAIL, JOIN_COURSE_BY_URL_REQUEST, JOIN_COURSE_BY_URL_SUCCESS, JOIN_COURSE_FAIL, JOIN_COURSE_REQUEST, JOIN_COURSE_SUCCESS, NOTIFICATION_FAIL, NOTIFICATION_SUCCESS } from "../constants";
 import {
     ICourseInfoState, ICourseMemberState, ICreateCourse,
     ICreateCourseState,
@@ -11,7 +8,9 @@ import {
     IJoinCourseByUrlState,
     IUserCourseState
 } from "../interfaces";
+import { UPDATE_COURSE_FAIL_MESSAGE, UPDATE_COURSE_SUCCESS_MESSAGE } from '../messages';
 import { GET_ALL_MEMBER_REQUEST, GET_ALL_MEMBER_SUCCESS, UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
+import { IUpdateCourseInput } from './../interfaces/course.interface';
 
 export const createCourse = (data: ICreateCourse) =>
     async (dispatch: (args: ICreateCourseState) => ICreateCourseState) => {
@@ -125,7 +124,7 @@ export const getAllMemberInCourse = (courseId: number) =>
             });
 
             const result = await courseApi.getAllMemberInCourse(courseId);
-         
+
             if (result.data.code !== 200) throw new Error();
 
             dispatch({
@@ -158,7 +157,7 @@ export const inviteCourseByToken = (courseId: number, token: string, role: strin
 
 
 export const updateCourseInfo = (courseId: number, body: IUpdateCourseInput) =>
-    async (dispatch: (args: IUpdateCourseInfoState) => IUpdateCourseInfoState) => {
+    async (dispatch ) => {
         try {
             dispatch({
                 type: UPDATE_COURSE_INFO_REQUEST
@@ -166,6 +165,11 @@ export const updateCourseInfo = (courseId: number, body: IUpdateCourseInput) =>
 
             const result = await courseApi.updateCourseInfo(courseId, body);
             if (result.status !== 200) throw new Error();
+
+            dispatch({
+                type: NOTIFICATION_SUCCESS,
+                payload: UPDATE_COURSE_SUCCESS_MESSAGE
+            })
             dispatch({
                 type: UPDATE_COURSE_INFO_SUCCESS,
                 payload: result.data.payload,
@@ -173,6 +177,13 @@ export const updateCourseInfo = (courseId: number, body: IUpdateCourseInput) =>
         } catch (err) {
             dispatch({
                 type: UPDATE_COURSE_INFO_FAIL
+            });
+            dispatch({
+                type: NOTIFICATION_FAIL,
+                payload: UPDATE_COURSE_FAIL_MESSAGE
             })
         }
     }
+
+
+

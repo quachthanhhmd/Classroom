@@ -13,11 +13,9 @@ import { updateProfile, updateUserHeader } from "../../actions";
 import { storage } from "../../configs/firebase";
 import { IProfileBody } from "../../interfaces";
 import { AppState } from "../../reducers";
-import { formatDate } from '../../utils/converter';
 import { objectFieldChange } from "../../utils/object-solve";
 import { ProfileValidate } from "../../utils/validation";
 import PasswordManage from '../PasswordManage';
-import { SnackBarRender } from "../SnackBar";
 import "./index.scss";
 
 

@@ -13,7 +13,6 @@ import { getAllCourseInfo, getUserData, signOut } from "../../actions";
 import { useScrollHook } from "../../customs";
 import { AppState } from "../../reducers";
 import Profile from "../Profile";
-import { SnackBarRender } from "../SnackBar";
 import ThemeMode from '../ThemeMode';
 import "./index.scss";
 
@@ -87,12 +86,7 @@ const Header = () => {
     }
     return (
         <>
-            {
-                auth.message && <SnackBarRender message={auth.message!} isSuccess={auth.isSuccess} />
-            }
-            {
-                user.message && <SnackBarRender message={user.message!} isSuccess={user.isSuccess} />
-            }
+
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
             <div className="header-main" style={styleScroll}>
 

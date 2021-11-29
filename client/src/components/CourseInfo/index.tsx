@@ -112,11 +112,10 @@ const CourseInfo = (props: IPropType) => {
         }
 
         const newData = objectFieldChange(course, data);
-        console.log(newData);
         if (Object.keys(newData).length === 0) {
             return;
         }
-
+        console.log(newData);
         dispatch(updateCourseInfo(+courseId, newData));
     }
 

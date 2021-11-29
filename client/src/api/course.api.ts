@@ -1,5 +1,5 @@
+import { ICourseInfo, ICreateCourse, IHttpFormat, IMemberSummary, IPostResponse, IUserCourse } from './../interfaces';
 import { IUpdateCourseInput } from './../interfaces/course.interface';
-import { IMemberSummary, ICourseInfo, ICourseSummary, ICreateCourse, IHttpFormat, IUserCourse } from './../interfaces';
 import axiosClient from "./axios.client";
 
 
@@ -8,7 +8,7 @@ const courseApi = {
         const url = "v1/course/";
         return axiosClient.post<IHttpFormat<ICourseInfo>>(url, body);
     },
-    joinCourse: (code: string) => { 
+    joinCourse: (code: string) => {
         const url = `v1/course/join/${code}`;
         return axiosClient.post<IHttpFormat<ICourseInfo>>(url);
     },
@@ -32,9 +32,13 @@ const courseApi = {
         const url = `v1/course/invite/${courseId}?token=${token}&role=${role}`
         return axiosClient.patch<IHttpFormat<null>>(url);
     },
-    updateCourseInfo : (courseId: number, body: IUpdateCourseInput) => {
+    updateCourseInfo: (courseId: number, body: IUpdateCourseInput) => {
         const url = `v1/course/update/${courseId}`;
         return axiosClient.patch<IHttpFormat<ICourseInfo>>(url, body);
+    },
+    getAllPost: (courseId: number) => {
+        const url = `v1/course/${courseId}/post`;
+        return axiosClient.get<IHttpFormat<IPostResponse>>(url);
     }
 }
 

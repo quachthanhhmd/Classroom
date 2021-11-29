@@ -13,7 +13,6 @@ import { useHistory, useParams } from "react-router";
 import { getAllMemberInCourse, updateStateMember } from "../../actions";
 import InviteMember from "../../components/InviteMember";
 import CircularLoading from "../../components/Loading";
-import { SnackBarRender } from "../../components/SnackBar";
 import { MEMBERSTATE, TYPEROLE } from "../../constants";
 import { IMemberSummary } from "../../interfaces";
 import { FORBIDDEN_MESSAGE } from "../../messages";
@@ -204,9 +203,6 @@ const Member = () => {
                             Thành viên | EClassroom
                         </title>
                     </Helmet>
-                    {
-                        member.message && <SnackBarRender message={member.message!} isSuccess={member.isSuccess} />
-                    }
                     <div className="member-main___teacher">
                         <div className="member-main___teacher___header">
                             <div className="member-main___teacher___header--title">

@@ -15,13 +15,14 @@ import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
 import CourseInfo from "../../components/CourseInfo";
 import CircularLoading from "../../components/Loading";
 import Post from "../../components/Post";
-import { SnackBarRender } from "../../components/SnackBar";
 import env from "../../configs/env";
 import { TYPEROLE } from "../../constants";
 import { ICourseInfo } from "../../interfaces";
 import { FORBIDDEN_MESSAGE } from "../../messages";
 import { AppState } from "../../reducers";
+import courseApi from "../../api/course.api";
 import "./index.scss";
+
 
 
 const deadlineList = [
@@ -72,13 +73,28 @@ const Feed = () => {
     const [isWriteStatus, setIsWriteStatus] = useState(false);
     const [isChangeInfo, setIsChangeInfo] = useState(false);
 
+    // Fetch API
+
+   useEffect(() => {
+        const postList = async () => {
+            const res = await courseApi.getAllPost(+courseId);
+
+            if (res.data.code !== 200) {
+
+            }
+
+        }
+   })
+
+
+
+
     useEffect(() => {
         if (code) {
             dispatch(joinCourseByUrl(+courseId, code));
         }
-        //dispatch(getAllCourseInfo(Number(courseId)));
-
     }, [])
+
 
     useEffect(() => {
         if (!courseState.isSuccess && courseState.message === FORBIDDEN_MESSAGE)
@@ -105,9 +121,6 @@ const Feed = () => {
                             Bảng tin khóa học | EClassroom
                         </title>
                     </Helmet>
-                    {
-                        courseState.message && <SnackBarRender message={courseState.message!} isSuccess={courseState.isSuccess} />
-                    }
                     <CourseInfo course={courseState.course as ICourseInfo | null} isOpenModal={isChangeInfo} setIsOpenModal={handleChangeInfo} />
                     <Dialog
                         fullWidth
@@ -298,6 +311,8 @@ const Feed = () => {
 
 
                                 </Card>
+
+                                    
                                 <Post />
                                 {/* <Card className="feed-main___body___right--exam">
                             <CardContent>

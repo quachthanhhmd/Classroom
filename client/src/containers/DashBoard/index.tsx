@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { getUserCouseList } from "../../actions/course.action";
 import CircularLoading from "../../components/Loading";
-import { SnackBarRender } from "../../components/SnackBar";
 import { ICourseSummary } from "../../interfaces";
 import { AppState } from "../../reducers";
 import "./index.scss";
@@ -51,9 +50,7 @@ const DashBoard = () => {
             </Helmet>
             {courseState && !courseState.isLoading ?
                 <div className="dashboard-main">
-                    {
-                        courseState.message && <SnackBarRender message={courseState.message!} isSuccess={courseState.isSuccess} />
-                    }
+             
                     <div className="dashboard-main--title">
                         Tất cả khóa học
                     </div>

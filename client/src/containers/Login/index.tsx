@@ -11,7 +11,6 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { signIn } from "../../actions";
-import { SnackBarRender } from "../../components/SnackBar";
 import { ISigninInput } from '../../interfaces';
 import { AppState } from "../../reducers";
 import { SignInValidate } from "../../utils/validation";
@@ -81,9 +80,6 @@ const Login = () => {
                     Đăng Nhập | EClassroom
                 </title>
             </Helmet>
-            {
-                auth.message && <SnackBarRender message={auth.message!} isSuccess={auth.isSuccess} />
-            }
             <CardHeader className={classes.header} title="Đăng Nhập" />
             <CardContent>
                 <div>

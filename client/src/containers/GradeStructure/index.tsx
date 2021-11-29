@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { changeOrderType, createExerciseType, deleteExerciseType, updateExerciseType } from '../../actions/exercise-type.action';
 import CircularLoading from '../../components/Loading';
-import { SnackBarRender } from '../../components/SnackBar';
 import { IChangeOrder, ICreateExerciseType, IExerciseTypeDetail } from '../../interfaces';
 import { AppState } from '../../reducers';
 import { objectArrayChange } from '../../utils/object-solve';
@@ -186,7 +185,7 @@ const GradeStructure = () => {
         }
         //dispatch(getAllCourseInfo(Number(courseId)));
     }
-    console.log(itemList);
+
     const handleAddDrag = () => {
         let newItemList = [...itemList];
         newItemList.push(fakeData(newItemList.length));
@@ -218,7 +217,7 @@ const GradeStructure = () => {
         <>
             {exercise && !exercise.isLoading ?
                 <div className="structure-main">
-                    {exercise.message && <SnackBarRender message={exercise.message} isSuccess={exercise.isSuccess} />}
+           
                     <Card className="structure-main___title">
                         <Typography variant="h4" component="div" className="structure-main___title--class-name">
                             Lap tring ung dung web - 18 - 3

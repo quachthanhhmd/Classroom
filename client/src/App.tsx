@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { BrowserRouter } from "react-router-dom";
 import './App.css';
 import Loading from "./components/Loading";
+import Notification from "./components/Notification";
 import renderRoutes from "./configs/routes";
 import { AppState } from "./reducers";
 
@@ -56,7 +57,7 @@ function App() {
             <Redirect from="/" to="/" /> */}
           </Suspense>
         </BrowserRouter>
-
+        <Notification />
       </div >
     </ThemeProvider>
   );

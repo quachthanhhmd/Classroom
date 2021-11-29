@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { signUp } from "../../actions";
 import { ISignUpInput } from "../../interfaces";
 import { SignUpValidate } from "../../utils/validation";
-import { SnackBarRender } from '../../components/SnackBar';
 import { AppState } from "../../reducers";
 import "./index.scss";
 
@@ -68,9 +67,7 @@ const Register = () => {
                     Đăng Ký | EClassroom
                 </title>
             </Helmet>
-            {
-                auth.message && <SnackBarRender message={auth.message!} isSuccess={auth.isSuccess} />
-            }
+      
             <CardHeader className={classes.header} title="Đăng Ký" />
 
             <CardContent>
