@@ -40,6 +40,7 @@ export class CourseService {
                 id
             },
             raw: false,
+            nest: true,
         });
     }
 
@@ -97,7 +98,8 @@ export class CourseService {
                     id: courseId,
                     ownerId: userId,
                 }
-            }
+            },
+            raw: false,
         })
 
         return course ? true : false;
@@ -110,13 +112,14 @@ export class CourseService {
      * @returns 
      */
     public updateCourse = async (courseId: number, body: IUpdateCourse) => {
+
         return Course.update(
             body,
             {
                 where: {
                     id: courseId,
                 },
-                returning: true,
+
             }
         )
     }

@@ -5,4 +5,10 @@ export interface IPostDetail {
     updatedAt: Date;
     commentList: any[];
     attachmentList: any[];
+    user: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        avatarUrl: string
+    }
 }

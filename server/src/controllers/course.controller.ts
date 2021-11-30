@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
-import { CourseService, MemberService, TokenService, UserService } from "../services";
-import { serializeCourseDetail, IAuthorizeRequest, IResponse } from "./../interfaces";
+import { CourseService, FeedService, MemberService, TokenService, UserService } from "../services";
+import { serializeCourseDetail, serializeFeedDetailList, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
 
 @injectable()
@@ -13,6 +13,7 @@ export class CourseController {
         @inject("MemberService") private readonly _memberService: MemberService,
         @inject("UserService") private readonly _userService: UserService,
         @inject("TokenService") private readonly _tokenService: TokenService,
+        @inject("FeedService") private readonly _feedService: FeedService,
     ) { }
 
     public addCourse = async (
@@ -137,7 +138,6 @@ export class CourseController {
             const body = req.body;
 
             const isOwnCourse = await this._courseService.isOwnCourse(courseId, userId);
-
             if (!isOwnCourse) return res.composer.forbidden();
 
             await this._courseService.updateCourse(courseId, body);
@@ -145,7 +145,26 @@ export class CourseController {
 
             return res.composer.success(serializeCourseDetail(newCourse))
         } catch (err) {
+
             return res.composer.otherException(err);
+        }
+    }
+
+    public getAllPost = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = +req.params.courseId;
+
+            // get all post, exercise post more
+            const feedList = await this._feedService.getAllFeedInCourse(courseId);
+            console.log(feedList);
+
+            return res.composer.success(serializeFeedDetailList(feedList))
+        } catch (err) {
+            console.log(err);
+            res.composer.otherException(err);
         }
     }
 }

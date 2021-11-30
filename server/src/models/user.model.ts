@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, Default, HasMany, Index, IsEmail, Model, PrimaryKey, Table, Unique
+    AllowNull, AutoIncrement, Column, DataType, Default, HasMany, Index, IsEmail, Model, PrimaryKey, Table, Unique,
 } from "sequelize-typescript";
 import { initPasswordHash } from "../config/bcrypt";
 import { Member, Submission, Token } from "./";
@@ -108,8 +108,8 @@ export class User extends Model<IUser, IUserCreationAttibutes> {
     @HasMany(() => OAuth)
     oAuthList?: OAuth[];
 
-    @HasMany(() => Feed)
-    feedList?: Feed[];
+    @HasMany(() => Feed, { foreignKey: "userId" })
+    feedList!: Feed[];
 
     @HasMany(() => Comment)
     commentList?: Comment[];

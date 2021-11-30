@@ -4,7 +4,8 @@ import {
 import {
     CropFree, FileCopy, MoreHoriz, MoreVert, Settings
 } from "@material-ui/icons";
-import { EditorState, convertToRaw } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
+import createImagePlugin from "draft-js-image-plugin";
 import React, { useEffect, useState } from "react";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
@@ -17,14 +18,13 @@ import courseApi from "../../api/course.api";
 import postApi from "../../api/feed.api";
 import CourseInfo from "../../components/CourseInfo";
 import CircularLoading from "../../components/Loading";
-import createImagePlugin from "draft-js-image-plugin";
 import Post from "../../components/Post";
 import { TYPEROLE } from "../../constants";
 import { ICourseInfo } from "../../interfaces";
+import { IPostDetail } from "../../interfaces/post.interface";
 import { FORBIDDEN_MESSAGE, POST_NEW_FAIL, POST_NEW_SUCCESS } from "../../messages";
 import { AppState } from "../../reducers";
 import "./index.scss";
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 
 const imagePlugin = createImagePlugin();
@@ -79,18 +79,20 @@ const Feed = () => {
     const [isWriteStatus, setIsWriteStatus] = useState(false);
     const [isChangeInfo, setIsChangeInfo] = useState(false);
 
+    const [postList, setPostList] = useState<IPostDetail[]>([]);
     // Fetch API
 
     useEffect(() => {
         const postList = async () => {
             const res = await courseApi.getAllPost(+courseId);
 
-            if (res.data.code !== 200) {
+            if (res.data.code !== 200) return;
 
-            }
-
+            setPostList(res.data.payload);
         }
-    })
+
+        postList();
+    }, [setPostList, courseId])
 
 
     useEffect(() => {
@@ -116,7 +118,10 @@ const Feed = () => {
             return;
         }
         dispatch(showSuccessNotify(POST_NEW_SUCCESS));
-        dispatch(getAllCourseInfo(Number(courseId)));
+
+        // set post list
+        let newPostList = [res.data.payload, ...postList];
+        setPostList(newPostList);
     }
 
     const handleClose = () =>
@@ -371,8 +376,11 @@ const Feed = () => {
 
                                 </Card>
 
+                                {
+                                    postList &&
+                                    postList.map((post) => <Post post={post} />)
+                                }
 
-                                <Post />
                                 {/* <Card className="feed-main___body___right--exam">
                             <CardContent>
 

@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, ForeignKey, Model, PrimaryKey, Table,
+    AllowNull, AutoIncrement, BelongsTo, Column, DataType, DefaultScope, ForeignKey, Model, PrimaryKey, Table,
 } from "sequelize-typescript";
 import { Course } from "./course.model";
 import { User } from "./user.model";
@@ -39,4 +39,7 @@ export class Feed extends Model<IFeed, IFeedCreation> {
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
     courseId!: number;
+
+    @BelongsTo(() => User)
+    user?: User;
 }

@@ -59,6 +59,13 @@ class CourseRoute {
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER),
             this._courseController.updateCourseInfo,
         )
+
+        this.router.get(
+            "/:courseId/post",
+            this._authenticate.authenticate(),
+            validate(this._courseValidation.getAllPost),
+            this._courseController.getAllPost
+        )
     }
 
 }

@@ -77,4 +77,14 @@ export class CourseValidation {
             }
         })
     }
+    public getAllPost = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            },
+        })
+    }
 }

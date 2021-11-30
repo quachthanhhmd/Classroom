@@ -25,7 +25,7 @@ export class FeedController {
             const commentList = await this._commentService.findAllComment(feed.userId, ReferenceType.FEED, feedId);
             const attachmentList = await this._attachmentService.findAllAttachment(ReferenceType.FEED, feedId);
 
-            return res.composer.success(serializeFeedDetail({...feed, commentList, attachmentList}))
+            return res.composer.success(serializeFeedDetail({ ...feed, commentList, attachmentList }))
         } catch (err) {
             return res.composer.otherException(err);
         }
@@ -40,13 +40,15 @@ export class FeedController {
             const courseId = +req.params.courseId;
 
             const isMember = await this._memberService.isActiveMember(userId, courseId);
-            console.log(isMember);
+
             if (!isMember) return res.composer.forbidden()
 
-            const newFeed = await this._feedService.createFeed(courseId, userId, req.body);
+            const createdFeed = await this._feedService.createFeed(courseId, userId, req.body);
+            const newFeed = await this._feedService.findFeedById(createdFeed.id);
 
             return res.composer.success(serializeFeedDetail(newFeed));
         } catch (err) {
+            console.log(err);
             res.composer.otherException(err);
         }
     }
@@ -64,7 +66,8 @@ export class FeedController {
                 return res.composer.forbidden();
             }
 
-            const updateFeed = await this._feedService.updateFeed(feedId, req.body);
+            await this._feedService.updateFeed(feedId, req.body);
+            const updateFeed = await this._feedService.findFeedById(feedId);
 
             return res.composer.success(serializeFeedDetail(updateFeed));
         } catch (err) {

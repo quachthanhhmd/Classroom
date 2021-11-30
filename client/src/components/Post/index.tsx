@@ -1,16 +1,28 @@
-import { Card, CardHeader, Avatar, IconButton, CardContent, Typography, Button, CardActions, TextField, Grid, Divider } from "@material-ui/core";
-import { MoreVert, Favorite, Send, People } from "@material-ui/icons";
+import { Avatar, Button, Card, CardContent, CardHeader, Divider, Grid, IconButton, TextField, Typography } from "@material-ui/core";
+import { MoreVert, People, Send } from "@material-ui/icons";
+import { EditorState, convertFromRaw } from "draft-js";
 import React from "react";
-
+import { Editor } from "react-draft-wysiwyg";
+import { IPostDetail } from "../../interfaces/post.interface";
+import { sameDay } from "../../utils/converter";
 import "./index.scss";
 
-const Post = () => {
 
+const Post = (props: { post: IPostDetail }) => {
+    const { post } = props;
+
+    const getDateFormat = (date: Date) => {
+        const newDate = new Date(date);
+        if (sameDay(newDate, new Date())) {
+            return `${newDate.getHours()}: ${newDate.getMinutes()}`
+        }
+        return `${newDate.getDay()} thg ${newDate.getMonth()}`;
+    }
     return (
         <Card className="post-main">
             <CardHeader
                 avatar={
-                    <Avatar src="/none-avt.png" aria-label="recipe" alt="avt-post">
+                    <Avatar src={post.user.avatarUrl ? post.user.avatarUrl : "/none-avt.png"} aria-label="recipe" alt="avt-post">
                         R
                     </Avatar>
                 }
@@ -19,17 +31,21 @@ const Post = () => {
                         <MoreVert />
                     </IconButton>
                 }
-                title="Shrimp and Chorizo Paella"
-                subheader="September 14, 2016"
+                title={`${post.user.firstName} ${post.user.lastName}`}
+                subheader={getDateFormat(post.createdAt)}
             />
 
-            <CardContent>
-                <Typography variant="body2">
-                    This impressive paella is a perfect party dish and a fun meal to cook
-                    together with your guests. Add 1 cup of frozen peas along with the mussels,
-                    if you like.
-                </Typography>
-            </CardContent>
+
+            <div className="post-main___content">
+                <Editor readOnly={true}
+                    toolbarClassName='hide-toolbar'
+                    editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))}
+                    toolbar={{
+                        options: []
+                    }} />
+            </div>
+
+
 
             {/* <CardActions disableSpacing>
                 <IconButton aria-label="add to favorites">

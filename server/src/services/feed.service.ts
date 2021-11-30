@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import "reflect-metadata";
 import { IFeedCreate } from "../interfaces";
-import { Feed } from "../models";
+import { Feed, User } from "../models";
 
 @injectable()
 export class FeedService {
@@ -28,7 +28,16 @@ export class FeedService {
         return Feed.findOne({
             where: {
                 id: feedId
-            }
+            },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["avatarUrl", "firstName", "lastName"],
+                }
+            ],
+            raw: false,
+            nest: true,
         }
         );
     }
@@ -69,12 +78,39 @@ export class FeedService {
             }
         })
     }
-
+    /**
+     * 
+     * @param feedId 
+     * @returns 
+     */
     public getAllInfoFeed = async (feedId: number): Promise<Feed | null> => {
         return Feed.findOne({
             where: {
                 id: feedId,
             },
+        })
+    }
+
+    /**
+     * Find all feed and sort by time
+     * @param courseId 
+     * @returns 
+     */
+    public getAllFeedInCourse = async (courseId: number): Promise<Feed[]> => {
+        return Feed.findAll({
+            where: {
+                courseId
+            },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["avatarUrl", "firstName", "lastName"],
+                }
+            ],
+            order: [["createdAt", "DESC"]],
+            raw: false,
+            nest: true,
         })
     }
 }
