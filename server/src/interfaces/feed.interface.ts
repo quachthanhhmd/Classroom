@@ -16,9 +16,9 @@ export const serializeFeedDetail = (model: any) => {
         content: model.content,
         createdAt: model.createdAt,
         updatedAt: model.updatedAt,
-        commentList: model.commentList && model.commentList.map((comment) => (serializeComment(comment))),
+        commentList: model.commentList ? model.commentList.map((comment) => (serializeComment(comment))) : [],
         attachmentList:
-            model.attachmentList && model.attachmentList.map((attachment) => (serializeAttachment(attachment))),
+            model.attachmentList ? model.attachmentList.map((attachment) => (serializeAttachment(attachment))) : [],
     }
 }
 

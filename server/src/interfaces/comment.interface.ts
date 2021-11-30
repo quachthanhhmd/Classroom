@@ -15,6 +15,11 @@ export const serializeComment = (model: any) => {
         updatedAt: model.updatedAt,
         refType: model.refType,
         refId: model.refId,
-        userId: model.userId
+        user: {
+            id: model.user.id,
+            firstName: model.user.firstName,
+            lastName: model.user.lastName,
+            avatarUrl: model.user.avatarUrl,
+        }
     }
 }

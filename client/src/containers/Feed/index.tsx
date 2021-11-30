@@ -14,13 +14,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
 import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
+import commentApi from "../../api/comment.api";
 import courseApi from "../../api/course.api";
 import postApi from "../../api/feed.api";
 import CourseInfo from "../../components/CourseInfo";
 import CircularLoading from "../../components/Loading";
 import Post from "../../components/Post";
 import { TYPEROLE } from "../../constants";
-import { ICourseInfo } from "../../interfaces";
+import { IComment, ICourseInfo } from "../../interfaces";
 import { IPostDetail } from "../../interfaces/post.interface";
 import { FORBIDDEN_MESSAGE, POST_NEW_FAIL, POST_NEW_SUCCESS } from "../../messages";
 import { AppState } from "../../reducers";
@@ -86,13 +87,12 @@ const Feed = () => {
         const postList = async () => {
             const res = await courseApi.getAllPost(+courseId);
 
-            if (res.data.code !== 200) return;
+            if (res && res.status !== 200) return;
 
             setPostList(res.data.payload);
         }
-
         postList();
-    }, [setPostList, courseId])
+    }, [])
 
 
     useEffect(() => {
@@ -108,8 +108,29 @@ const Feed = () => {
     }, [courseState, history])
 
 
+    const createComment = async (data: IComment, id: number) => {
+
+        try {
+            const res = await commentApi.createNewComment(data);
+
+            //if (res && res.status !== 200) throw new Error();
+
+            // update feed
+            console.log(res.data.payload);
+            // const newPostList = postList.map((post) => {
+            //     if (post.id === id) {
+            //         post.commentList.push(res.data.payload);
+            //     }
+            //     return post;
+            // });
+     
+            // setPostList(newPostList);
+        } catch (err) {
+
+        }
+    }
+
     const handlePostStatus = async () => {
-        console.log(JSON.stringify(convertToRaw(editorState.getCurrentContent())));
 
         const res = await postApi.postNew(+courseId, { content: JSON.stringify(convertToRaw(editorState.getCurrentContent())) })
 
@@ -377,8 +398,8 @@ const Feed = () => {
                                 </Card>
 
                                 {
-                                    postList &&
-                                    postList.map((post) => <Post post={post} />)
+                                    postList && postList.length !== 0 &&
+                                    postList.map((post) => <Post clickCreateComment={createComment} post={post} />)
                                 }
 
                                 {/* <Card className="feed-main___body___right--exam">

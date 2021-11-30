@@ -1,11 +1,29 @@
 import { injectable } from "inversify";
 import { Op } from "sequelize";
 import { ICreateComment } from "../interfaces";
-import { Comment } from "../models";
+import { Comment, User } from "../models";
 
 @injectable()
 export class CommentService {
 
+    /**
+     * Find one comment by id
+     * @param id 
+     * @returns 
+     */
+    public findCommentById = async (id: number) => {
+        return Comment.findOne({
+            where: {
+                id
+
+            },
+            include: [{
+                model: User
+            }],
+            raw: true,
+            nest: true,
+        })
+    }
     /**
      * Create new comment
      * @param {number} userId
@@ -16,6 +34,30 @@ export class CommentService {
         return Comment.create({
             userId,
             ...body
+        })
+    }
+
+    /**
+     * find all comment in post
+     * @param refType 
+     * @param refId 
+     * @returns 
+     */
+    public findCommentByRefType = async (refType: string, refId: number) => {
+        return Comment.findAll({
+            where: {
+                [Op.and]: {
+                    refId,
+                    refType
+                },
+
+            },
+            include: [{
+                model: User
+            }],
+            order: [["createdAt", "ASC"]],
+            raw: true,
+            nest: true,
         })
     }
 
@@ -33,8 +75,15 @@ export class CommentService {
                     userId,
                     refId,
                     refType
-                }
-            }
+                },
+
+            },
+            include: [{
+                model: User
+            }],
+            order: [["createdAt", "ASC"]],
+            raw: false,
+            nest: true,
         })
     }
 

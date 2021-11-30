@@ -1,9 +1,11 @@
+import { ICommentResponse } from ".";
+
 export interface IPostDetail {
     id: number;
     content: string;
     createdAt: Date;
     updatedAt: Date;
-    commentList: any[];
+    commentList: ICommentResponse[];
     attachmentList: any[];
     user: {
         id: number;

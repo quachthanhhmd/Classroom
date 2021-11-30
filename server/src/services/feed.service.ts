@@ -1,10 +1,13 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import "reflect-metadata";
+import { CommentService } from ".";
 import { IFeedCreate } from "../interfaces";
-import { Feed, User } from "../models";
-
+import { Feed, ReferenceType, User } from "../models";
 @injectable()
 export class FeedService {
+    constructor(
+        @inject("CommentService") private readonly _commentService: CommentService
+    ) { }
     /**
      * Create new Feed
      * @param {number} courseId 
@@ -96,8 +99,8 @@ export class FeedService {
      * @param courseId 
      * @returns 
      */
-    public getAllFeedInCourse = async (courseId: number): Promise<Feed[]> => {
-        return Feed.findAll({
+    public getAllFeedInCourse = async (courseId: number): Promise<any[]> => {
+        const feedList = await Feed.findAll({
             where: {
                 courseId
             },
@@ -109,8 +112,14 @@ export class FeedService {
                 }
             ],
             order: [["createdAt", "DESC"]],
-            raw: false,
+            raw: true,
             nest: true,
         })
+
+        return Promise.all(feedList.map(async (feed) => {
+            const allComment = await this._commentService.findCommentByRefType(ReferenceType.FEED, feed.id);
+
+            return { ...feed, commentList: allComment }
+        }))
     }
 }

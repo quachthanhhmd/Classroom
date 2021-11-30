@@ -8,3 +8,4 @@ export * from "./course.constant";
 export * from "./member.constant";
 export * from "./exercise.constant";
 export * from "./notification.constant";
+export * from "./common.constant";

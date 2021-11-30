@@ -180,7 +180,6 @@ const GradeStructure = () => {
             dispatch(createExerciseType(Number(courseId), data));
         }
         else {
-            console.log("Cai nay la update")
             dispatch(updateExerciseType(Number(courseId), itemList[index].id, data));
         }
         //dispatch(getAllCourseInfo(Number(courseId)));

@@ -8,7 +8,7 @@ import {
 } from "../interfaces";
 import { CREATE_COURSE_FAIL_MESSAGE, CREATE_COURSE_SUCCESS_MESSAGE, FORBIDDEN_MESSAGE, JOIN_COURSE_FAIL_MESSAGE, JOIN_COURSE_SUCCESS_MESSAGE } from "../messages";
 import { UPDATE_COURSE_INFO_FAIL, UPDATE_COURSE_INFO_REQUEST, UPDATE_COURSE_INFO_SUCCESS } from './../constants/course.constant';
-import { CREATE_EXERCISE_TYPE_SUCCESS, DELETE_EXERCISE_TYPE_SUCCESS, UPDATE_EXERCISE_TYPE_SUCCESS } from './../constants/exercise.constant';
+import { CREATE_EXERCISE_TYPE_SUCCESS, DELETE_EXERCISE_TYPE_SUCCESS } from './../constants/exercise.constant';
 import { UPDATE_MEMBER_STATE_FAIL, UPDATE_MEMBER_STATE_SUCCESS } from './../constants/member.constant';
 
 

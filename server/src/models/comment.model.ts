@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, ForeignKey, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table
 } from "sequelize-typescript";
 import { User } from "./user.model";
 
@@ -45,4 +45,7 @@ export class Comment extends Model<IComment, ICommentCreationAttributes> {
     @ForeignKey(() => User)
     @Column(DataType.INTEGER.UNSIGNED)
     userId!: number;
+
+    @BelongsTo(() => User)
+    user?: User;
 }

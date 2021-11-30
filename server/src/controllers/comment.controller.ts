@@ -17,7 +17,8 @@ export class CommentController {
             const userId = <number> req.currentUser?.id;
             const body = req.body;
 
-            const newComment = await this._commentService.createComment(userId, body);
+            const createdComment = await this._commentService.createComment(userId, body);
+            const newComment = await this._commentService.findCommentById(createdComment.id);
 
             return res.composer.success(serializeComment(newComment));
         } catch (err) {
