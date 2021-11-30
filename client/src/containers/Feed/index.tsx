@@ -1,5 +1,5 @@
 import {
-    Button, Card, CardContent, CardHeader, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper
+    Button, Card, CardContent, CardHeader, Container, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Paper, Typography
 } from "@material-ui/core";
 import {
     CropFree, FileCopy, MoreHoriz, MoreVert, Settings
@@ -113,18 +113,18 @@ const Feed = () => {
         try {
             const res = await commentApi.createNewComment(data);
 
-            //if (res && res.status !== 200) throw new Error();
+            if (res && res.status !== 200) throw new Error();
 
             // update feed
-            console.log(res.data.payload);
-            // const newPostList = postList.map((post) => {
-            //     if (post.id === id) {
-            //         post.commentList.push(res.data.payload);
-            //     }
-            //     return post;
-            // });
-     
-            // setPostList(newPostList);
+
+            const newPostList = postList.map((post) => {
+                if (post.id === id) {
+                    post.commentList.push(res.data.payload);
+                }
+                return post;
+            });
+
+            setPostList(newPostList);
         } catch (err) {
 
         }
@@ -302,7 +302,24 @@ const Feed = () => {
                                         </CardContent>
                                     </Card>
                                 }
-                                <Card className="feed-main___body___left--deadline" style={{ fontSize: "1rem" }}>
+                                <Card className="feed-main___body___left--grade-structure">
+                                    <CardHeader
+                                        title="Cấu trúc điểm"
+                                    />
+                                    <CardContent>
+                                        {
+                                            course && course.exerciseTypeList &&
+                                            course.exerciseTypeList.map((type, index) => (
+                                                <Typography>
+                                                    {`${type.name}: ${type.grade}`}
+                                                </Typography>
+                                            ))
+
+
+                                        }
+                                    </CardContent>
+                                </Card>
+                                <Card className="feed-main___body___left--deadline" style={{ fontSize: "1rem", marginTop: "1rem"}}>
                                     <CardHeader
                                         title={<p className="feed-main___body___left--card-header">Sắp hết hạn</p>}
                                     >
