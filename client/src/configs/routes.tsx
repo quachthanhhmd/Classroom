@@ -10,6 +10,7 @@ import HomePage from "../pages/Home";
 import Loading from "../components/Loading";
 import AddIDModal from "../components/AddIDModal";
 import env from "./env";
+import Exercise from "../containers/Exercise";
 
 const Feed = lazy(() => import("../containers/Feed"));
 const GradeStructure = lazy(() => import("../containers/GradeStructure"));
@@ -144,7 +145,13 @@ const courseRouteList = [
         path: ROUTES.structure,
         exact: false,
         auth: true,
-        main: () => <GradeStructure/>
+        main: () => <GradeStructure />
+    },
+    {
+        path: ROUTES.exercise,
+        exact: false,
+        auth: true,
+        main: () => <Exercise />
     }
 ]
 

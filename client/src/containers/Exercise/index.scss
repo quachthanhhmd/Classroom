@@ -1,0 +1,47 @@
+.exercise-main {
+    width: 80%;
+
+    margin: 2rem auto;
+
+    &___exam {
+
+        &--create {
+            font-size: 1rem !important;
+            //padding: 0.4rem;
+            margin-top: 0.2rem !important;
+            background-color: rgb(100, 127, 247) !important;
+            border-radius: 1rem !important;
+        }
+
+        &___button {
+            display: flex !important;
+            justify-content: space-between !important;
+
+            &--title {
+                display: flex;
+            }
+
+         
+            &--icon {
+                align-items: center;
+                height: auto !important;
+
+                padding: 0.1rem;
+            }
+            &--display {
+                font-size: 1.3rem;
+                text-transform: none;
+                align-self: center;
+            }
+
+            &--time {
+                opacity: 0.8;
+                font-size: 0.8rem !important;
+            }
+
+            &--name {
+                margin-left: 0.4rem;
+            }
+        }
+    }
+}

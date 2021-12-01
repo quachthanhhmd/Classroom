@@ -159,11 +159,10 @@ export class CourseController {
 
             // get all post, exercise post more
             const feedList = await this._feedService.getAllFeedInCourse(courseId);
-            console.log(feedList);
 
             return res.composer.success(serializeFeedDetailList(feedList))
         } catch (err) {
-            console.log(err);
+
             res.composer.otherException(err);
         }
     }

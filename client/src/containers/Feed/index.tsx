@@ -86,7 +86,7 @@ const Feed = () => {
     useEffect(() => {
         const postList = async () => {
             const res = await courseApi.getAllPost(+courseId);
-
+            console.log(res);
             if (res && res.status !== 200) return;
 
             setPostList(res.data.payload);

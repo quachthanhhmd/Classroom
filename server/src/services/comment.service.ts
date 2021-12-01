@@ -38,6 +38,33 @@ export class CommentService {
     }
 
     /**
+     * Get one comment have Create At latest
+     * @param refType 
+     * @param refId 
+     * @returns 
+     */
+    public getLatestComment = async (refType: string, refId: number) => {
+        return Comment.findOne({
+            where: {
+                [Op.and]: {
+                    refId,
+                    refType
+                },
+            },
+            include: [{
+                model: User
+            }],
+            order: [["createdAt", "DESC"]],
+            raw: true,
+            nest: true,
+        })
+    }
+
+    public getCommentPagination = async (refType: string, refId: number, feedId: number) => {
+
+    }
+
+    /**
      * find all comment in post
      * @param refType 
      * @param refId 

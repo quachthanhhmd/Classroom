@@ -6,4 +6,5 @@ export const ROUTES = {
     exam: "/exam/:courseId",
     inviteMember: "/course/invite/:courseId",
     structure: "/structure/:courseId",
+    exercise: "/exercise/:courseId"
 }

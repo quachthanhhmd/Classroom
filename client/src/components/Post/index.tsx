@@ -7,7 +7,8 @@ import { useSelector } from "react-redux";
 import { IComment } from "../../interfaces";
 import { IPostDetail } from "../../interfaces/post.interface";
 import { AppState } from "../../reducers";
-import { sameDay } from "../../utils/converter";
+import { getDateFormat, sameDay } from "../../utils/converter";
+import Comment from "../Comment";
 import { ReferenceType } from "../../constants";
 import "./index.scss";
 
@@ -20,15 +21,11 @@ interface Props {
 const Post = (props: Props) => {
     const { post, clickCreateComment } = props;
     const [comment, setComment] = useState<string>("");
+    const [isShowAll, setIsShowAll] = useState<boolean>(false);
+
     const auth = useSelector((state: AppState) => state.auth);
 
-    const getDateFormat = (date: Date) => {
-        const newDate = new Date(date);
-        if (sameDay(newDate, new Date())) {
-            return `${`0${newDate.getHours()}`.substr(-2)}: ${`0${newDate.getMinutes()}`.substr(-2)}`
-        }
-        return `${newDate.getDay()} thg ${newDate.getMonth()}`;
-    }
+
 
     const handleSubmitComment = () => {
         if (!comment) return;
@@ -40,6 +37,9 @@ const Post = (props: Props) => {
         }, post.id)
 
         setComment("");
+    }
+    const handleShowAllComment = () => {
+        setIsShowAll(!isShowAll);
     }
 
     return (
@@ -78,7 +78,7 @@ const Post = (props: Props) => {
                 </IconButton>
             </CardActions> */}
             <Divider />
-            <Button style={{ textTransform: "none", marginLeft: "1rem", marginTop: "1rem" }}>
+            <Button style={{ textTransform: "none", marginLeft: "1rem", marginTop: "1rem" }} onClick={handleShowAllComment}>
                 <Grid container direction="row" alignItems="center">
                     <Grid item>
                         <People style={{ marginRight: "1rem" }} />
@@ -90,33 +90,28 @@ const Post = (props: Props) => {
 
             </Button>
             <CardContent style={{ width: "100%", marginLeft: "0.5rem", marginRight: "0.5rem" }}>
-                {
-                    post && post.commentList.length !== 0 && post.commentList.map((comment, index) => (
-                        <Grid key={`comment-feed-${index}`} container wrap="nowrap" spacing={2}>
-                            <Grid item>
-                                <Avatar alt="Remy Sharp" src={comment.user.avatarUrl ? comment.user.avatarUrl : "/none-avt.png"} />
+                {!isShowAll ?
+                    <>
+                        {
+                            post && post.commentList.length !== 0 && <Comment comment={post.commentList[post.commentList.length - 1]} index={1} />
+                        }
+                    </>
+                    :
+                    <>
+                        {
 
-                            </Grid>
-                            <Grid item xs zeroMinWidth>
-                                <h4 style={{ margin: 0, textAlign: "left", marginBottom: "-0.8rem" }}>{`${comment.user.firstName} ${comment.user.lastName}`} &nbsp; <span style={{ textAlign: "left", opacity: "0.6", fontWeight: "normal", marginTop: "-0.1rem" }}>
-                                    {getDateFormat(comment.createdAt)}
-                                </span></h4>
+                            post && post.commentList.length !== 0 && post.commentList.map((comment, index) => (
+                                <Comment comment={comment} index={index + 1} />
+                            ))
 
-
-                                <p style={{ textAlign: "left" }}>
-                                    {comment.content}
-                                </p>
-
-                            </Grid>
-                        </Grid>
-                    ))
+                        }
+                    </>
                 }
-
             </CardContent>
             <Divider />
             <CardHeader
                 avatar={
-                    <Avatar src={auth && auth.user?.avatarUrl ?auth.user.avatarUrl  : "/none-avt.png"} aria-label="recipe" alt="avt-post">
+                    <Avatar src={auth && auth.user?.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} aria-label="recipe" alt="avt-post">
                         R
                     </Avatar>
                 }
@@ -139,7 +134,7 @@ const Post = (props: Props) => {
             >
             </CardHeader>
 
-        </Card>
+        </Card >
     )
 }
 

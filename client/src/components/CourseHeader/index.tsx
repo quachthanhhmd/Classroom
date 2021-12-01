@@ -44,7 +44,7 @@ const Header = () => {
 
     useEffect(() => {
         window.location.pathname.includes("course") && setTypePill(0);
-        //window.location.pathname.includes("exam") && setTypePill(1);
+        window.location.pathname.includes("exercise") && setTypePill(1);
         window.location.pathname.includes("structure") && setTypePill(2);
         window.location.pathname.includes("member") && setTypePill(3);
     }, [window.location.pathname])
@@ -119,11 +119,11 @@ const Header = () => {
                         <LinkTab label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
 
                         </LinkTab>
-                        <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to="/auth" >
-                            <Link to="/auth/2" />
-                        </LinkTab>
+
                         {member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
-                            <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+                            <>
+                                <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to={`/exercise/${courseId}`} />                               <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+                            </>
                         }
                         <LinkTab label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
                     </Tabs>
