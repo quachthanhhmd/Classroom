@@ -1,6 +1,7 @@
 import exerciseApi from "../api/exercise.api";
 import { CREATE_EXERCISE_TYPE_FAIL, CREATE_EXERCISE_TYPE_REQUEST, CREATE_EXERCISE_TYPE_SUCCESS, DELETE_EXERCISE_TYPE_SUCCESS, NOTIFICATION_SUCCESS, UPDATE_EXERCISE_TYPE_FAIL, UPDATE_EXERCISE_TYPE_REQUEST, UPDATE_EXERCISE_TYPE_SUCCESS, UPDATE_ORDER_CHANGE_SUCCESS } from "../constants";
 import { IChangeOrder, ICreateExerciseType, IExerciseAction } from "../interfaces";
+import { DELETE_SUCCESS, UPDATE_SUCCESS } from "../messages";
 import { CREATE_EXERCISE_TYPE_SUCCESS_MESSAGE } from "../messages/exercise.message";
 
 
@@ -41,7 +42,7 @@ export const updateExerciseType = (courseId: number, typeId: number, data: ICrea
             if (result.data.code !== 200) throw new Error();
             dispatch({
                 type: NOTIFICATION_SUCCESS,
-                payload: UPDATE_EXERCISE_TYPE_SUCCESS
+                payload: UPDATE_SUCCESS
             })
             dispatch({
                 type: UPDATE_EXERCISE_TYPE_SUCCESS,
@@ -63,7 +64,7 @@ export const deleteExerciseType = (typeId: number, courseId: number) =>
             if (result.data.code !== 200) throw new Error();
             dispatch({
                 type: NOTIFICATION_SUCCESS,
-                payload: DELETE_EXERCISE_TYPE_SUCCESS
+                payload: DELETE_SUCCESS
             })
             dispatch({
                 type: DELETE_EXERCISE_TYPE_SUCCESS,
