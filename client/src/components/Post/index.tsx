@@ -20,12 +20,12 @@ interface Props {
 const Post = (props: Props) => {
     const { post, clickCreateComment } = props;
     const [comment, setComment] = useState<string>("");
-
+    const auth = useSelector((state: AppState) => state.auth);
 
     const getDateFormat = (date: Date) => {
         const newDate = new Date(date);
         if (sameDay(newDate, new Date())) {
-            return `${newDate.getHours()}: ${newDate.getMinutes()}`
+            return `${`0${newDate.getHours()}`.substr(-2)}: ${`0${newDate.getMinutes()}`.substr(-2)}`
         }
         return `${newDate.getDay()} thg ${newDate.getMonth()}`;
     }
@@ -38,6 +38,8 @@ const Post = (props: Props) => {
             refId: post.id,
             content: comment
         }, post.id)
+
+        setComment("");
     }
 
     return (
@@ -82,7 +84,7 @@ const Post = (props: Props) => {
                         <People style={{ marginRight: "1rem" }} />
                     </Grid>
                     <Grid item>
-                        <Typography component="div"> {post && post.commentList.length === 0 ? post.commentList.length : 0} nhận xét về lớp học</Typography>
+                        <Typography component="div"> {post.commentList.length !== 0 ? post.commentList.length : 0} nhận xét về lớp học</Typography>
                     </Grid>
                 </Grid>
 
@@ -96,7 +98,7 @@ const Post = (props: Props) => {
 
                             </Grid>
                             <Grid item xs zeroMinWidth>
-                                <h4 style={{ margin: 0, textAlign: "left", marginBottom: "-0.8rem" }}>{`${comment.user.firstName} ${comment.user.lastName}`} &nbsp;&nbsp; <span style={{ textAlign: "left", opacity: "0.6", fontWeight: "normal", marginTop: "-0.1rem" }}>
+                                <h4 style={{ margin: 0, textAlign: "left", marginBottom: "-0.8rem" }}>{`${comment.user.firstName} ${comment.user.lastName}`} &nbsp; <span style={{ textAlign: "left", opacity: "0.6", fontWeight: "normal", marginTop: "-0.1rem" }}>
                                     {getDateFormat(comment.createdAt)}
                                 </span></h4>
 
@@ -114,7 +116,7 @@ const Post = (props: Props) => {
             <Divider />
             <CardHeader
                 avatar={
-                    <Avatar src={post.user.avatarUrl ? post.user.avatarUrl : "/none-avt.png"} aria-label="recipe" alt="avt-post">
+                    <Avatar src={auth && auth.user?.avatarUrl ?auth.user.avatarUrl  : "/none-avt.png"} aria-label="recipe" alt="avt-post">
                         R
                     </Avatar>
                 }

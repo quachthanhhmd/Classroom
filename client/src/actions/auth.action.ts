@@ -1,36 +1,22 @@
-import { ILogoutType } from './../interfaces/auth.interface';
-import { USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from './../constants';
 import jwt_decode from "jwt-decode";
 import authApi from "../api/auth.api";
-import {
-  ISignInType,
-  ISigninInput,
-  IPayload,
-  IUserHeader,
-  ISignUpInput,
-  ISignUpType,
-  IUserSummary,
-  ILoginOAuthType,
-  ILoginOAuth
-} from "../interfaces";
-
 import env from "../configs/env";
-
 import {
-  USER_LOGIN_REQUEST,
-  USER_LOGIN_SUCCESS,
-  USER_LOGIN_FAIL,
-  USER_INFO_REQUEST,
-  USER_INFO_SUCCESS,
-  USER_INFO_FAIL,
-  USER_LOGOUT,
-  USER_UPDATE_HEADER,
-  USER_LOGIN_OAUTH_REQUEST,
-  USER_LOGIN_OAUTH_SUCCESS,
-  USER_LOGIN_OAUTH_FAIL,
-  NOTIFICATION_SUCCESS
+  NOTIFICATION_FAIL,
+  NOTIFICATION_SUCCESS, USER_INFO_FAIL, USER_INFO_REQUEST,
+  USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_OAUTH_FAIL, USER_LOGIN_OAUTH_REQUEST,
+  USER_LOGIN_OAUTH_SUCCESS, USER_LOGIN_REQUEST,
+  USER_LOGIN_SUCCESS, USER_LOGOUT,
+  USER_UPDATE_HEADER
 } from "../constants";
-import { LOGIN_SUCCESS, SIGNUP_SUCCESS } from '../messages';
+import {
+  ILoginOAuth, IPayload, ISigninInput, ISignUpInput, IUserHeader, IUserSummary
+} from "../interfaces";
+import { LOGIN_FAIL, LOGIN_SUCCESS, SIGNUP_SUCCESS } from '../messages';
+import { USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from './../constants';
+import { ILogoutType } from './../interfaces/auth.interface';
+
+
 
 export const signIn = (data: ISigninInput) => async (dispatch) => {
   try {
@@ -40,6 +26,7 @@ export const signIn = (data: ISigninInput) => async (dispatch) => {
 
     const result = await authApi.signIn(data);
 
+    if (result.status !== 200) throw new Error();
     dispatch({
       type: NOTIFICATION_SUCCESS,
       payload: LOGIN_SUCCESS
@@ -50,7 +37,11 @@ export const signIn = (data: ISigninInput) => async (dispatch) => {
       payload: result.data.payload,
     });
   } catch (error) {
-    console.log(error);
+    dispatch({
+      type: NOTIFICATION_FAIL,
+      payload: LOGIN_FAIL
+    })
+
     dispatch({
       type: USER_LOGIN_FAIL,
     });

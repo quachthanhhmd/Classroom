@@ -60,6 +60,8 @@ export class AuthController {
                 })
             );
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     };

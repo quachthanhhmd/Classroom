@@ -53,7 +53,8 @@ export class CourseService {
         return Course.findOne({
             where: {
                 code,
-            }
+            },
+            raw: true,
         })
     }
 
@@ -68,7 +69,8 @@ export class CourseService {
             where: {
                 id: courseId,
                 code,
-            }
+            },
+            raw: true
         });
         if (course) return true;
 
@@ -99,7 +101,7 @@ export class CourseService {
                     ownerId: userId,
                 }
             },
-            raw: false,
+            raw: true,
         })
 
         return course ? true : false;
