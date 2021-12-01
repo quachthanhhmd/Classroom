@@ -7,12 +7,11 @@ import {
 import { convertToRaw, EditorState } from "draft-js";
 import createImagePlugin from "draft-js-image-plugin";
 import React, { useEffect, useState } from "react";
-import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
-import { getAllCourseInfo, joinCourseByUrl } from "../../actions";
+import { joinCourseByUrl } from "../../actions";
 import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import commentApi from "../../api/comment.api";
 import courseApi from "../../api/course.api";
@@ -20,12 +19,14 @@ import postApi from "../../api/feed.api";
 import CourseInfo from "../../components/CourseInfo";
 import CircularLoading from "../../components/Loading";
 import Post from "../../components/Post";
+import RichText from "../../components/RichText";
 import { TYPEROLE } from "../../constants";
 import { IComment, ICourseInfo } from "../../interfaces";
 import { IPostDetail } from "../../interfaces/post.interface";
 import { FORBIDDEN_MESSAGE, POST_NEW_FAIL, POST_NEW_SUCCESS } from "../../messages";
 import { AppState } from "../../reducers";
 import "./index.scss";
+
 
 
 const imagePlugin = createImagePlugin();
@@ -154,19 +155,7 @@ const Feed = () => {
     const handleChangeInfo = () =>
         isChangeInfo && setIsChangeInfo(false);
 
-    const uploadCallback = (file) => {
-        return new Promise(
-            (resolve, reject) => {
-                if (file) {
-                    let reader = new FileReader();
-                    reader.onload = (e: any) => {
-                        resolve({ data: { link: e.target.result } })
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-        );
-    }
+
     return (
 
         <>
@@ -319,7 +308,7 @@ const Feed = () => {
                                         }
                                     </CardContent>
                                 </Card>
-                                <Card className="feed-main___body___left--deadline" style={{ fontSize: "1rem", marginTop: "1rem"}}>
+                                <Card className="feed-main___body___left--deadline" style={{ fontSize: "1rem", marginTop: "1rem" }}>
                                     <CardHeader
                                         title={<p className="feed-main___body___left--card-header">Sắp hết hạn</p>}
                                     >
@@ -350,34 +339,7 @@ const Feed = () => {
                                         isWriteStatus ?
                                             <CardContent className="feed-main___body___right--write-status___expand">
                                                 <div className="feed-main___body___right--write-status___expand--rich-text">
-                                                    <Editor
-                                                        editorState={editorState}
-                                                        onEditorStateChange={setEditorState}
-                                                        editorClassName="editor-class"
-                                                        toolbarClassName="toolbar-class"
-
-                                                        toolbar={{
-                                                            options: ['inline', 'blockType', 'fontSize', 'fontFamily', 'list', 'textAlign', 'colorPicker', 'link', 'embedded', 'emoji', 'image', 'remove', 'history'],
-                                                            image: {
-                                                                uploadEnabled: true,
-                                                                uploadCallback: uploadCallback,
-                                                                previewImage: true,
-                                                                inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
-                                                                alt: { present: false, mandatory: false },
-                                                                defaultSize: {
-                                                                    height: 'auto',
-                                                                    width: '10rem',
-                                                                },
-                                                            },
-                                                            inline: { inDropdown: true },
-                                                            list: { inDropdown: true },
-                                                            textAlign: { inDropdown: true },
-                                                            link: { inDropdown: true },
-
-                                                            history: { inDropdown: true },
-
-                                                        }}
-                                                    />
+                                                    <RichText content={editorState} setContent={setEditorState} />
                                                 </div>
                                                 <div className="feed-main___body___right--write-status___expand--submit">
                                                     <Button

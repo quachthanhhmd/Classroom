@@ -1,6 +1,7 @@
 import { Card, Grid, CardContent, CardHeader, Divider, Button, IconButton, Typography } from '@material-ui/core';
 import { Add, MoreVert, Assignment } from '@material-ui/icons';
-import React from 'react';
+import React, { useState } from 'react';
+import AddExercise from '../../components/AddExercise';
 
 
 
@@ -32,8 +33,17 @@ const ButtonExam = () => {
 
 
 const Exercise = () => {
+
+    const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
+
+
+    const createExercise = () => {
+
+    }
+
     return (
         <div className="exercise-main">
+            <AddExercise open={createModalOpen} handleClose={() => setCreateModalOpen(false)} clickCreate={createExercise} />
             <Grid container spacing={3}>
                 <Grid item xs={2}>
                     <Card className="exercise-main___topic">
@@ -56,7 +66,9 @@ const Exercise = () => {
                         <CardHeader
                             title="Bài tập"
                             action={
-                                <Button className="exercise-main___exam--create" variant="contained" startIcon={<Add />}>
+                                <Button className="exercise-main___exam--create" variant="contained" startIcon={<Add />}
+                                    onClick={() => setCreateModalOpen(true)}
+                                >
                                     Tạo
                                 </Button>
                             }

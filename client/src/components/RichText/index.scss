@@ -1,0 +1,24 @@
+.container-info {
+    border-radius: 2px;
+}
+
+.overflow-text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: block;
+}
+
+.editor-class {
+    background-color: white;
+    color: black;
+    min-height: 19rem;
+    padding: 0 0.5rem 0 0.5rem;
+}
+
+.toolbar-class {
+    color: black;
+    padding-right: 16%;;
+    position: relative;
+    z-index: 10;
+}

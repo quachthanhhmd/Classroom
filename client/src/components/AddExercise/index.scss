@@ -1,0 +1,14 @@
+.exercise {
+    &___rich-text {
+        border: 1px solid black;
+        min-height: 19rem;
+        padding: 2px;
+    }
+
+    &___option {
+        margin: 0.6rem 0 0.6rem 0;
+        > * {
+            padding: 0.2rem;
+        }
+    }
+}
