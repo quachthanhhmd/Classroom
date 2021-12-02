@@ -11,3 +11,4 @@ export * from "./attachment.interface";
 export * from "./comment.interface";
 export * from "./exercise-type.interface";
 export * from "./submission.interface";
+export * from "./topic.interface";

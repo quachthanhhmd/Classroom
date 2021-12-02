@@ -60,9 +60,6 @@ export class CommentService {
         })
     }
 
-    public getCommentPagination = async (refType: string, refId: number, feedId: number) => {
-
-    }
 
     /**
      * find all comment in post

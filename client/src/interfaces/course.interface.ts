@@ -1,6 +1,7 @@
 import { IPaginationInfo } from './';
-import { IChangeOrderState, ICreateExerciseType, ICreateExerciseTypeState, IDeleteExerciseTypeState, IExerciseTypeDetail, IUpdateExerciseTypeState } from './exercise.interface';
+import { IChangeOrderState, ICreateExerciseTypeState, IDeleteExerciseTypeState, IExerciseTypeDetail, IUpdateExerciseTypeState } from './exercise.interface';
 import { IPostDetail } from './post.interface';
+import { ITopicDetail } from './topic.interface';
 
 
 export interface IUserCourse {
@@ -34,7 +35,8 @@ export interface ICourseInfo {
     studentExist: number,
     studentLimit: number,
     ownerId: number,
-    exerciseTypeList?: IExerciseTypeDetail[]
+    exerciseTypeList?: IExerciseTypeDetail[],
+    topicList?: ITopicDetail[],
 }
 
 //-------------------------------------

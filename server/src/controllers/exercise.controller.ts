@@ -1,12 +1,13 @@
 import { inject, injectable } from "inversify";
 import { serializeExerciseDetail, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
-import { ExerciseService, MemberService } from "../services";
+import { ExerciseService, MemberService, TopicService } from "../services";
 
 @injectable()
 export class ExerciseController {
     constructor(
         @inject("ExerciseService") private readonly _exerciseService: ExerciseService,
         @inject("MemberService") private readonly _memberService: MemberService,
+        @inject("TopicService") private readonly _topicService: TopicService
     ) { }
 
     public createNewExercise = async (
@@ -15,14 +16,35 @@ export class ExerciseController {
     ): Promise<void> => {
         try {
             const courseId = +req.params.courseId;
-            const bodyExercise: ICreateExercise = req.body;
+            const bodyExercise = req.body;
+            console.log(bodyExercise);
+            let topicId = -1;
+            if (bodyExercise.topic.id === -1) {
+                const newTopic = await this._topicService.createTopic(courseId, { topic: bodyExercise.topic.topic });
 
-            const newExercise = await this._exerciseService.createExercise(courseId, bodyExercise);
+                if (newTopic) {
+                    topicId = newTopic.id;
+                }
+            }
+
+            if (topicId === -1 && bodyExercise.topic.id !== -1) {
+                const topic = await this._topicService.findTopicById(bodyExercise.topic.id);
+
+                if (!topic) return res.composer.badRequest();
+                topicId = topic.id;
+            }
+
+            delete bodyExercise.topic;
+            console.log(topicId);
+            console.log(bodyExercise);
+            const newExercise = await this._exerciseService.createExercise(courseId, { ...bodyExercise, topicId });
 
             if (!newExercise) return res.composer.internalServerError();
 
             return res.composer.success(serializeExerciseDetail(newExercise));
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }

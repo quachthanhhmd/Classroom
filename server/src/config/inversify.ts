@@ -16,7 +16,8 @@ import {
     CommentService,
     CourseService,
     ExerciseService,
-    FeedService, MemberService, OAuthService, SubmissionService, TokenService, UserService
+    FeedService, MemberService, OAuthService, SubmissionService, TokenService, TopicService,
+    UserService,
 } from "../services";
 import { ExerciseTypeService } from "../services/exercise-type.service";
 import {
@@ -27,7 +28,8 @@ import {
     ExerciseTypeValidation,
     ExerciseValidation,
     FeedValidation,
-    MemberValidation, SubmissionValidation, UserValidation } from "../validations";
+    MemberValidation, SubmissionValidation, UserValidation
+} from "../validations";
 
 const existContainer = new Container({ defaultScope: "Singleton" });
 
@@ -75,5 +77,7 @@ existContainer.bind<ExerciseTypeController>("ExerciseTypeController").to(Exercis
 existContainer.bind<SubmissionService>("SubmissionService").to(SubmissionService);
 existContainer.bind<SubmissionController>("SubmissionController").to(SubmissionController);
 existContainer.bind<SubmissionValidation>("SubmissionValidation").to(SubmissionValidation);
+
+existContainer.bind<TopicService>("TopicService").to(TopicService);
 
 export const container = existContainer;

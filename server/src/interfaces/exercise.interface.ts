@@ -2,7 +2,8 @@ export interface ICreateExercise {
     title: string,
     description?: string,
     deadline?: Date,
-    topicId?: number,
+    topicId: number,
+    typeId: number
 }
 
 export const serializeExerciseDetail = (model: any) => {
@@ -12,6 +13,7 @@ export const serializeExerciseDetail = (model: any) => {
         description: model.description,
         deadline: model.deadline,
         topicId: model.topicId,
+        typeId: model.typeId,
         createdAt: model.createdAt,
         updateAt: model.updateAt,
     }

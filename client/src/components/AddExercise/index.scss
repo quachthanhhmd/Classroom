@@ -11,4 +11,11 @@
             padding: 0.2rem;
         }
     }
+
+    &___dropdown {
+        &--option {
+            padding: 1rem !important;
+            margin: 1rem;
+        }
+    }
 }

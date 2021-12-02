@@ -2,15 +2,17 @@ import {
     AllowNull,
     AutoIncrement, Column,
     DataType,
-    Default, DefaultScope, HasMany,
-    Model,
+    Default, DefaultScope, HasMany, Model,
     PrimaryKey,
+    Scopes,
+    ScopeTableOptions,
     Table
 } from "sequelize-typescript";
 import { Member } from "./";
 import { ExerciseType } from "./exercise-type.model";
 import { Exercise } from "./exercise.model";
 import { Feed } from "./feed.model";
+import { Topic } from "./topic.model";
 
 // interface ICourse {
 //     id?: number,
@@ -27,15 +29,35 @@ import { Feed } from "./feed.model";
 
 // interface CourseCreationAttributes extends Optional<ICourse, "id"> { }
 
+// @Scopes(() => ({
+//     memberList: {
+//         include: [{
+//             model: ExerciseType,
+//             separate: true,
+//             order: [["orderIndex", "ASC"]],
+//             through: {attributes: []},
+//         }],
+//     },
+//     topicList: {
+//         include: [{
+//             model: Topic,
+//             through: {attributes: []},
+//         }]
+//     },
+// }))
+@DefaultScope(
+    {
+        include: [{
+            model: () => ExerciseType, separate: true, order: [["orderIndex", "ASC"]]
+
+        }],
+
+    }
+)
 @Table({
     paranoid: true,
     timestamps: true,
     tableName: "course"
-})
-@DefaultScope({
-    include: [
-        { model: () => ExerciseType, separate: true, order:[["orderIndex", "ASC"]] },
-    ]
 })
 export class Course extends Model {
 
@@ -95,6 +117,9 @@ export class Course extends Model {
 
     @HasMany(() => ExerciseType)
     exerciseTypeList?: ExerciseType[];
+
+    @HasMany(() => Topic)
+    topicList?: Topic[];
 }
 
 function generateClassCode(length: number) {

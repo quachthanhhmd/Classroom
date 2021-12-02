@@ -12,3 +12,4 @@ export * from "./state.interface";
 export * from "./exercise.interface";
 export * from "./reducer.interface";
 export * from "./comment.interface";
+export * from "./topic.interface";

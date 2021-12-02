@@ -1,3 +1,25 @@
+export interface ICreateExercise {
+    title: string,
+    topic: {
+        id: number,
+        topic: string
+    },
+    deadline: string,
+    typeId: number,
+}
+
+export interface IExerciseDetail {
+    id: number,
+    title: string,
+    description?: string,
+    deadline: Date,
+    topicId: number,
+    typeId: number,
+    createdAt: Date,
+    updateAt: Date,
+}
+
+
 export interface ICreateExerciseType {
     name: string,
     description?: string

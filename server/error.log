@@ -1,0 +1,7 @@
+{"level":"error","message":"POST /v1/exercise/course/1 404 - 2137.199 ms - message: -\n","timestamp":"2021-12-02T13:12:58.471Z"}
+{"level":"error","message":"GET /v1/user/1 401 - 5.334 ms - message: -\n","timestamp":"2021-12-02T15:02:25.898Z"}
+{"level":"error","message":"GET /v1/user/ 401 - 1.190 ms - message: -\n","timestamp":"2021-12-02T15:02:25.917Z"}
+{"level":"error","message":"POST /v1/exercise/course/1 404 - 1157.615 ms - message: -\n","timestamp":"2021-12-02T15:09:27.363Z"}
+{"level":"error","message":"POST /v1/exercise/course/1 404 - 357.934 ms - message: -\n","timestamp":"2021-12-02T15:10:01.444Z"}
+{"level":"error","message":"POST /v1/exercise/course/1 404 - 1147.103 ms - message: -\n","timestamp":"2021-12-02T15:10:22.291Z"}
+{"level":"error","message":"POST /v1/exercise/course/1 404 - 358.344 ms - message: -\n","timestamp":"2021-12-02T15:10:24.703Z"}

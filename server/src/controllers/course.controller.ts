@@ -43,6 +43,7 @@ export class CourseController {
             if (!course) {
                 return res.composer.notFound();
             }
+            console.log(course);
 
             return res.composer.success(serializeCourseDetail(course));
         } catch (err) {

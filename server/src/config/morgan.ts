@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request } from "express";
 import morgan from "morgan";
 import { logger } from "./";
 import { IResponse } from "./../interfaces/api.interface";

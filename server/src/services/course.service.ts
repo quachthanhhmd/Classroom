@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { col, Op } from "sequelize";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { ICreateCourse } from "../interfaces";
-import { Course, ExerciseType } from "../models";
+import { Course, ExerciseType, Topic } from "../models";
 import { MemberService } from "./";
 import { IUpdateCourse } from "./../interfaces/course.interface";
 
@@ -39,6 +39,9 @@ export class CourseService {
             where: {
                 id
             },
+            include: [{
+                model: Topic
+            }],
             raw: false,
             nest: true,
         });

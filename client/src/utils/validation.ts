@@ -84,3 +84,14 @@ export const AddStudentIDValidate = yup.object({
 export const InviteByEmailValidate = yup.object({
     email: yup.string().email("Bạn phải nhập theo định dạng email").required("Bạn phải nhập email để mời người khác vào lớp"),
 })
+
+export const CreateExerciseValidate = yup.object({
+    title: yup.string().required("Tiêu đề của bài tập bắt buộc phải có"),
+    topic: yup.object({
+        id: yup.number(),
+        name: yup.string(),
+    }),
+    description: yup.string(),
+    typeId: yup.number().required("Chọn cấu trúc điểm của bài này"),
+    deadline: yup.date(),
+})

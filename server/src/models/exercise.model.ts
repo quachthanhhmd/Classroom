@@ -13,7 +13,8 @@ interface IExercise {
     topicId?: number,
     type?: number,
     courseId: number,
-    state?: string
+    state?: string,
+    typeId: number,
 }
 
 interface IExerciseCreationAttributes extends Optional<IExercise, "id"> { }
@@ -34,7 +35,7 @@ export class Exercise extends Model<IExercise, IExerciseCreationAttributes> {
     @Column(DataType.TEXT)
     title!: string;
 
-    @AllowNull(false)
+    @AllowNull(true)
     @Column(DataType.TEXT)
     description!: string;
 

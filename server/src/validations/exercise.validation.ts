@@ -9,7 +9,11 @@ export class ExerciseValidation {
                 title: Joi.string().required(),
                 description: Joi.string(),
                 deadline: Joi.date(),
-                topicId: Joi.number(),
+                topic: Joi.object().keys({
+                    id: Joi.number().required(),
+                    topic: Joi.string(),
+                }),
+                typeId: Joi.number().required(),
             },
             params: {
                 courseId: Joi.alternatives(

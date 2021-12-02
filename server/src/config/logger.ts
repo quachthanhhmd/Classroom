@@ -9,7 +9,7 @@ const enumerateErrorFormat = winston.format((info): winston.Logform.Transformabl
     return info;
 });
 
-export const logger: any = winston.createLogger({
+export const logger = winston.createLogger({
     level: env.TYPE === "development" ? "debug" : "info",
     format: winston.format.combine(
         enumerateErrorFormat(),

@@ -1,7 +1,13 @@
 import { Card, Grid, CardContent, CardHeader, Divider, Button, IconButton, Typography } from '@material-ui/core';
 import { Add, MoreVert, Assignment } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
+import { getAllCourseInfo } from '../../actions';
+import { showErrorNotify, showSuccessNotify } from '../../actions/notification.action';
+import exerciseApi from '../../api/exercise.api';
 import AddExercise from '../../components/AddExercise';
+import { ICreateExercise } from '../../interfaces';
 
 
 
@@ -34,11 +40,30 @@ const ButtonExam = () => {
 
 const Exercise = () => {
 
+    const { courseId } = useParams<{ courseId: string }>();
+
+    const dispatch = useDispatch();
     const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
 
 
-    const createExercise = () => {
+    const createExercise = async (data: ICreateExercise) => {
 
+        try {
+            console.log(data);
+            const result = await exerciseApi.createExercise(+courseId, data);
+
+            if (!result || result.status !== 200) throw new Error();
+
+            if (data.topic.id !== -1) {
+
+            } else {
+                dispatch(getAllCourseInfo(+courseId));
+            }
+
+            dispatch(showSuccessNotify("Tạo mới bài tập thành công"));
+        } catch (err) {
+            dispatch(showErrorNotify("Tạo mới bài tập thất bại, vui lòng thử lại"))
+        }
     }
 
     return (
