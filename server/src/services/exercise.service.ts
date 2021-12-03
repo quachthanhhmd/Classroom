@@ -5,11 +5,30 @@ import { ICreateExercise } from "./../interfaces";
 
 @injectable()
 export class ExerciseService {
-
+    /**
+     * Find one exercise by id
+     * @param id 
+     * @returns 
+     */
     public findExerciseById = async (id: number) => {
         return Exercise.findByPk(id);
     }
 
+    /**
+     * Find All exercise by courseId
+     * @param courseId 
+     * @returns 
+     */
+    public findAllExerciseByCourseId = async (courseId: number): Promise<Exercise[]> => {
+        return Exercise.findAll({
+            where: {
+                courseId
+            },
+            order: [["createdAt", "ASC"]],
+            raw: true,
+            nest: false
+        })
+    }
     /**
      * Create new Exercise
      * @param topicId 

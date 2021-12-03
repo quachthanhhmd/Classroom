@@ -40,7 +40,8 @@ export class CourseService {
                 id
             },
             include: [{
-                model: Topic
+                model: Topic,
+                order: [["createdAt", "ASC"]]
             }],
             raw: false,
             nest: true,

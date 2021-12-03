@@ -3,6 +3,17 @@ import Joi from "joi";
 
 @injectable()
 export class ExerciseValidation {
+
+    public getAll = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            }
+        })
+    }
     public CreateExercise = () => {
         return Joi.object().keys({
             body: {

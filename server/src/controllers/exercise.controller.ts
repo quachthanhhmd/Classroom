@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { serializeExerciseDetail, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
+import { serializeAllExercise, serializeExerciseDetail, serializeExerciseList, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
 import { ExerciseService, MemberService, TopicService } from "../services";
 
 @injectable()
@@ -10,6 +10,24 @@ export class ExerciseController {
         @inject("TopicService") private readonly _topicService: TopicService
     ) { }
 
+    public getAllExercise = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = +req.params.courseId;
+
+            const exerciseList = await this._exerciseService.findAllExerciseByCourseId(courseId);
+            // const topicList = await this._topicService.findTopicByCourseId(courseId);
+
+            return res.composer.success(serializeExerciseList(exerciseList));
+        } catch (err) {
+            console.log(err);
+
+            return res.composer.otherException(err);
+        }
+    }
+
     public createNewExercise = async (
         req: IAuthorizeRequest,
         res: IResponse
@@ -17,7 +35,7 @@ export class ExerciseController {
         try {
             const courseId = +req.params.courseId;
             const bodyExercise = req.body;
-            console.log(bodyExercise);
+
             let topicId = -1;
             if (bodyExercise.topic.id === -1) {
                 const newTopic = await this._topicService.createTopic(courseId, { topic: bodyExercise.topic.topic });
@@ -35,8 +53,6 @@ export class ExerciseController {
             }
 
             delete bodyExercise.topic;
-            console.log(topicId);
-            console.log(bodyExercise);
             const newExercise = await this._exerciseService.createExercise(courseId, { ...bodyExercise, topicId });
 
             if (!newExercise) return res.composer.internalServerError();

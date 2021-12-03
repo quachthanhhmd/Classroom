@@ -14,11 +14,12 @@
 // }
 
 export const getDateFormat = (date: Date) => {
+    
     const newDate = new Date(date);
     if (sameDay(newDate, new Date())) {
         return `${`0${newDate.getHours()}`.substr(-2)}: ${`0${newDate.getMinutes()}`.substr(-2)}`
     }
-    return `${newDate.getDay()} thg ${newDate.getMonth()}`;
+    return `${newDate.getDay()} thg ${newDate.getMonth() + 1}`;
 }
 
 

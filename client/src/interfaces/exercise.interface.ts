@@ -1,3 +1,5 @@
+import { ITopicDetail } from ".";
+
 export interface ICreateExercise {
     title: string,
     topic: {
@@ -68,5 +70,11 @@ export interface IUpdateExerciseTypeState {
     type: string,
     payload?: IExerciseTypeDetail
 }
+
+export interface IGetAllExerciseResponse {
+    topicList: ITopicDetail[];
+    exerciseList: IExerciseDetail[]; 
+}
+
 
 export type IExerciseAction = ICreateExerciseTypeState | IUpdateExerciseTypeState | IChangeOrderState | IDeleteExerciseTypeState;

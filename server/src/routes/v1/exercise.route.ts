@@ -18,6 +18,15 @@ class ExerciseRoute {
         this.initializeRoutes();
     }
     public initializeRoutes(): void {
+
+        this.router.get(
+            "/course/:courseId",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
+            validate(this._exerciseValidation.getAll),
+            this._exerciseController.getAllExercise
+        )
+
         this.router.post(
             "/course/:courseId",
             this._authenticate.authenticate(),

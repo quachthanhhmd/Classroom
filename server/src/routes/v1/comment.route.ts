@@ -29,7 +29,7 @@ class CommentRoute {
             "/:commentId/course/:courseId",
             this._authenticate.authenticate(),
             validate(this._commentValidation.DeleteComment()),
-            this._authenticate.courseAuthentication(TYPEROLE),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             this._commentController.deleteComment
         )
     }

@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table
 } from "sequelize-typescript";
 import { Course } from ".";
 import { Exercise } from "./exercise.model";
@@ -35,4 +35,7 @@ export class Topic extends Model<ITopic, ITopicCreationAttributes> {
 
     @HasMany(() => Exercise)
     exerciseList!: Exercise[];
+
+    @BelongsTo(() => Course)
+    course!: Course;
 }

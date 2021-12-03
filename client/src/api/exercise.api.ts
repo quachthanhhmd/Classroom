@@ -3,6 +3,10 @@ import axiosClient from "./axios.client";
 
 
 const exerciseApi = {
+    getAllExercise: (courseId: number) => {
+        const url = `/v1/exercise/course/${courseId}`;
+        return axiosClient.get<IHttpFormat<IExerciseDetail[]>>(url);
+    }, 
     createExerciseType: (courseId: number, data: ICreateExerciseType) => {
         const url = `/v1/exercise-type/course/${courseId}`;
         return axiosClient.post<IHttpFormat<IExerciseTypeDetail>>(url, data);
