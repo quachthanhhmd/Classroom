@@ -6,6 +6,7 @@ import { initPasswordHash } from "../config/bcrypt";
 import { Member, Submission, Token } from "./";
 import { GENDER } from "./../constants/gender.constant";
 import { Comment } from "./comment.model";
+import { Course } from "./course.model";
 import { Feed } from "./feed.model";
 import { OAuth } from "./oAuth.model";
 

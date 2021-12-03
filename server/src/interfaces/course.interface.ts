@@ -11,7 +11,7 @@ export interface IUpdateCourse {
     name?: string,
     description?: string,
     topic?: string,
-    studentLimit?: string,
+    studentLimit?: number,
     avatarUrl?: string,
     backgroundUrl?: string,
 }

@@ -1,7 +1,9 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
+import { Exercise, Feed } from "../models";
 import { CourseService, FeedService, MemberService, TokenService, UserService } from "../services";
+import { standardizedObjectArr } from "../utils/object";
 import { serializeCourseDetail, serializeFeedDetailList, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
 
@@ -43,7 +45,6 @@ export class CourseController {
             if (!course) {
                 return res.composer.notFound();
             }
-            console.log(course);
 
             return res.composer.success(serializeCourseDetail(course));
         } catch (err) {
@@ -143,9 +144,11 @@ export class CourseController {
 
             await this._courseService.updateCourse(courseId, body);
             const newCourse = await this._courseService.getCourseDetail(courseId);
+            console.log(newCourse);
 
             return res.composer.success(serializeCourseDetail(newCourse))
         } catch (err) {
+            console.log(err);
 
             return res.composer.otherException(err);
         }
@@ -159,11 +162,23 @@ export class CourseController {
             const courseId = +req.params.courseId;
 
             // get all post, exercise post more
-            const feedList = await this._feedService.getAllFeedInCourse(courseId);
 
-            return res.composer.success(serializeFeedDetailList(feedList))
+            const course = await this._courseService.getAllPost(courseId);
+
+            if (!course) return res.composer.notFound();
+
+            const feedList = standardizedObjectArr<Feed>(course.feedList);
+            const exerciseList = standardizedObjectArr<Exercise>(course.exerciseList);
+
+            const postList: (Exercise | Feed)[] =
+                [...feedList, ...exerciseList].sort(
+                    (a, b) =>
+                        new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
+                );
+
+            return res.composer.success(serializeFeedDetailList(postList))
         } catch (err) {
-
+            console.log(err);
             res.composer.otherException(err);
         }
     }

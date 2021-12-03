@@ -7,3 +7,4 @@ export default (object: any, keys: string[]) => {
         return obj;
     }, {})
 }
+

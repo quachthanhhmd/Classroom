@@ -17,11 +17,12 @@ import commentApi from "../../api/comment.api";
 import courseApi from "../../api/course.api";
 import postApi from "../../api/feed.api";
 import CourseInfo from "../../components/CourseInfo";
+import ThumbnailExercise from "../../components/ExercisePost/thumbnail";
 import CircularLoading from "../../components/Loading";
 import Post from "../../components/Post";
 import RichText from "../../components/RichText";
 import { TYPEROLE } from "../../constants";
-import { IComment, ICourseInfo } from "../../interfaces";
+import { IComment, ICourseInfo, IExerciseDetail, isPostDetail } from "../../interfaces";
 import { IPostDetail } from "../../interfaces/post.interface";
 import { FORBIDDEN_MESSAGE, POST_NEW_FAIL, POST_NEW_SUCCESS } from "../../messages";
 import { AppState } from "../../reducers";
@@ -81,15 +82,15 @@ const Feed = () => {
     const [isWriteStatus, setIsWriteStatus] = useState(false);
     const [isChangeInfo, setIsChangeInfo] = useState(false);
 
-    const [postList, setPostList] = useState<IPostDetail[]>([]);
+    const [postList, setPostList] = useState<(IPostDetail | IExerciseDetail)[]>([]);
     // Fetch API
 
     useEffect(() => {
         const postList = async () => {
             const res = await courseApi.getAllPost(+courseId);
-            console.log(res);
-            if (res && res.status !== 200) return;
 
+            if (!res || res.status !== 200) return;
+            console.log(res.data.payload);
             setPostList(res.data.payload);
         }
         postList();
@@ -114,12 +115,12 @@ const Feed = () => {
         try {
             const res = await commentApi.createNewComment(data);
 
-            if (res && res.status !== 200) throw new Error();
+            if (!res || res.status !== 200) throw new Error();
 
             // update feed
 
             const newPostList = postList.map((post) => {
-                if (post.id === id) {
+                if (isPostDetail(post) && post.id === id) {
                     post.commentList.push(res.data.payload);
                 }
                 return post;
@@ -378,7 +379,12 @@ const Feed = () => {
 
                                 {
                                     postList && postList.length !== 0 &&
-                                    postList.map((post) => <Post clickCreateComment={createComment} post={post} />)
+                                    postList.map((feed) => {
+
+                                        if (isPostDetail(feed))
+                                            return <Post clickCreateComment={createComment} post={feed} />
+                                        return <ThumbnailExercise feed={feed} />
+                                    })
                                 }
 
                                 {/* <Card className="feed-main___body___right--exam">

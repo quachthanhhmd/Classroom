@@ -1,5 +1,5 @@
 import { IPaginationInfo } from './';
-import { IChangeOrderState, ICreateExerciseTypeState, IDeleteExerciseTypeState, IExerciseTypeDetail, IUpdateExerciseTypeState } from './exercise.interface';
+import { IChangeOrderState, ICreateExerciseTypeState, IDeleteExerciseTypeState, IExerciseDetail, IExerciseTypeDetail, IUpdateExerciseTypeState } from './exercise.interface';
 import { IPostDetail } from './post.interface';
 import { ITopicDetail } from './topic.interface';
 
@@ -116,7 +116,12 @@ export interface IUpdateCourseInput {
 }
 //----------------------------------------------------------------
 
-export type IPostResponse = Array<IPostDetail>;
+export type IPostResponse = Array<IPostDetail | IExerciseDetail>;
+
+export function isPostDetail(object: any): object is IPostDetail {
+    return "content" in object;
+}
+
 
 export interface IPoseResponseState {
     type: string;

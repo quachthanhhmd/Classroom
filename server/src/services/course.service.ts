@@ -1,16 +1,19 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { col, Op } from "sequelize";
+import { Op } from "sequelize";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { ICreateCourse } from "../interfaces";
-import { Course, ExerciseType, Topic } from "../models";
-import { MemberService } from "./";
+import { Course, Exercise, Feed, Topic, User } from "../models";
+import { ExerciseService, FeedService, MemberService } from "./";
 import { IUpdateCourse } from "./../interfaces/course.interface";
 
 @injectable()
 export class CourseService {
 
-    constructor(@inject("MemberService") private readonly _memberService: MemberService) { }
+    constructor(
+        @inject("MemberService") private readonly _memberService: MemberService,
+        @inject("FeedService") private readonly _feedService: FeedService,
+        @inject("ExerciseService") private readonly _exerciseService: ExerciseService) { }
 
     /**
      * Create a new class.
@@ -18,13 +21,13 @@ export class CourseService {
      * @param courseBody 
      * @returns 
      */
-    public createCourse = async (id: number, courseBody: ICreateCourse): Promise<Course> => {
+    public createCourse = async (ownerId: number, courseBody: ICreateCourse): Promise<Course> => {
         const newCourse = await Course.create({
-            ownerId: id,
             ...courseBody,
+            ownerId
         })
 
-        await this._memberService.addMember(id, newCourse.id, TYPEROLE.TEACHER, MEMBERSTATE.ACCEPT);
+        await this._memberService.addMember(ownerId, newCourse.id, TYPEROLE.TEACHER, MEMBERSTATE.ACCEPT);
 
         return newCourse;
     }
@@ -128,5 +131,34 @@ export class CourseService {
 
             }
         )
+    }
+
+    public getAllPost = async (courseId: number) => {
+        return Course.findOne({
+            attributes: ["id"],
+            where: {
+                id: courseId,
+            },
+            include: [
+                {
+                    model: Feed,
+                    order: [["createdAt", "ASC"]],
+                    include: [
+                        {
+                            model: User,
+                            as: "user",
+                            attributes: ["avatarUrl", "firstName", "lastName"],
+                        }
+                    ],
+                },
+                {
+                    model: Exercise,
+                    order: [["createdAt", "ASC"]],
+
+                }
+            ],
+            raw: false,
+            nest: true,
+        })
     }
 }

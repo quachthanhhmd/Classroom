@@ -42,4 +42,7 @@ export class Feed extends Model<IFeed, IFeedCreation> {
 
     @BelongsTo(() => User)
     user?: User;
+
+    // @BelongsTo(() => Course)
+    // course!: Course;
 }
