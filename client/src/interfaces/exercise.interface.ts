@@ -1,4 +1,4 @@
-import { ITopicDetail } from ".";
+import { ICommentResponse, ITopicDetail } from ".";
 
 export interface ICreateExercise {
     title: string,
@@ -11,6 +11,32 @@ export interface ICreateExercise {
 }
 
 export interface IExerciseDetail {
+    id: number,
+    title: string,
+    description: string,
+    deadline: Date,
+    courseId: number,
+    topic: {
+        topic: string,
+        id: number,
+    },
+    user: {
+        id: number,
+        firstName: string,
+        lastName: string,
+        avatarUrl: string
+    },
+    type: {
+        name: string,
+        id: number
+    },
+    commentList: ICommentResponse[],
+    attachmentList: any[],
+    createdAt: Date,
+    updateAt: Date,
+}
+
+export interface IExerciseThumbnail {
     id: number,
     title: string,
     description?: string,
@@ -73,7 +99,7 @@ export interface IUpdateExerciseTypeState {
 
 export interface IGetAllExerciseResponse {
     topicList: ITopicDetail[];
-    exerciseList: IExerciseDetail[]; 
+    exerciseList: IExerciseThumbnail[];
 }
 
 

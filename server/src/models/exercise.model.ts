@@ -1,8 +1,8 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table
 } from "sequelize-typescript";
-import { Course, ExerciseType, Submission } from ".";
+import { Course, ExerciseType, Submission, User } from ".";
 import { Topic } from "./topic.model";
 
 interface IExercise {
@@ -11,10 +11,10 @@ interface IExercise {
     description?: string,
     deadline?: Date,
     topicId?: number,
-    type?: number,
     courseId: number,
     state?: string,
     typeId: number,
+    ownerId: number,
 }
 
 interface IExerciseCreationAttributes extends Optional<IExercise, "id"> { }
@@ -60,4 +60,21 @@ export class Exercise extends Model<IExercise, IExerciseCreationAttributes> {
 
     @HasMany(() => Submission)
     submissionList?: Submission[];
+
+    @BelongsTo(() => Topic)
+    topic?: Topic;
+
+    @BelongsTo(() => Course)
+    course?: Course;
+
+    @BelongsTo(() => ExerciseType)
+    type?: ExerciseType;
+
+    @ForeignKey(() => User)
+    @AllowNull(false)
+    @Column(DataType.INTEGER.UNSIGNED)
+    ownerId!: number;
+
+    @BelongsTo(() => User)
+    user?: User;
 }

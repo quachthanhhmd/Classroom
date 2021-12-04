@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
-import { Exercise, Feed } from "../models";
-import { CourseService, FeedService, MemberService, TokenService, UserService } from "../services";
+import { Exercise, Feed, ReferenceType } from "../models";
+import { CommentService, CourseService, ExerciseService, FeedService, MemberService, TokenService, UserService } from "../services";
 import { standardizedObjectArr } from "../utils/object";
 import { serializeCourseDetail, serializeFeedDetailList, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
@@ -16,6 +16,8 @@ export class CourseController {
         @inject("UserService") private readonly _userService: UserService,
         @inject("TokenService") private readonly _tokenService: TokenService,
         @inject("FeedService") private readonly _feedService: FeedService,
+        @inject("CommentService") private readonly _commentService: CommentService,
+        @inject("ExerciseService") private readonly _exerciseService: ExerciseService
     ) { }
 
     public addCourse = async (
@@ -144,7 +146,6 @@ export class CourseController {
 
             await this._courseService.updateCourse(courseId, body);
             const newCourse = await this._courseService.getCourseDetail(courseId);
-            console.log(newCourse);
 
             return res.composer.success(serializeCourseDetail(newCourse))
         } catch (err) {
@@ -167,8 +168,14 @@ export class CourseController {
 
             if (!course) return res.composer.notFound();
 
-            const feedList = standardizedObjectArr<Feed>(course.feedList);
-            const exerciseList = standardizedObjectArr<Exercise>(course.exerciseList);
+            // const feedList = standardizedObjectArr<Feed>(course.feedList);
+
+            // // const feedCommentList = await this._commentService.findCommentByRefType(ReferenceType.FEED, fe)
+
+            // const exerciseList = standardizedObjectArr<Exercise>(course.exerciseList);
+
+            const feedList = await this._feedService.getAllFeedInCourse(courseId);
+            const exerciseList = await this._exerciseService.getAllExerciseInCourse(courseId);
 
             const postList: (Exercise | Feed)[] =
                 [...feedList, ...exerciseList].sort(

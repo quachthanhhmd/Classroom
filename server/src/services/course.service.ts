@@ -150,6 +150,7 @@ export class CourseService {
                             attributes: ["avatarUrl", "firstName", "lastName"],
                         }
                     ],
+
                 },
                 {
                     model: Exercise,

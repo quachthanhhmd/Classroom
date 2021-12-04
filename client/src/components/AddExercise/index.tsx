@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 import { Close } from "@material-ui/icons";
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { EditorState } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
 import moment from "moment";
 import React, { Fragment, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -64,6 +64,11 @@ const AddExercise = (props: IPropsType) => {
     const handleCreateExercise = (data: any) => {
         onClose();
         let newData = { ...data, topic };
+        if (editorState.getCurrentContent().hasText()) {
+            newData = { ...newData, description: JSON.stringify(convertToRaw(editorState.getCurrentContent()))};
+        }
+
+      
         if (inputValue && inputValue > new Date()) {
             newData = { ...newData, deadline: inputValue };
         }
@@ -151,7 +156,7 @@ const AddExercise = (props: IPropsType) => {
 
                                                             variant="standard" labelId="uncontrolled-native-topic">
                                                             {course.course && course.course.topicList && course.course.topicList.map((topic, index) => (
-                                                                <MenuItem className="exercise___dropdown--option" key={`exercise-type-${index}`} value={topic.id}>{topic.topic}</MenuItem >
+                                                                <MenuItem className="exercise___dropdown--option" key={`topic-${index}`} value={topic.id}>{topic.topic}</MenuItem >
                                                             ))}
                                                             <MenuItem className="exercise___dropdown--option" >
                                                                 <Button

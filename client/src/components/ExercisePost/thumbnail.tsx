@@ -3,21 +3,29 @@ import { Card, CardHeader, Divider, Button, IconButton, CardContent } from "@mat
 import { MoreVert, Assignment } from "@material-ui/icons";
 
 import "./index.scss";
-import { IExerciseDetail } from '../../interfaces';
+import { IExerciseThumbnail } from '../../interfaces';
 import { getDateFormat } from '../../utils/converter';
-
+import { useHistory, useParams } from "react-router";
 
 interface IPropsType {
-    feed: IExerciseDetail
+    feed: IExerciseThumbnail
 }
 
 const ThumbnailExercise = (props: IPropsType) => {
+    const {courseId} = useParams<{courseId: string}>();
+    const history = useHistory();
+
     const { feed } = props;
+
+    const handleClick = () => {
+        history.push(`/course/${courseId}/post/${feed.id}/details`)
+    }
 
     return (
         <Card className="thumbnail-container">
             <Button
                 fullWidth
+                onClick={handleClick}
                 style={{ textTransform: "none", textAlign: "left", display: "initial" }}
             >
                 <CardHeader

@@ -1,13 +1,16 @@
 import { inject, injectable } from "inversify";
-import { serializeAllExercise, serializeExerciseDetail, serializeExerciseList, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
-import { ExerciseService, MemberService, TopicService } from "../services";
+import { serializeExerciseDetail, serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
+import { ReferenceType } from "../models";
+import { AttachmentService, CommentService, ExerciseService, MemberService, TopicService } from "../services";
 
 @injectable()
 export class ExerciseController {
     constructor(
         @inject("ExerciseService") private readonly _exerciseService: ExerciseService,
         @inject("MemberService") private readonly _memberService: MemberService,
-        @inject("TopicService") private readonly _topicService: TopicService
+        @inject("TopicService") private readonly _topicService: TopicService,
+        @inject("CommentService") private readonly _commentService: CommentService,
+        @inject("AttachmentService") private readonly _attachmentService: AttachmentService
     ) { }
 
     public getAllExercise = async (
@@ -28,12 +31,36 @@ export class ExerciseController {
         }
     }
 
+    public getOneExercise = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const postId = +req.params.postId;
+
+            const exercise = await this._exerciseService.findAllInfoById(+postId); ;
+            if (!exercise) {
+                return res.composer.notFound();
+            }
+
+            const commentList = await this._commentService.findCommentByRefType(ReferenceType.EXERCISE, exercise.id);
+            const attachmentList = await this._attachmentService.findAllAttachment(ReferenceType.EXERCISE, exercise.id);
+
+            return res.composer.success(serializeExerciseDetail({ ...exercise, commentList, attachmentList }));
+        } catch (err) {
+            console.log(err);
+
+            return res.composer.otherException(err);
+        }
+    }
+
     public createNewExercise = async (
         req: IAuthorizeRequest,
         res: IResponse
     ): Promise<void> => {
         try {
             const courseId = +req.params.courseId;
+            const userId = <number> req.currentUser?.id;
             const bodyExercise = req.body;
 
             let topicId = -1;
@@ -53,11 +80,12 @@ export class ExerciseController {
             }
 
             delete bodyExercise.topic;
-            const newExercise = await this._exerciseService.createExercise(courseId, { ...bodyExercise, topicId });
+            const newExercise =
+                await this._exerciseService.createExercise(userId, courseId, { ...bodyExercise, topicId });
 
             if (!newExercise) return res.composer.internalServerError();
 
-            return res.composer.success(serializeExerciseDetail(newExercise));
+            return res.composer.success(serializeExerciseThumbnail(newExercise));
         } catch (err) {
             console.log(err);
 
@@ -76,7 +104,7 @@ export class ExerciseController {
             const userId = <number> req.currentUser?.id;
 
             const isPermitToCRUD = await this._memberService.isPermitToCRUD(courseId, userId);
-            console.log(isPermitToCRUD);
+
             if (!isPermitToCRUD) return res.composer.forbidden();
 
             await this._exerciseService.updateExercise(id, body);
@@ -100,7 +128,7 @@ export class ExerciseController {
             const userId = <number> req.currentUser?.id;
 
             const isPermitToCRUD = await this._memberService.isPermitToCRUD(courseId, userId);
-            console.log(isPermitToCRUD);
+
             if (!isPermitToCRUD) return res.composer.forbidden();
 
             await this._exerciseService.deleteExercise(id);

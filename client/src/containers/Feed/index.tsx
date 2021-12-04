@@ -22,7 +22,7 @@ import CircularLoading from "../../components/Loading";
 import Post from "../../components/Post";
 import RichText from "../../components/RichText";
 import { TYPEROLE } from "../../constants";
-import { IComment, ICourseInfo, IExerciseDetail, isPostDetail } from "../../interfaces";
+import { IComment, ICourseInfo, IExerciseThumbnail, isPostDetail } from "../../interfaces";
 import { IPostDetail } from "../../interfaces/post.interface";
 import { FORBIDDEN_MESSAGE, POST_NEW_FAIL, POST_NEW_SUCCESS } from "../../messages";
 import { AppState } from "../../reducers";
@@ -82,7 +82,7 @@ const Feed = () => {
     const [isWriteStatus, setIsWriteStatus] = useState(false);
     const [isChangeInfo, setIsChangeInfo] = useState(false);
 
-    const [postList, setPostList] = useState<(IPostDetail | IExerciseDetail)[]>([]);
+    const [postList, setPostList] = useState<(IPostDetail | IExerciseThumbnail)[]>([]);
     // Fetch API
 
     useEffect(() => {

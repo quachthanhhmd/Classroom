@@ -1,10 +1,16 @@
-import { injectable } from "inversify";
+import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { Exercise } from "../models";
+import { CommentService } from ".";
+import { Exercise, ExerciseType, ReferenceType, Topic, User } from "../models";
 import { ICreateExercise } from "./../interfaces";
 
 @injectable()
 export class ExerciseService {
+    constructor(
+        @inject("CommentService") private readonly _commentService: CommentService
+    ) {
+
+    }
     /**
      * Find one exercise by id
      * @param id 
@@ -12,6 +18,51 @@ export class ExerciseService {
      */
     public findExerciseById = async (id: number) => {
         return Exercise.findByPk(id);
+    }
+
+    public getAllExerciseInCourse = async (courseId: number): Promise<any[]> => {
+        const exerciseList = await Exercise.findAll({
+            where: {
+                courseId
+            },
+            include: [
+                {
+                    model: User,
+                    as: "user",
+                    attributes: ["id", "avatarUrl", "firstName", "lastName"],
+                }
+            ],
+            order: [["createdAt", "DESC"]],
+            raw: true,
+            nest: true,
+        })
+
+        return Promise.all(exerciseList.map(async (feed) => {
+            const allComment = await this._commentService.findCommentByRefType(ReferenceType.EXERCISE, feed.id);
+
+            return { ...feed, commentList: allComment }
+        }))
+    }
+
+    public findAllInfoById = async (id: number) => {
+        return Exercise.findOne({
+            where: { id },
+            include: [
+                {
+                    model: Topic,
+                    attributes: ["id", "topic"]
+                },
+                {
+                    model: ExerciseType,
+                    attributes: ["id", "name"],
+                },
+                {
+                    model: User,
+                }
+            ],
+            raw: true,
+            nest: true,
+        })
     }
 
     /**
@@ -36,8 +87,9 @@ export class ExerciseService {
      * @param body 
      * @returns 
      */
-    public createExercise = async (courseId: number, body: ICreateExercise) => {
+    public createExercise = async (ownerId: number, courseId: number, body: ICreateExercise) => {
         return Exercise.create({
+            ownerId,
             courseId,
             ...body
         })

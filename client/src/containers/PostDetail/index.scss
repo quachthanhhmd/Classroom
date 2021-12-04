@@ -1,0 +1,11 @@
+.post-detail {
+    width: 70%;
+    margin: 2rem auto;
+
+    &___action {
+        align-self: end !important;
+    }
+    &___title {
+        color: blue;
+    }
+}

@@ -17,7 +17,7 @@ const GradeStructure = lazy(() => import("../containers/GradeStructure"));
 const Member = lazy(() => import("../containers/Member"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const InviteByToken = lazy(() => import("../components/InviteByToken"));
-
+const PostDetail = lazy(() => import("../containers/PostDetail"));
 
 type IRoute = {
     path: string,
@@ -152,6 +152,12 @@ const courseRouteList = [
         exact: false,
         auth: true,
         main: () => <Exercise />
+    },
+    {
+        path: ROUTES.detail,
+        exact: false,
+        auth: true,
+        main: () => <PostDetail />
     }
 ]
 

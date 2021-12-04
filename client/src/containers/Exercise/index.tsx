@@ -8,7 +8,7 @@ import { showErrorNotify, showSuccessNotify } from '../../actions/notification.a
 import exerciseApi from '../../api/exercise.api';
 import AddExercise from '../../components/AddExercise';
 import CircularLoading from '../../components/Loading';
-import { ICreateExercise, IExerciseDetail, IExerciseTypeDetail } from '../../interfaces';
+import { ICreateExercise, IExerciseThumbnail, IExerciseTypeDetail } from '../../interfaces';
 import { AppState } from '../../reducers';
 import { getDateFormat } from '../../utils/converter';
 
@@ -18,7 +18,7 @@ import "./index.scss";
 
 
 interface IPropsExam {
-    exercise: IExerciseDetail,
+    exercise: IExerciseThumbnail,
 
 }
 
@@ -54,7 +54,7 @@ const Exercise = () => {
     const dispatch = useDispatch();
     const course = useSelector((state: AppState) => state.course);
     const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
-    const [exerciseList, setExerciseList] = useState<IExerciseDetail[]>([])
+    const [exerciseList, setExerciseList] = useState<IExerciseThumbnail[]>([])
     const [displayIndex, setDisplayIndex] = useState<number>(-1);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 

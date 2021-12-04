@@ -7,6 +7,7 @@ import { Member, Submission, Token } from "./";
 import { GENDER } from "./../constants/gender.constant";
 import { Comment } from "./comment.model";
 import { Course } from "./course.model";
+import { Exercise } from "./exercise.model";
 import { Feed } from "./feed.model";
 import { OAuth } from "./oAuth.model";
 
@@ -117,6 +118,9 @@ export class User extends Model<IUser, IUserCreationAttibutes> {
 
     @HasMany(() => Submission)
     submissionList?: Submission[];
+
+    @HasMany(() => Exercise)
+    ownerExerciseList?: Exercise[];
 }
 
 const generateFromList = (strList: string, length: number): string => {

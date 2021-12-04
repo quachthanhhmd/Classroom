@@ -1,4 +1,4 @@
-import { serializeAttachment, serializeComment, serializeExerciseDetail } from "."
+import { serializeAttachment, serializeComment, serializeExerciseThumbnail } from "."
 import { Exercise, Feed } from "../models";
 
 export interface IFeedCreate {
@@ -30,10 +30,9 @@ export function isFeedDetail(object: any): object is Feed {
 export const serializeFeedDetailList = (modelList: (Feed | Exercise)[]) => {
 
     return modelList.map((model: Feed | Exercise) => {
-        console.log(isFeedDetail(model));
-        console.log(model);
+
         if (isFeedDetail(model)) return serializeFeedDetail(model);
 
-        return serializeExerciseDetail(model);
+        return serializeExerciseThumbnail(model);
     });
 }

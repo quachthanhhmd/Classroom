@@ -1,12 +1,12 @@
-import { IChangeOrder, ICreateExercise, ICreateExerciseType, IExerciseDetail, IExerciseTypeDetail, IHttpFormat } from "../interfaces";
+import { IChangeOrder, ICreateExercise, ICreateExerciseType, IExerciseThumbnail, IExerciseTypeDetail, IHttpFormat } from "../interfaces";
 import axiosClient from "./axios.client";
 
 
 const exerciseApi = {
     getAllExercise: (courseId: number) => {
         const url = `/v1/exercise/course/${courseId}`;
-        return axiosClient.get<IHttpFormat<IExerciseDetail[]>>(url);
-    }, 
+        return axiosClient.get<IHttpFormat<IExerciseThumbnail[]>>(url);
+    },
     createExerciseType: (courseId: number, data: ICreateExerciseType) => {
         const url = `/v1/exercise-type/course/${courseId}`;
         return axiosClient.post<IHttpFormat<IExerciseTypeDetail>>(url, data);
@@ -24,8 +24,13 @@ const exerciseApi = {
         return axiosClient.post<IHttpFormat<IExerciseTypeDetail[]>>(url, data);
     },
     createExercise: (courseId: number, data: ICreateExercise) => {
+        console.log(data);
         const url = `/v1/exercise/course/${courseId}`;
-        return axiosClient.post<IHttpFormat<IExerciseDetail>>(url, data);
+        return axiosClient.post<IHttpFormat<IExerciseThumbnail>>(url, data);
+    },
+    getOneExercise: (courseId: number, postId: number) => {
+        const url = `/v1/exercise/course/${courseId}/post/${postId}`;
+        return axiosClient.get<IHttpFormat<any>>(url);
     }
 }
 
