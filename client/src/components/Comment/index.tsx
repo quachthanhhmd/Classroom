@@ -13,7 +13,7 @@ const Comment = (props: IPropsType) => {
     const { comment, index } = props;
 
     return (
-        <Grid key={`comment-feed-${index}`} container wrap="nowrap" spacing={2}>
+        <Grid key={`comment-feed-${index}-${comment.refId}`} container wrap="nowrap" spacing={2}>
             <Grid item>
                 <Avatar alt="Remy Sharp" src={comment.user.avatarUrl ? comment.user.avatarUrl : "/none-avt.png"} />
 

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 export function useScrollHook() {
     const [style, setStyle] = useState({});
-
+    
     useEffect(() => {
         const handleChangeHeaderStyle = () => {
             if (document.body.getBoundingClientRect().top > scrollPos) {
@@ -11,9 +11,10 @@ export function useScrollHook() {
                 setStyle({ transform: "translateY(-100%)" });
             }
             scrollPos = document.body.getBoundingClientRect().top;
+            console.log(document.body.getBoundingClientRect().top);
         };
 
-        let scrollPos = 0;
+        let scrollPos = -1;
         window.addEventListener("scroll", handleChangeHeaderStyle);
 
         return () => {

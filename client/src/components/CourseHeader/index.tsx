@@ -30,7 +30,7 @@ interface ParamTypes {
 const Header = () => {
     const { courseId } = useParams<ParamTypes>();
     const styleScroll = useScrollHook();
-
+    const [resetScroll, setResetScroll] = useState<boolean>(false);
     const [typePill, setTypePill] = useState<number>(0);
     const dispatch = useDispatch();
     const member = useSelector((state: AppState) => state.member);
@@ -44,9 +44,14 @@ const Header = () => {
 
     useEffect(() => {
         window.location.pathname.includes("course") && setTypePill(0);
+
         window.location.pathname.includes("exercise") && setTypePill(1);
         window.location.pathname.includes("structure") && setTypePill(2);
         window.location.pathname.includes("member") && setTypePill(3);
+
+        if (window.location.pathname.split("/").length > 3) {
+            setResetScroll(true);
+        }
     }, [window.location.pathname])
 
     useEffect(() => {
@@ -84,11 +89,25 @@ const Header = () => {
     const handleGoHome = () => {
         window.location.href = "/";
     }
+    // const checkObjectEmpty = (obj: object) => {
+    //     console.log(123)
+    //     if (resetScroll) {
+
+    //         setResetScroll(false);
+    //         return true;
+    //     }
+
+    //     return obj // 👈 null and undefined check
+    //         && Object.keys(obj).length === 0
+    //         && Object.getPrototypeOf(obj) === Object.prototype
+    // }
+
+
     return (
         <>
 
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
-            <div className="header-main" style={styleScroll}>
+            <div className={`header-main`} style={styleScroll}>
 
                 <div className="header-main___left">
                     <div className="header-main___left--menu">

@@ -19,6 +19,7 @@ const ThumbnailExercise = (props: IPropsType) => {
 
     const handleClick = () => {
         history.push(`/course/${courseId}/post/${feed.id}/details`)
+        //history.push("/")
     }
 
     return (

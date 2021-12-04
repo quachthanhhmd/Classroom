@@ -9,3 +9,4 @@ export const ROUTES = {
     exercise: "/exercise/:courseId",
     detail: "/course/:courseId/post/:postId/details",
 }
+

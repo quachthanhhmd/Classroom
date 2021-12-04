@@ -8,7 +8,7 @@ import { Close } from "@material-ui/icons";
 import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { convertToRaw, EditorState } from "draft-js";
 import moment from "moment";
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { ICreateExercise } from "../../interfaces";
@@ -212,7 +212,7 @@ const AddExercise = (props: IPropsType) => {
                                             <Divider />
                                             <Box sx={{ minWidth: 120 }} className="exercise___option">
                                                 <FormControl fullWidth>
-                                                    <Fragment>
+                                              
                                                         <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
                                                             <KeyboardDateTimePicker
                                                                 variant="inline"
@@ -225,7 +225,7 @@ const AddExercise = (props: IPropsType) => {
                                                             //rifmFormatter={dateFormatter}
                                                             />
                                                         </MuiPickersUtilsProvider >
-                                                    </Fragment>
+                                                 
                                                 </FormControl>
                                             </Box>
                                         </Card>
