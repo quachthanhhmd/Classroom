@@ -30,7 +30,6 @@ interface ParamTypes {
 const Header = () => {
     const { courseId } = useParams<ParamTypes>();
     const styleScroll = useScrollHook();
-    const [resetScroll, setResetScroll] = useState<boolean>(false);
     const [typePill, setTypePill] = useState<number>(0);
     const dispatch = useDispatch();
     const member = useSelector((state: AppState) => state.member);
@@ -49,9 +48,6 @@ const Header = () => {
         window.location.pathname.includes("structure") && setTypePill(2);
         window.location.pathname.includes("member") && setTypePill(3);
 
-        if (window.location.pathname.split("/").length > 3) {
-            setResetScroll(true);
-        }
     }, [window.location.pathname])
 
     useEffect(() => {
@@ -89,19 +85,6 @@ const Header = () => {
     const handleGoHome = () => {
         window.location.href = "/";
     }
-    // const checkObjectEmpty = (obj: object) => {
-    //     console.log(123)
-    //     if (resetScroll) {
-
-    //         setResetScroll(false);
-    //         return true;
-    //     }
-
-    //     return obj // 👈 null and undefined check
-    //         && Object.keys(obj).length === 0
-    //         && Object.getPrototypeOf(obj) === Object.prototype
-    // }
-
 
     return (
         <>

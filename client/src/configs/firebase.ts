@@ -4,6 +4,7 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 
 import env from "../configs/env";
+import { ICreateAttachment } from "../interfaces/attachment.interface";
 
 // const firebaseConfig = {
 //     apiKey: env.FIREBASE.API_KEY,
@@ -40,9 +41,9 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
 const signInWithGoogle = async () => {
     try {
         const response = await auth.signInWithPopup(googleProvider);
-     
+
         const user = response.user;
-    
+
         const querySnapshot = await db
             .collection("users")
             .where("uid", "==", user!.uid)
@@ -53,8 +54,8 @@ const signInWithGoogle = async () => {
                 uid: user!.uid,
                 courseList: [],
             });
-        } 
-        
+        }
+
         return {
             email: user!.email as string,
             firstName: user!.displayName as string,
@@ -67,8 +68,54 @@ const signInWithGoogle = async () => {
         //alert(err.message);
     }
 };
+
+const uploadFile = (folderName: string, file: File, callback: (data: ICreateAttachment) => void) => {
+    const uploadTask = storage.ref(`${folderName}/${file.name}`).put(file);
+    uploadTask.on(
+        "state_changed",
+        (snapShot) => {
+            //takes a snap shot of the process as it is happening
+            console.log(snapShot)
+        },
+        (error: any) => {
+            console.log(error);
+        },
+        () => {
+
+            let data: ICreateAttachment;
+            storage
+                .ref(folderName)
+                .child(file.name)
+                .getDownloadURL()
+                .then((url: string) => {
+                    data = {
+                        ...data,
+                        url
+                    };
+                });
+
+            storage
+                .ref(folderName)
+                .child(file.name)
+                .getMetadata()
+                .then((metadata) => {
+                    data = {
+                        ...data,
+                        name: metadata.name,
+                        size: metadata.size,
+                        type: "other",
+                        extension: (metadata.contentType === null) ? undefined : metadata.contentType,
+                    }
+                    callback(data);
+                });
+
+
+        }
+    );
+}
+
 const logout = () => {
     auth.signOut();
 };
 // const storage = app.
-export { storage, auth, signInWithGoogle, logout, firebase as default };
+export { storage, auth, uploadFile, signInWithGoogle, logout, firebase as default };

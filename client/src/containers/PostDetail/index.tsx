@@ -1,15 +1,17 @@
-import { Card, CardContent, CardHeader, Grid, Typography, Divider, Button, IconButton } from "@material-ui/core";
+import { Button, Card, CardContent, CardHeader, Divider, Grid, IconButton, Typography } from "@material-ui/core";
 import { Add, Assignment, Clear } from '@material-ui/icons';
+import { DropzoneDialog } from 'material-ui-dropzone';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import commentApi from "../../api/comment.api";
 import exerciseApi from '../../api/exercise.api';
 import CircularLoading from '../../components/Loading';
 import ContentPost from "../../components/Post/ContentPost";
-import { ReferenceType } from "../../constants";
+import { uploadFile } from "../../configs/firebase";
+import { FolderName, ReferenceType } from "../../constants";
 import { IComment, IExerciseDetail } from '../../interfaces';
-import { getDateFormat, getDateTimeFormat } from '../../utils/converter';
-import { DropzoneDialog } from 'material-ui-dropzone'
+import { ICreateAttachment } from "../../interfaces/attachment.interface";
+import { getDateTimeFormat } from '../../utils/converter';
 import "./index.scss";
 
 const PostDetail = () => {
@@ -18,7 +20,7 @@ const PostDetail = () => {
     const [exercise, setExercise] = useState<IExerciseDetail | null>(null);
 
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const [spendingFile, setSpendingFile] = useState<any[]>([]);
+    const [spendingFile, setSpendingFile] = useState<File[]>([]);
 
 
     useEffect(() => {
@@ -58,11 +60,16 @@ const PostDetail = () => {
         }
     }
 
-    const handleSave = (fileList: any[]) => {
+    const createNewAttachment = (data: ICreateAttachment) => {
+        console.log(data);
+    }
+
+    const handleSave = (fileList: File[]) => {
         handleClose();
         const newSpendingFile = [...spendingFile, ...fileList];
-        console.log(newSpendingFile);
-        setSpendingFile(newSpendingFile)
+
+        setSpendingFile(newSpendingFile);
+        //uploadFile(FolderName.EXERCISE, fileList[0], createNewAttachment)
     }
 
     const handleEditFile = (indexValue: number) => {
@@ -74,6 +81,17 @@ const PostDetail = () => {
     const handleClose = () => {
         setOpenDialog(false);
     }
+
+    const styles = {
+
+        cardHeader: {
+           backgroundColor: "#d8e2f3",
+           MuiTypography: {
+              fontVariant: "h4"
+           }
+        }
+     };
+
     return (
         <>
             {(exercise && !isLoading) ?
@@ -113,25 +131,43 @@ const PostDetail = () => {
                                 <CardContent>
 
                                     {spendingFile.length === 0 ?
-                                        <Button
-                                            variant="outlined"
-                                            fullWidth
-                                            onClick={() => setOpenDialog(true)}
-                                            startIcon={
-                                                <Add />
-                                            }
-                                        >
-                                            Nộp bài tập
-                                        </Button>
+                                        <>
+                                            <Button
+                                                variant="outlined"
+                                                fullWidth
+                                                onClick={() => setOpenDialog(true)}
+                                                startIcon={
+                                                    <Add />
+                                                }
+                                            >
+                                                Nộp bài tập
+                                            </Button>
+                                            <Button
+                                                style={{ marginTop: "1rem" }}
+                                                variant="contained"
+                                                fullWidth
+                                            >
+                                                Đánh dấu là đã nộp
+                                            </Button>
+                                        </>
                                         :
                                         <>
                                             {
                                                 spendingFile.map((file, index) => {
                                                     return (
                                                         <CardHeader
+                                                            fullWidth
+                                                            style={{width: "100%"}}
                                                             key={`files-${index}`}
                                                             avatar={<Assignment />}
                                                             title={file.name}
+                                                            titleTypographyProps={{
+                                                                textOverflow: "ellipsis !important",
+                                                                width: "100% !important",
+                                                                display:"inline",
+                                                                whiteSpace: "nowrap !important",
+                                                                overflow: "hidden !important"
+                                                            }}
                                                             action={
                                                                 <IconButton onClick={() => handleEditFile(index)}>
                                                                     <Clear />
@@ -153,6 +189,20 @@ const PostDetail = () => {
                                             >
                                                 Thêm mới
                                             </Button>
+                                            <Button
+                                                fullWidth
+                                                variant="contained"
+
+                                                style={{ marginTop: "1rem", backgroundColor: "rgb(3, 169, 244)" }}
+
+                                            > Nộp bài</Button>
+
+                                            <Button
+                                                fullWidth
+                                                variant="contained"
+                                                style={{ marginTop: "1rem" }}
+
+                                            > Hủy nộp bài</Button>
                                         </>
                                     }
                                     <DropzoneDialog
@@ -162,13 +212,12 @@ const PostDetail = () => {
                                         showPreviews={true}
                                         maxFileSize={5000000}
                                         onClose={handleClose}
+                                        submitButtonText="Tải lên"
+                                        dialogTitle="Tải tệp lên"
+                                        cancelButtonText="Hủy bỏ"
+                                        dropzoneText="Kéo thả vào để tải tệp lên"
                                     />
-                                    <Button
-                                        fullWidth
-                                        variant="contained"
-                                        style={{ marginTop: "1rem" }}
 
-                                    > Hủy nộp bài</Button>
                                 </CardContent>
                             </Card>
                         </Grid>
