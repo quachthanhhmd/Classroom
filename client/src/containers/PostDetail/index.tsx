@@ -16,6 +16,7 @@ import { uploadBulk, uploadFile } from "../../configs/firebase";
 import { FolderName, ReferenceType, SubmissionType, TYPEROLE } from "../../constants";
 import { IComment, ICreateSubmission, IExerciseDetail, ISubmissionResponse } from '../../interfaces';
 import { ICreateAttachment } from "../../interfaces/attachment.interface";
+import { UPDATE_SUCCESS } from "../../messages";
 import { SUBMISSION_FAIL, SUBMISSION_SUCCESS } from "../../messages/exercise.message";
 import { AppState } from "../../reducers";
 import { getDateTimeFormat } from '../../utils/converter';
@@ -37,7 +38,7 @@ const PostDetail = () => {
     const { courseId, postId } = useParams<{ courseId: string, postId: string }>();
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [exercise, setExercise] = useState<IExerciseDetail | null>(null);
-
+    const [submission, setSubmission] = useState<ISubmissionResponse | null>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [spendingFile, setSpendingFile] = useState<IFileState[]>([]);
 
@@ -65,23 +66,63 @@ const PostDetail = () => {
             const res = await submissionApi.getSubmission(+courseId, +postId);
 
             if (!res || res.status !== 200) return;
-
+            console.log(res.data.payload);
             updateSpendingFileState(res.data.payload);
         }
-        if (member && member.currentRole?.role === TYPEROLE.STUDENT) {
-            getSubmission();
-        }
-    }, [member])
+        //if (member && member.currentRole?.role === TYPEROLE.STUDENT) {
+        getSubmission();
+        //}
+    }, [])
 
+    const handleUpdateStatusSubmission = async (state: SubmissionType) => {
+        if (!submission) return;
+
+        const data = {
+            type: state,
+        }
+        try {
+            const res = await submissionApi.updateSubmission(submission.id, +courseId, data);
+
+            if (!res || res.status !== 200) throw new Error();
+
+            dispatch(showSuccessNotify(UPDATE_SUCCESS));
+            setSubmission({
+                ...submission,
+                type: state
+            })
+            //setIsSubmitted(false)
+        } catch (err) {
+            dispatch(showErrorNotify("Cập nhật thất bại"))
+        }
+    }
+
+
+    const newAttachmentListAppend = (fileList: IFileState[]) => {
+        return fileList.filter(file => {
+            if (file.type === "spending") return true;
+            return false;
+        })
+    }
+
+    const checkDeleteAttachment = (fileList: IFileState[]) => {
+
+    }
 
     const createSubmission = async (attachmentList: ICreateAttachment[]) => {
-       
+
+        const createAttachList = newAttachmentListAppend(spendingFile);
+
+        if (submission && createAttachList.length === 0) {
+            handleUpdateStatusSubmission(SubmissionType.SUBMITTED);
+            return;
+        }
+
         const data: ICreateSubmission = {
             type: SubmissionType.SUBMITTED,
             attachmentList
         }
         try {
-        
+
             const res = await submissionApi.createSubmission(+courseId, +postId, data);
             if (!res || res.status !== 200) {
                 throw new Error()
@@ -101,7 +142,7 @@ const PostDetail = () => {
                 file: new File([], attachment.name)
             }
         }));
-
+        setSubmission(data);
         setIsSubmitted(true);
     }
 
@@ -155,6 +196,8 @@ const PostDetail = () => {
         setOpenDialog(false);
     }
     const handleSubmitAttachment = async () => {
+
+        setIsLoading(true);
         const uploadList = spendingFile.filter((file, index) => file.type === "spending");
 
         let fileUploadList: File[] = [];
@@ -164,8 +207,16 @@ const PostDetail = () => {
             }
         });
         await uploadBulk(FolderName.EXERCISE, fileUploadList, createSubmission);
-    }
 
+        if (submission) {
+            setSubmission({
+                ...submission,
+                type: SubmissionType.SUBMITTED
+            })
+        }
+        setIsSubmitted(true);
+        setIsLoading(false);
+    }
 
     return (
         <>
@@ -205,7 +256,7 @@ const PostDetail = () => {
                                 </CardHeader>
                                 <CardContent>
 
-                                    {(!isSubmitted && spendingFile.length === 0) ?
+                                    {(spendingFile.length === 0) ?
                                         <>
                                             <Button
                                                 variant="outlined"
@@ -251,30 +302,39 @@ const PostDetail = () => {
                                                         )
                                                 })
                                             }
-                                            <Button
-                                                variant="outlined"
-                                                fullWidth
-                                                onClick={() => setOpenDialog(true)}
-                                                startIcon={
-                                                    <Add />
-                                                }
-                                            >
-                                                Thêm mới
-                                            </Button>
-                                            <Button
-                                                fullWidth
-                                                variant="contained"
-                                                onClick={handleSubmitAttachment}
-                                                style={{ marginTop: "1rem", backgroundColor: "rgb(3, 169, 244)" }}
 
-                                            > Nộp bài</Button>
+                                            {(!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) &&
+                                                <Button
+                                                    variant="outlined"
+                                                    fullWidth
+                                                    onClick={() => setOpenDialog(true)}
+                                                    startIcon={
+                                                        <Add />
+                                                    }
+                                                >
+                                                    Thêm mới
+                                                </Button>
+                                            }
+                                            {(!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) ?
+                                                <Button
+                                                    fullWidth
+                                                    variant="contained"
+                                                    onClick={handleSubmitAttachment}
+                                                    style={{ marginTop: "1rem", backgroundColor: "rgb(3, 169, 244)" }}
 
-                                            <Button
-                                                fullWidth
-                                                variant="contained"
-                                                style={{ marginTop: "1rem" }}
+                                                > Nộp bài</Button>
+                                                :
+                                                <Button
+                                                    fullWidth
+                                                    variant="contained"
+                                                    onClick={() => {
+                                                        handleUpdateStatusSubmission(SubmissionType.CANCELLED)
 
-                                            > Hủy nộp bài</Button>
+                                                    }}
+                                                    style={{ marginTop: "1rem" }}
+
+                                                > Hủy nộp bài</Button>
+                                            }
                                         </>
                                     }
                                     <DropzoneDialog

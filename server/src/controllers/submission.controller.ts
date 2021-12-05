@@ -53,18 +53,21 @@ export class SubmissionController {
             const attachmentList =
                 await this._attachmentService.findAllAttachment(ReferenceType.SUBMISSION, submission.id)
 
-            return res.composer.success(serializeSubmissionDetail({...submission, attachmentList}))
+            return res.composer.success(serializeSubmissionDetail({ ...submission, attachmentList }))
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }
+
     public updateSubmission = async (
         req: IAuthorizeRequest,
         res: IResponse
     ): Promise<void> => {
         try {
-            const submissionId = +req.params.id;
-            const { body } = req.body;
+            const submissionId = +req.params.submissionId;
+            const body = req.body;
             // const isBelongsToUser = await this._submissionService.isBelongsToUser(submissionId, userId);
             // const roleUser = await this._memberService.getRoleMember(userId, courseId);
             // if (!roleUser) return res.composer.notFound();

@@ -19,7 +19,7 @@ class SubmissionRoute {
 
     public initializeRoutes(): void {
         this.router.get(
-            "course/:courseId/exercise/:exerciseId",
+            "/course/:courseId/exercise/:exerciseId",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._validation.getSubmission),
@@ -35,7 +35,7 @@ class SubmissionRoute {
         )
 
         this.router.patch(
-            "/:submissionId/course/:coursesId",
+            "/:submissionId/course/:courseId",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._validation.UpdateSubmission),

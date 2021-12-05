@@ -10,6 +10,11 @@ const submissionApi = {
         console.log(data);
         const url = `/v1/submission/course/${courseId}/exercise/${exerciseId}`;
         return axiosClient.post<IHttpFormat<ISubmissionResponse>>(url, data);
+    },
+    updateSubmission: (submissionId: number, courseId: number, data: any) => {
+        console.log(submissionId, courseId);
+        const url = `/v1/submission/${submissionId}/course/${courseId}`;
+        return axiosClient.patch<IHttpFormat<ISubmissionResponse>>(url, data);
     }
 }
 

@@ -40,9 +40,9 @@ export class Authenticate {
 
             const userId = <number> req.currentUser?.id;
             const courseId = +req.params.courseId;
-            console.log(userId, courseId);
+            console.log(courseId, userId);
             const member = await this._memberService.getRole(userId, courseId);
-            console.log(member);
+
             if (!member) return res.composer.forbidden();
             const isPermit = requiredRights.includes(member.role);
             if (!isPermit) {
