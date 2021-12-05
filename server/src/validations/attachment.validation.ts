@@ -34,4 +34,24 @@ export class AttachmentValidation {
             }
         })
     }
+
+    public CreateBulk = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            },
+            body: Joi.array().items({
+                name: Joi.string(),
+                type: Joi.string().valid(FileType),
+                extension: Joi.string(),
+                url: Joi.string().required(),
+                thumbnailUrl: Joi.string(),
+                description: Joi.string(),
+                size: Joi.number().required(),
+            })
+        })
+    }
 }

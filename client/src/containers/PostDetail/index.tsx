@@ -1,18 +1,37 @@
 import { Button, Card, CardContent, CardHeader, Divider, Grid, IconButton, Typography } from "@material-ui/core";
 import { Add, Assignment, Clear } from '@material-ui/icons';
 import { DropzoneDialog } from 'material-ui-dropzone';
+import filter from "material-ui/svg-icons/image/filter";
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router';
+import { create } from "yup/lib/array";
+import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import commentApi from "../../api/comment.api";
 import exerciseApi from '../../api/exercise.api';
+import submissionApi from "../../api/submission.api";
 import CircularLoading from '../../components/Loading';
 import ContentPost from "../../components/Post/ContentPost";
-import { uploadFile } from "../../configs/firebase";
-import { FolderName, ReferenceType } from "../../constants";
-import { IComment, IExerciseDetail } from '../../interfaces';
+import { uploadBulk, uploadFile } from "../../configs/firebase";
+import { FolderName, ReferenceType, SubmissionType, TYPEROLE } from "../../constants";
+import { IComment, ICreateSubmission, IExerciseDetail, ISubmissionResponse } from '../../interfaces';
 import { ICreateAttachment } from "../../interfaces/attachment.interface";
+import { SUBMISSION_FAIL, SUBMISSION_SUCCESS } from "../../messages/exercise.message";
+import { AppState } from "../../reducers";
 import { getDateTimeFormat } from '../../utils/converter';
 import "./index.scss";
+
+
+enum fileState {
+    DELETE = "deleted",
+    SPENDING = "spending",
+    SUBMITTED = "submitted"
+}
+
+interface IFileState {
+    file: File,
+    type: fileState,
+}
 
 const PostDetail = () => {
     const { courseId, postId } = useParams<{ courseId: string, postId: string }>();
@@ -20,8 +39,12 @@ const PostDetail = () => {
     const [exercise, setExercise] = useState<IExerciseDetail | null>(null);
 
     const [openDialog, setOpenDialog] = useState<boolean>(false);
-    const [spendingFile, setSpendingFile] = useState<File[]>([]);
+    const [spendingFile, setSpendingFile] = useState<IFileState[]>([]);
 
+    const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+
+    const dispatch = useDispatch();
+    const member = useSelector((state: AppState) => state.member)
 
     useEffect(() => {
         async function getExercise(courseId: number, postId: number) {
@@ -30,12 +53,57 @@ const PostDetail = () => {
             setIsLoading(false);
             if (!res || res.status !== 200) return;
 
-            console.log(res.data.payload);
             setExercise(res.data.payload);
         }
 
         getExercise(+courseId, +postId);
     }, [])
+
+
+    useEffect(() => {
+        async function getSubmission() {
+            const res = await submissionApi.getSubmission(+courseId, +postId);
+
+            if (!res || res.status !== 200) return;
+
+            updateSpendingFileState(res.data.payload);
+        }
+        if (member && member.currentRole?.role === TYPEROLE.STUDENT) {
+            getSubmission();
+        }
+    }, [member])
+
+
+    const createSubmission = async (attachmentList: ICreateAttachment[]) => {
+       
+        const data: ICreateSubmission = {
+            type: SubmissionType.SUBMITTED,
+            attachmentList
+        }
+        try {
+        
+            const res = await submissionApi.createSubmission(+courseId, +postId, data);
+            if (!res || res.status !== 200) {
+                throw new Error()
+            }
+            dispatch(showSuccessNotify(SUBMISSION_SUCCESS));
+            updateSpendingFileState(res.data.payload);
+
+        } catch (err) {
+            dispatch(showErrorNotify(SUBMISSION_FAIL))
+        }
+    }
+
+    const updateSpendingFileState = (data: ISubmissionResponse) => {
+        setSpendingFile(data.attachmentList.map((attachment) => {
+            return {
+                type: fileState.SUBMITTED,
+                file: new File([], attachment.name)
+            }
+        }));
+
+        setIsSubmitted(true);
+    }
 
     const handleCreateComment = async (content: string, id: number) => {
 
@@ -60,37 +128,44 @@ const PostDetail = () => {
         }
     }
 
-    const createNewAttachment = (data: ICreateAttachment) => {
-        console.log(data);
-    }
-
     const handleSave = (fileList: File[]) => {
         handleClose();
-        const newSpendingFile = [...spendingFile, ...fileList];
+        const standardFileList: IFileState[] = fileList.map((file) => {
+            return {
+                file,
+                type: fileState.SPENDING
+            }
+        })
 
+        const newSpendingFile: IFileState[] = [...spendingFile, ...standardFileList];
+        console.log(newSpendingFile);
         setSpendingFile(newSpendingFile);
-        //uploadFile(FolderName.EXERCISE, fileList[0], createNewAttachment)
     }
 
     const handleEditFile = (indexValue: number) => {
 
-        const newFileList = spendingFile.filter((file, index) => index !== indexValue);
+        const newFileList = spendingFile.map((file, index) => {
+            if (index === indexValue) return { ...file, type: fileState.DELETE };
+            return file;
+        });
         setSpendingFile(newFileList);
     }
 
     const handleClose = () => {
         setOpenDialog(false);
     }
+    const handleSubmitAttachment = async () => {
+        const uploadList = spendingFile.filter((file, index) => file.type === "spending");
 
-    const styles = {
+        let fileUploadList: File[] = [];
+        uploadList.forEach(element => {
+            if (element.type === "spending") {
+                fileUploadList.push(element.file)
+            }
+        });
+        await uploadBulk(FolderName.EXERCISE, fileUploadList, createSubmission);
+    }
 
-        cardHeader: {
-           backgroundColor: "#d8e2f3",
-           MuiTypography: {
-              fontVariant: "h4"
-           }
-        }
-     };
 
     return (
         <>
@@ -130,7 +205,7 @@ const PostDetail = () => {
                                 </CardHeader>
                                 <CardContent>
 
-                                    {spendingFile.length === 0 ?
+                                    {(!isSubmitted && spendingFile.length === 0) ?
                                         <>
                                             <Button
                                                 variant="outlined"
@@ -154,29 +229,26 @@ const PostDetail = () => {
                                         <>
                                             {
                                                 spendingFile.map((file, index) => {
-                                                    return (
-                                                        <CardHeader
-                                                            fullWidth
-                                                            style={{width: "100%"}}
-                                                            key={`files-${index}`}
-                                                            avatar={<Assignment />}
-                                                            title={file.name}
-                                                            titleTypographyProps={{
-                                                                textOverflow: "ellipsis !important",
-                                                                width: "100% !important",
-                                                                display:"inline",
-                                                                whiteSpace: "nowrap !important",
-                                                                overflow: "hidden !important"
-                                                            }}
-                                                            action={
-                                                                <IconButton onClick={() => handleEditFile(index)}>
-                                                                    <Clear />
-                                                                </IconButton>
-                                                            }
-                                                        />
+                                                    if (file.type !== fileState.DELETE)
+                                                        return (
+                                                            <div className="submission-file">
+                                                                <div className="submission-file___avatar">
+                                                                    <Assignment />
+                                                                </div>
+
+                                                                <div className="submission-file___title">
+                                                                    {file.file.name}
+                                                                </div>
+                                                                <div className="submission-file___action">
+                                                                    <IconButton onClick={() => handleEditFile(index)}>
+                                                                        <Clear />
+                                                                    </IconButton>
+                                                                </div>
+
+                                                            </div>
 
 
-                                                    )
+                                                        )
                                                 })
                                             }
                                             <Button
@@ -192,7 +264,7 @@ const PostDetail = () => {
                                             <Button
                                                 fullWidth
                                                 variant="contained"
-
+                                                onClick={handleSubmitAttachment}
                                                 style={{ marginTop: "1rem", backgroundColor: "rgb(3, 169, 244)" }}
 
                                             > Nộp bài</Button>

@@ -69,53 +69,31 @@ const signInWithGoogle = async () => {
     }
 };
 
-const uploadFile = (folderName: string, file: File, callback: (data: ICreateAttachment) => void) => {
-    const uploadTask = storage.ref(`${folderName}/${file.name}`).put(file);
-    uploadTask.on(
-        "state_changed",
-        (snapShot) => {
-            //takes a snap shot of the process as it is happening
-            console.log(snapShot)
-        },
-        (error: any) => {
-            console.log(error);
-        },
-        () => {
 
-            let data: ICreateAttachment;
-            storage
-                .ref(folderName)
-                .child(file.name)
-                .getDownloadURL()
-                .then((url: string) => {
-                    data = {
-                        ...data,
-                        url
-                    };
-                });
+const uploadBulk = async (folderName: string, fileList: File[], callback: (data: ICreateAttachment[]) => void) => {
 
-            storage
-                .ref(folderName)
-                .child(file.name)
-                .getMetadata()
-                .then((metadata) => {
-                    data = {
-                        ...data,
-                        name: metadata.name,
-                        size: metadata.size,
-                        type: "other",
-                        extension: (metadata.contentType === null) ? undefined : metadata.contentType,
-                    }
-                    callback(data);
-                });
+    const dataList: ICreateAttachment[] = await Promise.all(fileList.map((file) => uploadFile(folderName, file)));
+    console.log(dataList.length);
+    callback(dataList);
+}
 
+const uploadFile = async (folderName: string, file: File) => {
+    const uploadTask =  await storage.ref(`${folderName}/${file.name}`).put(file);
 
-        }
-    );
+    const url = await uploadTask.ref.getDownloadURL()
+    const metaData = await uploadTask.ref.getMetadata()
+    return {
+        url,
+        name: metaData.name,
+        size: metaData.size,
+        type: "other",
+        extension: (metaData.contentType === null) ? undefined : metaData.contentType,
+    }
+
 }
 
 const logout = () => {
     auth.signOut();
 };
 // const storage = app.
-export { storage, auth, uploadFile, signInWithGoogle, logout, firebase as default };
+export { storage, uploadBulk, auth, uploadFile, signInWithGoogle, logout, firebase as default };

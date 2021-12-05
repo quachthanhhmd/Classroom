@@ -25,6 +25,8 @@ interface IAttachment {
     refId: number;
 }
 
+
+
 interface IAttachmentCreationAttributes extends Optional<IAttachment, "id"> { }
 
 @Table({

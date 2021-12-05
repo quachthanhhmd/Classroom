@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { inject, injectable } from "inversify";
+import { TYPEROLE } from "../../constants";
 import { AttachmentController } from "../../controllers";
 import { validate, Authenticate } from "../../middlewares";
 import { AttachmentValidation } from "../../validations";
@@ -17,6 +18,14 @@ class AttachmentRoute {
         this.initializeRoutes();
     }
     public initializeRoutes(): void {
+
+        this.router.post(
+            "/course/courseId",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
+            validate(this._attachmentValidation.CreateBulk()),
+            this._attachmentController.createBulkAttachment
+        )
         this.router.post(
             "/feed/:feedId",
             this._authenticate.authenticate(),

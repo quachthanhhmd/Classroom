@@ -11,6 +11,27 @@ export class AttachmentController {
         @inject("MemberService") private readonly _memberService: MemberService,
     ) { }
 
+    public createBulkAttachment = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const refId = +req.params.refId;
+            const refType = req.params.refType;
+
+            const body = req.body;
+
+            const newAttachment =
+                await this._attachmentService.createBulkAttachment(<ReferenceType> refType, refId, body);
+
+            return res.composer.success(newAttachment);
+        } catch (err) {
+            console.log(err);
+
+            return res.composer.otherException(err);
+        }
+    }
+
     public createAttachment = async (
         req: IAuthorizeRequest,
         res: IResponse

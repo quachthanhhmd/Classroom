@@ -6,7 +6,22 @@ import { AttachmentValidation } from ".";
 export class SubmissionValidation {
     constructor(
         @inject("AttachmentValidation") private readonly _attachmentValidation: AttachmentValidation,
-    ) {}
+    ) { }
+
+    public getSubmission = () => {
+        return Joi.object().keys({
+            params: {
+                exerciseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ),
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                )
+            }
+        })
+    }
 
     public CreateSubmission = () => {
         return Joi.object().keys({
@@ -18,7 +33,7 @@ export class SubmissionValidation {
             },
             body: {
                 type: Joi.string(),
-                submissionList: this._attachmentValidation.CreateAttachment()
+                attachmentList: Joi.array().items(this._attachmentValidation.CreateAttachment())
             }
         })
     }

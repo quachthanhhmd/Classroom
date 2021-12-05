@@ -91,4 +91,15 @@ export class SubmissionService {
 
         return !!submission;
     }
+
+    public findByUserId = async (userId: number, exerciseId: number): Promise<Submission | null> => {
+        return Submission.findOne({
+            where: {
+                [Op.and]: {
+                    userId,
+                    exerciseId,
+                }
+            }
+        })
+    }
 }

@@ -10,3 +10,10 @@ export enum FolderName {
     IMAGE = "images",
     COURSE_IMAGE = "course-images",
 }
+
+export enum SubmissionType {
+    SUBMITTED = "submitted",
+    SCORED = "scored",
+    CANCELLED = "cancelled",
+    COMPLETED = "completed",
+}

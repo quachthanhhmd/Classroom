@@ -9,3 +9,33 @@
         color: blue;
     }
 }
+
+
+.submission-file {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+
+    &___avatar {
+        width: 15%;
+        align-self: center;
+        align-items: center;
+        text-align: center;
+    }
+
+    &___title {
+        width: 70%;
+        
+        align-self: center;
+        align-items: center;
+        text-align: left;
+
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    &___action{
+        width: 10%;
+    }
+}

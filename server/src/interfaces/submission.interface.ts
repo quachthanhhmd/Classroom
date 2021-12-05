@@ -18,7 +18,7 @@ export const serializeSubmissionDetail = (model: any) => {
         score: model.score,
         userId: model.userId,
         exerciseId: model.exerciseId,
-        attachmentList: model.attachmentList.map(serializeAttachment),
-        commentList: model.commentList.map(serializeComment),
+        attachmentList: model.attachmentList ? model.attachmentList.map(serializeAttachment) : [],
+        commentList: model.commentList ? model.commentList.map(serializeComment) : [],
     }
 }

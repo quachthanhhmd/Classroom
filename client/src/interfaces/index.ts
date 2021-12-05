@@ -13,3 +13,5 @@ export * from "./exercise.interface";
 export * from "./reducer.interface";
 export * from "./comment.interface";
 export * from "./topic.interface";
+export * from "./attachment.interface";
+export * from "./submission.interface";

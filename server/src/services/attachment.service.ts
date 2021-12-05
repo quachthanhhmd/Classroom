@@ -51,7 +51,7 @@ export class AttachmentService {
      * @param {ICreateAttachment} body 
      * @returns 
      */
-    public createAttachment = (feedId: number, body: ICreateAttachment) => {
+    public createAttachment = async (feedId: number, body: ICreateAttachment) => {
         return Attachment.create({
             refType: ReferenceType.FEED,
             refId: feedId,
@@ -67,7 +67,7 @@ export class AttachmentService {
      * @returns 
      */
     public createBulkAttachment = (
-        refType: ReferenceType, refId: number, body: ICreateAttachment[]) :Promise<Attachment[]> => {
+        refType: ReferenceType, refId: number, body: ICreateAttachment[]): Promise<Attachment[]> => {
         const valueCreateBulk = body.map((v) => ({ ...v, refType, refId }));
 
         return Attachment.bulkCreate(

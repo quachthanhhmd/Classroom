@@ -20,22 +20,44 @@ export class SubmissionController {
         try {
             const userId = <number> req.currentUser?.id;
             const exerciseId = +req.params.exerciseId;
-            const { type, submissionList } = req.body;
+            const { type, attachmentList } = req.body;
 
+            console.log(req.body);
             const newSubmission = await this._submissionService.createSubmission(exerciseId, userId, type);
 
             const newAttachmentList = await this._attachmentService.createBulkAttachment(
-                ReferenceType.SUBMISSION, newSubmission.id, submissionList
+                ReferenceType.SUBMISSION, newSubmission.id, attachmentList
             );
 
             return res.composer.success(
                 serializeSubmissionDetail({ ...newSubmission, attachmentList: newAttachmentList })
             );
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }
 
+    public getSubmission = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const userId = <number> req.currentUser?.id;
+            const exerciseId = +req.params.exerciseId;
+
+            const submission = await this._submissionService.findByUserId(userId, exerciseId);
+
+            if (!submission) return res.composer.success();
+            const attachmentList =
+                await this._attachmentService.findAllAttachment(ReferenceType.SUBMISSION, submission.id)
+
+            return res.composer.success(serializeSubmissionDetail({...submission, attachmentList}))
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
     public updateSubmission = async (
         req: IAuthorizeRequest,
         res: IResponse
