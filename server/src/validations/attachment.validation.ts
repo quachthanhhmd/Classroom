@@ -27,10 +27,15 @@ export class AttachmentValidation {
     public DeleteAttachment = () => {
         return Joi.object().keys({
             params: {
-                attachmentId: Joi.alternatives(
+                courseId: Joi.alternatives(
                     Joi.string(),
                     Joi.number()
                 ).required(),
+            },
+            body: {
+                attachmentList: Joi.array().items({
+                    id: Joi.number().required(),
+                })
             }
         })
     }

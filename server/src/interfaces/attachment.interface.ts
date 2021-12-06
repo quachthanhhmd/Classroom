@@ -12,6 +12,7 @@ export interface ICreateAttachment {
 
 export const serializeAttachment = (model: any) => {
     return {
+        id: model.id,
         name: model.name,
         type: model.type,
         extension: model.extension,

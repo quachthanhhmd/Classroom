@@ -22,7 +22,7 @@ export class AttachmentController {
             const body = req.body;
 
             const newAttachment =
-                await this._attachmentService.createBulkAttachment(<ReferenceType> refType, refId, body);
+                await this._attachmentService.createBulkAttachment(<ReferenceType> refType, refId, body.attachmentList);
 
             return res.composer.success(newAttachment);
         } catch (err) {
@@ -58,19 +58,17 @@ export class AttachmentController {
         res: IResponse
     ): Promise<void> => {
         try {
-            const userId = <number> req.currentUser?.id;
-            const attachmentId = +req.params.attachmentId;
+            const attachmentList = req.body.attachmentList;
 
-            const attachment = await this._attachmentService.findAttachmentById(attachmentId);
-            if (!attachment || attachment.refType !== ReferenceType.FEED) return res.composer.notFound();
+            // const isBelongToUser = await this._feedService.isBelongsToFeed(attachment.refId, userId);
+            // if (!isBelongToUser) return res.composer.forbidden();
 
-            const isBelongToUser = await this._feedService.isBelongsToFeed(attachment.refId, userId);
-            if (!isBelongToUser) return res.composer.forbidden();
-
-            await this._attachmentService.deleteAttachment(attachmentId);
+            await this._attachmentService.deleteAttachment(attachmentList.map((attachment) => attachment.id));
 
             return res.composer.success();
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }

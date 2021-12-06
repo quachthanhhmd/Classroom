@@ -79,10 +79,10 @@ export class AttachmentService {
      * Delete attachment
      * @param attachmentId 
      */
-    public deleteAttachment = async (attachmentId: number) => {
+    public deleteAttachment = async (attachmentIdList: number[]) => {
         await Attachment.destroy({
             where: {
-                id: attachmentId,
+                id: [...attachmentIdList],
             }
         })
     }

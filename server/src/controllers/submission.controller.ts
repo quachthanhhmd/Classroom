@@ -22,7 +22,6 @@ export class SubmissionController {
             const exerciseId = +req.params.exerciseId;
             const { type, attachmentList } = req.body;
 
-            console.log(req.body);
             const newSubmission = await this._submissionService.createSubmission(exerciseId, userId, type);
 
             const newAttachmentList = await this._attachmentService.createBulkAttachment(

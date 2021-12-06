@@ -20,7 +20,7 @@ class AttachmentRoute {
     public initializeRoutes(): void {
 
         this.router.post(
-            "/course/courseId",
+            "/course/:courseId/:refId/:refType",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._attachmentValidation.CreateBulk()),
@@ -33,10 +33,10 @@ class AttachmentRoute {
             this._attachmentController.createAttachment
         )
 
-        this.router.delete(
-            "/:attachmentId",
+        this.router.post(
+            "/course/:courseId",
             this._authenticate.authenticate(),
-            validate(this._attachmentValidation.DeleteAttachment),
+            // validate(this._attachmentValidation.DeleteAttachment),
             this._attachmentController.deleteAttachment
         )
     }

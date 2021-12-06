@@ -1,38 +1,27 @@
 import { Button, Card, CardContent, CardHeader, Divider, Grid, IconButton, Typography } from "@material-ui/core";
 import { Add, Assignment, Clear } from '@material-ui/icons';
 import { DropzoneDialog } from 'material-ui-dropzone';
-import filter from "material-ui/svg-icons/image/filter";
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from 'react-router';
-import { create } from "yup/lib/array";
 import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
+import attachmentApi from "../../api/attachment.api";
 import commentApi from "../../api/comment.api";
 import exerciseApi from '../../api/exercise.api';
 import submissionApi from "../../api/submission.api";
 import CircularLoading from '../../components/Loading';
 import ContentPost from "../../components/Post/ContentPost";
-import { uploadBulk, uploadFile } from "../../configs/firebase";
-import { FolderName, ReferenceType, SubmissionType, TYPEROLE } from "../../constants";
+import { uploadBulk } from "../../configs/firebase";
+import { FolderName, ReferenceType, SubmissionType } from "../../constants";
 import { IComment, ICreateSubmission, IExerciseDetail, ISubmissionResponse } from '../../interfaces';
 import { ICreateAttachment } from "../../interfaces/attachment.interface";
 import { UPDATE_SUCCESS } from "../../messages";
 import { SUBMISSION_FAIL, SUBMISSION_SUCCESS } from "../../messages/exercise.message";
 import { AppState } from "../../reducers";
 import { getDateTimeFormat } from '../../utils/converter';
+import { convertAttachToFile, deleteAttachment, fileState, IFileState, uploadBulkAttachment } from "./crud-attachment";
 import "./index.scss";
 
-
-enum fileState {
-    DELETE = "deleted",
-    SPENDING = "spending",
-    SUBMITTED = "submitted"
-}
-
-interface IFileState {
-    file: File,
-    type: fileState,
-}
 
 const PostDetail = () => {
     const { courseId, postId } = useParams<{ courseId: string, postId: string }>();
@@ -48,6 +37,15 @@ const PostDetail = () => {
     const member = useSelector((state: AppState) => state.member)
 
     useEffect(() => {
+        async function getSubmission() {
+            const res = await submissionApi.getSubmission(+courseId, +postId);
+
+            if (!res || res.status !== 200) return;
+
+            if (res.data.payload)
+                updateSpendingFileState(res.data.payload);
+        }
+
         async function getExercise(courseId: number, postId: number) {
             setIsLoading(true);
             const res = await exerciseApi.getOneExercise(courseId, postId);
@@ -58,21 +56,11 @@ const PostDetail = () => {
         }
 
         getExercise(+courseId, +postId);
-    }, [])
-
-
-    useEffect(() => {
-        async function getSubmission() {
-            const res = await submissionApi.getSubmission(+courseId, +postId);
-
-            if (!res || res.status !== 200) return;
-            console.log(res.data.payload);
-            updateSpendingFileState(res.data.payload);
-        }
         //if (member && member.currentRole?.role === TYPEROLE.STUDENT) {
         getSubmission();
         //}
     }, [])
+
 
     const handleUpdateStatusSubmission = async (state: SubmissionType) => {
         if (!submission) return;
@@ -90,32 +78,30 @@ const PostDetail = () => {
                 ...submission,
                 type: state
             })
-            //setIsSubmitted(false)
+            if (state === SubmissionType.CANCELLED) {
+                setIsSubmitted(false);
+                return;
+            }
+            setIsSubmitted(true);
         } catch (err) {
             dispatch(showErrorNotify("Cập nhật thất bại"))
         }
     }
+    const createBulkAttachment = async (data: ICreateAttachment[]) => {
+        try {
+            const res = await attachmentApi.createBulkAttachment(ReferenceType.SUBMISSION, submission!.id, +courseId, { attachmentList: data });
 
+            if (!res || res.status !== 200) return;
 
-    const newAttachmentListAppend = (fileList: IFileState[]) => {
-        return fileList.filter(file => {
-            if (file.type === "spending") return true;
-            return false;
-        })
-    }
+            const newSpendingFile = spendingFile.filter(file => file.type !== fileState.SPENDING);
+            setSpendingFile([...newSpendingFile, ...res.data.payload.map(convertAttachToFile)])
 
-    const checkDeleteAttachment = (fileList: IFileState[]) => {
+        } catch (err) {
 
+        }
     }
 
     const createSubmission = async (attachmentList: ICreateAttachment[]) => {
-
-        const createAttachList = newAttachmentListAppend(spendingFile);
-
-        if (submission && createAttachList.length === 0) {
-            handleUpdateStatusSubmission(SubmissionType.SUBMITTED);
-            return;
-        }
 
         const data: ICreateSubmission = {
             type: SubmissionType.SUBMITTED,
@@ -129,25 +115,19 @@ const PostDetail = () => {
             }
             dispatch(showSuccessNotify(SUBMISSION_SUCCESS));
             updateSpendingFileState(res.data.payload);
-
+            setIsSubmitted(true);
         } catch (err) {
             dispatch(showErrorNotify(SUBMISSION_FAIL))
         }
     }
 
     const updateSpendingFileState = (data: ISubmissionResponse) => {
-        setSpendingFile(data.attachmentList.map((attachment) => {
-            return {
-                type: fileState.SUBMITTED,
-                file: new File([], attachment.name)
-            }
-        }));
+        setSpendingFile(data.attachmentList.map(convertAttachToFile));
         setSubmission(data);
         setIsSubmitted(true);
     }
 
     const handleCreateComment = async (content: string, id: number) => {
-
         const data: IComment = {
             content,
             refId: exercise!.id,
@@ -160,7 +140,6 @@ const PostDetail = () => {
             if (!res || res.status !== 200) throw new Error();
 
             // update exercise
-
             exercise?.commentList.push(res.data.payload);
 
             setExercise({ ...exercise });
@@ -174,17 +153,16 @@ const PostDetail = () => {
         const standardFileList: IFileState[] = fileList.map((file) => {
             return {
                 file,
-                type: fileState.SPENDING
+                type: fileState.SPENDING,
+                id: -1
             }
         })
 
         const newSpendingFile: IFileState[] = [...spendingFile, ...standardFileList];
-        console.log(newSpendingFile);
         setSpendingFile(newSpendingFile);
     }
 
     const handleEditFile = (indexValue: number) => {
-
         const newFileList = spendingFile.map((file, index) => {
             if (index === indexValue) return { ...file, type: fileState.DELETE };
             return file;
@@ -192,17 +170,43 @@ const PostDetail = () => {
         setSpendingFile(newFileList);
     }
 
-    const handleClose = () => {
-        setOpenDialog(false);
-    }
-    const handleSubmitAttachment = async () => {
 
+    const handleSubmitAttachment = async () => {
+        if (spendingFile.length === 0) {
+            alert("Hãy chọn file để nộp bài");
+            return;
+        }
         setIsLoading(true);
-        const uploadList = spendingFile.filter((file, index) => file.type === "spending");
+        if (submission) {
+            // delete attachment
+            const deleteList = await deleteAttachment(+courseId, spendingFile);
+
+            if (deleteList) {
+                setSpendingFile(deleteList);
+            }
+            // check upload new
+            const isUpdateBulk = await uploadBulkAttachment(+courseId, spendingFile, createBulkAttachment);
+            if (isUpdateBulk || deleteList) {
+                await handleUpdateStatusSubmission(SubmissionType.SUBMITTED)
+                setIsSubmitted(true);
+                setIsLoading(false);
+                return;
+            }
+        }
+
+
+        const uploadList = spendingFile.filter((file, index) => file.type === fileState.SPENDING);
+
+        if (uploadList.length === 0) {
+            await handleUpdateStatusSubmission(SubmissionType.SUBMITTED);
+            setIsLoading(false);
+            return;
+        }
+        // only update state
 
         let fileUploadList: File[] = [];
         uploadList.forEach(element => {
-            if (element.type === "spending") {
+            if (element.type === fileState.SPENDING) {
                 fileUploadList.push(element.file)
             }
         });
@@ -218,6 +222,10 @@ const PostDetail = () => {
         setIsLoading(false);
     }
 
+    const handleClose = () => {
+        setOpenDialog(false);
+    }
+    console.log(isSubmitted)
     return (
         <>
             {(exercise && !isLoading) ?
@@ -256,7 +264,7 @@ const PostDetail = () => {
                                 </CardHeader>
                                 <CardContent>
 
-                                    {(spendingFile.length === 0) ?
+                                    {(!submission && spendingFile.length === 0) ?
                                         <>
                                             <Button
                                                 variant="outlined"
@@ -271,6 +279,7 @@ const PostDetail = () => {
                                             <Button
                                                 style={{ marginTop: "1rem" }}
                                                 variant="contained"
+                                                onClick={() => createSubmission([])}
                                                 fullWidth
                                             >
                                                 Đánh dấu là đã nộp
@@ -291,9 +300,13 @@ const PostDetail = () => {
                                                                     {file.file.name}
                                                                 </div>
                                                                 <div className="submission-file___action">
-                                                                    <IconButton onClick={() => handleEditFile(index)}>
-                                                                        <Clear />
-                                                                    </IconButton>
+                                                                    {
+
+                                                                        (!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) &&
+                                                                        <IconButton onClick={() => handleEditFile(index)}>
+                                                                            <Clear />
+                                                                        </IconButton>
+                                                                    }
                                                                 </div>
 
                                                             </div>
