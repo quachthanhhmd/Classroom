@@ -34,6 +34,14 @@ class ExerciseRoute {
             this._exerciseController.getAllExercise
         )
 
+        this.router.get(
+            "/course/:courseId/deadline",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.STUDENT),
+            validate(this._exerciseValidation.getDeadlineList),
+            this._exerciseController.getDeadlineList
+        )
+        
         this.router.post(
             "/course/:courseId",
             this._authenticate.authenticate(),

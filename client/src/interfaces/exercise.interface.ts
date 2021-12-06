@@ -36,6 +36,13 @@ export interface IExerciseDetail {
     updateAt: Date,
 }
 
+export interface IDeadlineResponse {
+    id: number,
+    title: string,
+    deadline: Date,
+}
+
+
 export interface IExerciseThumbnail {
     id: number,
     title: string,

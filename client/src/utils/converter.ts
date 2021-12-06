@@ -27,6 +27,15 @@ export const getDateTimeFormat = (date: Date) => {
     return `${`0${newDate.getHours()}`.substr(-2)}:${`0${newDate.getMinutes()}`.substr(-2)}, ${newDate.getDay()} thg ${newDate.getMonth() + 1}`;
 }
 
+export const getDayFormat = (date: Date) => {
+    const newDate = new Date(date);
+    return `${newDate.getDay()}/${newDate.getMonth() + 1}`;
+}
+
+export const getTimeFormat = (date: Date) => {
+    const newDate = new Date(date);
+    return `${`0${newDate.getHours()}`.substr(-2)}:${`0${newDate.getMinutes()}`.substr(-2)}`;
+}
 
 export const sameDay = (d1: Date, d2: Date) => {
     return d1.getFullYear() === d2.getFullYear() &&

@@ -225,7 +225,7 @@ const PostDetail = () => {
     const handleClose = () => {
         setOpenDialog(false);
     }
-    console.log(isSubmitted)
+
     return (
         <>
             {(exercise && !isLoading) ?

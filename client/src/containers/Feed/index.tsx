@@ -15,6 +15,7 @@ import { joinCourseByUrl } from "../../actions";
 import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import commentApi from "../../api/comment.api";
 import courseApi from "../../api/course.api";
+import exerciseApi from "../../api/exercise.api";
 import postApi from "../../api/feed.api";
 import CourseInfo from "../../components/CourseInfo";
 import ThumbnailExercise from "../../components/ExercisePost/thumbnail";
@@ -22,10 +23,11 @@ import CircularLoading from "../../components/Loading";
 import Post from "../../components/Post";
 import RichText from "../../components/RichText";
 import { TYPEROLE } from "../../constants";
-import { IComment, ICourseInfo, IExerciseThumbnail, isPostDetail } from "../../interfaces";
+import { IComment, ICourseInfo, IDeadlineResponse, IExerciseThumbnail, isPostDetail } from "../../interfaces";
 import { IPostDetail } from "../../interfaces/post.interface";
 import { FORBIDDEN_MESSAGE, POST_NEW_FAIL, POST_NEW_SUCCESS } from "../../messages";
 import { AppState } from "../../reducers";
+import { getDateFormat, getDateTimeFormat, getDayFormat, getTimeFormat } from "../../utils/converter";
 import "./index.scss";
 
 
@@ -34,28 +36,6 @@ const imagePlugin = createImagePlugin();
 const plugins = [imagePlugin];
 
 
-const deadlineList = [
-    {
-        id: "ahasdjk",
-        deadline: "5/10",
-        content: "22:00 - BTCN03 - Chức năng tạo và đăng ký"
-    },
-    {
-        id: "ahaasdjk",
-        deadline: "5/10",
-        content: "22:00 - BTCN03 - Chức năng tạo và đăng ký"
-    },
-    {
-        id: "ahaas2djk",
-        deadline: "5/10",
-        content: "22:00 - BTCN03 - Chức năng tạo và đăng ký"
-    },
-    {
-        id: "ahaas1djk",
-        deadline: "5/10",
-        content: "22:00 - BTCN03 - Chức năng tạo và đăng ký"
-    }
-]
 interface ParamTypes {
     courseId: string
 }
@@ -83,9 +63,19 @@ const Feed = () => {
     const [isChangeInfo, setIsChangeInfo] = useState(false);
 
     const [postList, setPostList] = useState<(IPostDetail | IExerciseThumbnail)[]>([]);
+    const [deadlineList, setDeadlineList] = useState<IDeadlineResponse[]>([]);
+
     // Fetch API
 
     useEffect(() => {
+        const getDeadlineList = async () => {
+            const res = await exerciseApi.getDeadlineList(+courseId);
+
+            if (!res || res.status !== 200) return;
+
+            setDeadlineList(res.data.payload);
+        }
+
         const postList = async () => {
             const res = await courseApi.getAllPost(+courseId);
 
@@ -94,6 +84,11 @@ const Feed = () => {
             setPostList(res.data.payload);
         }
         postList();
+
+        if (role && role.currentRole?.role === TYPEROLE.STUDENT) {
+            getDeadlineList();
+        }
+
     }, [])
 
 
@@ -320,11 +315,11 @@ const Feed = () => {
                                             deadlineList.map(exam => (
                                                 <div className="feed-main___body___left--deadline___content--item">
                                                     <div className="feed-main___body___left--deadline___content--item___time">
-                                                        Đến hạn {exam.deadline}
+                                                        Đến hạn {getDayFormat(exam.deadline)} - {getTimeFormat(exam.deadline)}
                                                     </div>
                                                     <div className="feed-main___body___left--deadline___content--item___link">
                                                         <Link to={`/${exam.id}`} className="feed-main___body___left--deadline___content--item___link--name overflow-text">
-                                                            {exam.content}
+                                                            {exam.title}
                                                         </Link>
                                                     </div>
                                                 </div>

@@ -1,4 +1,4 @@
-import { IChangeOrder, ICreateExercise, ICreateExerciseType, IExerciseThumbnail, IExerciseTypeDetail, IHttpFormat } from "../interfaces";
+import { IChangeOrder, ICreateExercise, ICreateExerciseType, IDeadlineResponse, IExerciseThumbnail, IExerciseTypeDetail, IHttpFormat } from "../interfaces";
 import axiosClient from "./axios.client";
 
 
@@ -31,6 +31,10 @@ const exerciseApi = {
     getOneExercise: (courseId: number, postId: number) => {
         const url = `/v1/exercise/course/${courseId}/post/${postId}`;
         return axiosClient.get<IHttpFormat<any>>(url);
+    },
+    getDeadlineList: (courseId: number) => {
+        const url = `/v1/exercise/course/${courseId}/deadline`;
+        return axiosClient.get<IHttpFormat<IDeadlineResponse[]>>(url);
     }
 }
 

@@ -21,6 +21,16 @@ export const serializeExerciseThumbnail = (model: any) => {
     }
 }
 
+export const serializeDeadlineList = (modelList) => {
+    return modelList.map((model) => {
+        return {
+            id: model.id,
+            title: model.title,
+            deadline: model.deadline,
+        }
+    })
+}
+
 export const serializeExerciseDetail = (model: any) => {
     return {
         id: model.id,

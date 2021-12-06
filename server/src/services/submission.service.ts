@@ -46,6 +46,26 @@ export class SubmissionService {
 
     /**
      * 
+     * @param userId 
+     * @param exerciseIdList 
+     * @returns 
+     */
+    public findSubmissionByExerciseId = async (userId: number, exerciseIdList: number[]) => {
+        return Submission.findAll({
+            where: {
+                [Op.and]: {
+                    userId,
+                    exerciseId: [...exerciseIdList],
+                    type: {
+                        [Op.ne]: SubmissionType.CANCELLED
+                    }
+                }
+            }
+        })
+    }
+
+    /**
+     * 
      * @param {number} submissionId 
      * @param {number} userId 
      * @param body 

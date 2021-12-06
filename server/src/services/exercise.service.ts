@@ -1,5 +1,6 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
+import { Op } from "sequelize";
 import { CommentService } from ".";
 import { Exercise, ExerciseType, ReferenceType, Topic, User } from "../models";
 import { ICreateExercise } from "./../interfaces";
@@ -20,6 +21,32 @@ export class ExerciseService {
         return Exercise.findByPk(id);
     }
 
+    /**
+     * 
+     * @param courseId 
+     * @param userId 
+     * @param date 
+     * @returns 
+     */
+    public findAfterDate = async (courseId: number, userId: number, date: Date) => {
+        return Exercise.findAll({
+            where: {
+                [Op.and]: {
+                    courseId,
+                    userId,
+                    deadline: {
+                        [Op.gte]: date,
+                    }
+                }
+            }
+        })
+    }
+
+    /**
+     * 
+     * @param courseId 
+     * @returns 
+     */
     public getAllExerciseInCourse = async (courseId: number): Promise<any[]> => {
         const exerciseList = await Exercise.findAll({
             where: {

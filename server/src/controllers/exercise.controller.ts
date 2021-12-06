@@ -1,7 +1,9 @@
 import { inject, injectable } from "inversify";
-import { serializeExerciseDetail, serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
+import { serializeDeadlineList,
+    serializeExerciseDetail,
+    serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
 import { ReferenceType } from "../models";
-import { AttachmentService, CommentService, ExerciseService, MemberService, TopicService } from "../services";
+import { AttachmentService, CommentService, ExerciseService, MemberService, SubmissionService, TopicService } from "../services";
 
 @injectable()
 export class ExerciseController {
@@ -10,7 +12,8 @@ export class ExerciseController {
         @inject("MemberService") private readonly _memberService: MemberService,
         @inject("TopicService") private readonly _topicService: TopicService,
         @inject("CommentService") private readonly _commentService: CommentService,
-        @inject("AttachmentService") private readonly _attachmentService: AttachmentService
+        @inject("AttachmentService") private readonly _attachmentService: AttachmentService,
+        @inject("SubmissionService") private readonly _submissionService: SubmissionService
     ) { }
 
     public getAllExercise = async (
@@ -27,6 +30,38 @@ export class ExerciseController {
         } catch (err) {
             console.log(err);
 
+            return res.composer.otherException(err);
+        }
+    }
+
+    public getDeadlineList = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const userId = <number> req.currentUser?.id;
+            const courseId = +req.params.courseId;
+
+            const exerciseList = await this._exerciseService.findAfterDate(courseId, userId, new Date());
+
+            if (exerciseList.length === 0) {
+                return res.composer.success();
+            }
+            const exerciseIdList = exerciseList.map((exercise) => exercise.id);
+            const submissionList = await this._submissionService.findSubmissionByExerciseId(userId, exerciseIdList);
+            console.log(submissionList);
+
+            const newExerciseList = exerciseList.filter((exercise) => {
+                if (submissionList.some((submission) => submission.exerciseId === exercise.id)) {
+                    return true;
+                }
+
+                return false;
+            })
+            console.log(exerciseList);
+
+            return res.composer.success(serializeDeadlineList(newExerciseList));
+        } catch (err) {
             return res.composer.otherException(err);
         }
     }
