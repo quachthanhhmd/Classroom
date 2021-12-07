@@ -68,13 +68,7 @@ const Feed = () => {
     // Fetch API
 
     useEffect(() => {
-        const getDeadlineList = async () => {
-            const res = await exerciseApi.getDeadlineList(+courseId);
 
-            if (!res || res.status !== 200) return;
-
-            setDeadlineList(res.data.payload);
-        }
 
         const postList = async () => {
             const res = await courseApi.getAllPost(+courseId);
@@ -85,19 +79,30 @@ const Feed = () => {
         }
         postList();
 
-        if (role && role.currentRole?.role === TYPEROLE.STUDENT) {
-            getDeadlineList();
-        }
-
     }, [])
 
 
     useEffect(() => {
+        
         if (code) {
             dispatch(joinCourseByUrl(+courseId, code));
         }
     }, [])
 
+    useEffect(() => {
+        const getDeadlineList = async () => {
+            const res = await exerciseApi.getDeadlineList(+courseId);
+
+            if (!res || res.status !== 200) return;
+
+            setDeadlineList(res.data.payload);
+        }
+
+        if (role && role.currentRole?.role === TYPEROLE.STUDENT) {
+
+            getDeadlineList();
+        }
+    }, [role.currentRole, role.currentRole?.role])
 
     useEffect(() => {
         if (!courseState.isSuccess && courseState.message === FORBIDDEN_MESSAGE)
@@ -318,7 +323,7 @@ const Feed = () => {
                                                         Đến hạn {getDayFormat(exam.deadline)} - {getTimeFormat(exam.deadline)}
                                                     </div>
                                                     <div className="feed-main___body___left--deadline___content--item___link">
-                                                        <Link to={`/${exam.id}`} className="feed-main___body___left--deadline___content--item___link--name overflow-text">
+                                                        <Link to={`/course/${courseId}/post/${exam.id}/details`} className="feed-main___body___left--deadline___content--item___link--name overflow-text">
                                                             {exam.title}
                                                         </Link>
                                                     </div>

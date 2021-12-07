@@ -1,4 +1,5 @@
 import { inject, injectable } from "inversify";
+import moment from "moment";
 import "reflect-metadata";
 import { Op } from "sequelize";
 import { CommentService } from ".";
@@ -28,14 +29,15 @@ export class ExerciseService {
      * @param date 
      * @returns 
      */
-    public findAfterDate = async (courseId: number, userId: number, date: Date) => {
+    public findAfterDate = async (courseId: number, date: Date) => {
+        const standard = moment(date).format("YYYY-MM-DD hh:mm:ss");
+
         return Exercise.findAll({
             where: {
                 [Op.and]: {
                     courseId,
-                    userId,
                     deadline: {
-                        [Op.gte]: date,
+                        [Op.gte]: standard
                     }
                 }
             }

@@ -176,6 +176,10 @@ const PostDetail = () => {
             alert("Hãy chọn file để nộp bài");
             return;
         }
+        if (submission && submission.type === SubmissionType.SCORED) {
+            alert("Bài này đã được chấm điểm, bạn không thể nộp thêm");
+            return;
+        }
         setIsLoading(true);
         if (submission) {
             // delete attachment

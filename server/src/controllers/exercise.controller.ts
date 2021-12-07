@@ -1,7 +1,10 @@
 import { inject, injectable } from "inversify";
-import { serializeDeadlineList,
+import { ConsoleTransportOptions } from "winston/lib/winston/transports";
+import {
+    serializeDeadlineList,
     serializeExerciseDetail,
-    serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse } from "../interfaces";
+    serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse
+} from "../interfaces";
 import { ReferenceType } from "../models";
 import { AttachmentService, CommentService, ExerciseService, MemberService, SubmissionService, TopicService } from "../services";
 
@@ -41,27 +44,33 @@ export class ExerciseController {
         try {
             const userId = <number> req.currentUser?.id;
             const courseId = +req.params.courseId;
-
-            const exerciseList = await this._exerciseService.findAfterDate(courseId, userId, new Date());
+            console.log(123);
+            const exerciseList = await this._exerciseService.findAfterDate(courseId, new Date());
 
             if (exerciseList.length === 0) {
                 return res.composer.success();
             }
-            const exerciseIdList = exerciseList.map((exercise) => exercise.id);
+            console.log(exerciseList);
+            const exerciseIdList: number[] = exerciseList.map((exercise) => {
+                return exercise.id
+            });
+            console.log(exerciseIdList);
             const submissionList = await this._submissionService.findSubmissionByExerciseId(userId, exerciseIdList);
             console.log(submissionList);
 
             const newExerciseList = exerciseList.filter((exercise) => {
                 if (submissionList.some((submission) => submission.exerciseId === exercise.id)) {
-                    return true;
+                    return false;
                 }
 
-                return false;
+                return true;
             })
-            console.log(exerciseList);
+            console.log(newExerciseList);
 
             return res.composer.success(serializeDeadlineList(newExerciseList));
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }
