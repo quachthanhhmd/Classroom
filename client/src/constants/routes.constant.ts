@@ -8,5 +8,6 @@ export const ROUTES = {
     structure: "/structure/:courseId",
     exercise: "/exercise/:courseId",
     detail: "/course/:courseId/post/:postId/details",
+    submission: "/course/:courseId/post/:postId/submission"
 }
 
