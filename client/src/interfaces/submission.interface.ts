@@ -15,3 +15,17 @@ export interface ISubmissionResponse {
     attachmentList: IAttachmentResponse[],
     commentList: ICommentResponse[],
 }
+
+export interface ISubmissionSummary {
+    id: number,
+    type: string,
+    user: {
+        id: number,
+        firstName: string,
+        lastName: string,
+        avatarUrl?: string,
+        email: string,
+    },
+    updatedAt: Date,
+    score: Date,
+}

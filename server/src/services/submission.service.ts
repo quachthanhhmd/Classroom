@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
 import { Op } from "sequelize";
 import { IUpdateSubmission } from "../interfaces";
-import { Submission, SubmissionType } from "../models";
+import { Submission, SubmissionType, User } from "../models";
 
 @injectable()
 export class SubmissionService {
@@ -23,8 +23,18 @@ export class SubmissionService {
     public findAllSubmissionExercise = async (exerciseId: number) => {
         return Submission.findAll({
             where: {
-                exerciseId,
-            }
+                [Op.and]: {
+                    exerciseId,
+                    type: {
+                        [Op.ne]: SubmissionType.CANCELLED
+                    }
+                }
+            },
+            include: [{
+                model: User,
+            }],
+            raw: false,
+            nest: false,
         })
     }
 

@@ -1,6 +1,6 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, Model, PrimaryKey, Table
 } from "sequelize-typescript";
 import { Exercise, User } from ".";
 
@@ -51,4 +51,7 @@ export class Submission extends Model<ISubmission, ISubmissionCreationAttributes
     @Default(SubmissionType.SUBMITTED)
     @Column(DataType.TEXT)
     type!: string;
+
+    @BelongsTo(() => User)
+    user!: User;
 }

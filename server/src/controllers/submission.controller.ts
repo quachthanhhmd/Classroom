@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { IAuthorizeRequest, IResponse } from "../interfaces";
+import { serializeSubmissionList, IAuthorizeRequest, IResponse } from "../interfaces";
 import { ReferenceType, SubmissionType } from "../models";
 import { AttachmentService, ExerciseService, MemberService, SubmissionService } from "../services";
 import { serializeSubmissionDetail } from "./../interfaces/submission.interface";
@@ -13,6 +13,23 @@ export class SubmissionController {
         @inject("ExerciseService") private readonly _exerciseService: ExerciseService
     ) { }
 
+    public getAllSubmission = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const exerciseId = +req.params.exerciseId;
+            // const courseId = +req.params.courseId;
+
+            const submissionList = await this._submissionService.findAllSubmissionExercise(exerciseId);
+
+            return res.composer.success(serializeSubmissionList(submissionList));
+        } catch (err) {
+            console.log(err);
+
+            return res.composer.otherException(err);
+        }
+    }
     public createNewSubmission = async (
         req: IAuthorizeRequest,
         res: IResponse,

@@ -97,7 +97,7 @@ const GradeStructure = () => {
 
     useEffect(() => {
         if (course.course?.exerciseTypeList) {
-            console.log("update o day")
+
             setItemList(serializeExerciseType(course.course?.exerciseTypeList));
             setDefaultItemList(serializeExerciseType(course.course?.exerciseTypeList));
         }

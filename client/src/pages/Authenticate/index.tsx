@@ -1,18 +1,17 @@
 import { Card } from '@material-ui/core';
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { Helmet } from 'react-helmet';
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { FacebookButton, GoogleButton } from "../../components/LoginSocial";
+import { loginOAuth } from "../../actions";
+import { GoogleButton } from "../../components/LoginSocial";
 import ThemeMode from "../../components/ThemeMode";
 import { signInWithGoogle } from "../../configs/firebase";
-import { USER_REGISTER_SUCCESS } from "../../constants";
 import Login from "../../containers/Login";
 import Register from "../../containers/Register";
-import { AppState } from "../../reducers";
-import { loginOAuth } from "../../actions";
-import "./index.scss";
-import { Helmet } from 'react-helmet';
 import { SIGNUP_SUCCESS } from '../../messages';
+import { AppState } from "../../reducers";
+import "./index.scss";
 
 const changeToggleMode = () => {
     const toggle = document.getElementById("toggle-mode");

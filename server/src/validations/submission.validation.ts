@@ -8,6 +8,20 @@ export class SubmissionValidation {
         @inject("AttachmentValidation") private readonly _attachmentValidation: AttachmentValidation,
     ) { }
 
+    public getAllSubmission = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ),
+                exerciseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            }
+        })
+    }
     public getSubmission = () => {
         return Joi.object().keys({
             params: {

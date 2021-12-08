@@ -1,4 +1,4 @@
-import { ICreateSubmission, IHttpFormat, ISubmissionResponse } from "../interfaces";
+import { ICreateSubmission, IHttpFormat, ISubmissionResponse, ISubmissionSummary } from "../interfaces";
 import axiosClient from "./axios.client";
 
 const submissionApi = {
@@ -7,14 +7,16 @@ const submissionApi = {
         return axiosClient.get<IHttpFormat<ISubmissionResponse>>(url);
     },
     createSubmission: (courseId: number, exerciseId: number, data: ICreateSubmission) => {
-        console.log(data);
         const url = `/v1/submission/course/${courseId}/exercise/${exerciseId}`;
         return axiosClient.post<IHttpFormat<ISubmissionResponse>>(url, data);
     },
     updateSubmission: (submissionId: number, courseId: number, data: any) => {
-        console.log(submissionId, courseId);
         const url = `/v1/submission/${submissionId}/course/${courseId}`;
         return axiosClient.patch<IHttpFormat<ISubmissionResponse>>(url, data);
+    },
+    getAllInExercise: (courseId: number, exerciseId: number) => {
+        const url = `/v1/submission/course/${courseId}/exercise/${exerciseId}/all`;
+        return axiosClient.get<IHttpFormat<ISubmissionSummary[]>>(url);
     }
 }
 

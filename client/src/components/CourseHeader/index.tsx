@@ -8,7 +8,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { Link, LinkProps, useHistory } from "react-router-dom";
+import { Link, LinkProps } from "react-router-dom";
 import { getAllCourseInfo, getUserData, signOut } from "../../actions";
 import { TYPEROLE } from "../../constants";
 import { useScrollHook } from "../../customs";

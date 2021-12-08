@@ -17,13 +17,10 @@ import { MEMBERSTATE, TYPEROLE } from "../../constants";
 import { IMemberSummary } from "../../interfaces";
 import { FORBIDDEN_MESSAGE } from "../../messages";
 import { AppState } from "../../reducers";
+import { openInNewTab } from "../../utils/mail";
 import "./index.scss";
 
 
-const openInNewTab = (url) => {
-    const newWindow = window.open(url, '_blank', 'noopener,noreferrer')
-    if (newWindow) newWindow.opener = null
-}
 
 interface IMemberDisplay {
     course: any,

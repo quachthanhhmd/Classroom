@@ -2,7 +2,7 @@ import { Card, Grid, CardContent, CardHeader, Divider, Button, IconButton, Typog
 import { Add, MoreVert, Assignment } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { getAllCourseInfo } from '../../actions';
 import { showErrorNotify, showSuccessNotify } from '../../actions/notification.action';
 import exerciseApi from '../../api/exercise.api';
@@ -24,11 +24,20 @@ interface IPropsExam {
 
 const ButtonExam = (props: IPropsExam) => {
     const { exercise } = props;
+    
+    const {courseId} = useParams<{courseId: string}>();
+
+    const history = useHistory();
+
+    const handleClick = () => {
+        history.push(`/course/${courseId}/post/${exercise.id}/submission`)
+    }
 
     return (
         <Button
             key={`${exercise.id}-exercise-thumbnail`}
             className="exercise-main___exam___button"
+            onClick={handleClick}
             fullWidth
         >
 

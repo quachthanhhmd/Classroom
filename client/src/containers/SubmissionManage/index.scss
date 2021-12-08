@@ -14,13 +14,12 @@
     // flex: 1 0 auto;
     // -webkit-flex-direction: column;
     // flex-direction: column;
-
     &___title {
         padding: 1rem !important;
         display: flex;
         justify-content: space-between;
         &___left {
-            padding-left: 2rem;
+            
             &--button {
                 margin-left: 2rem;
             }
@@ -29,8 +28,6 @@
     }
 
     &___content {
-        
-
         -webkit-align-items: stretch;
         align-items: stretch;
         display: -webkit-box;
@@ -67,7 +64,6 @@
             margin: 0;
             flex: 1 1 auto; /* formerly flex: 1 0 auto; */
             overflow-y: scroll;
-          
         }
         &--manager {
             &--dropdown {
@@ -81,5 +77,26 @@
                 }
             }
         }
+
+        &--no-submission {
+            text-align: center;
+        }
     }
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+// /* Handle */
+// ::-webkit-scrollbar-thumb {
+//   background: #ffffff;
+//   border-radius: 10px;
+// }
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(192, 192, 192);
+    border-radius: 10px;
 }

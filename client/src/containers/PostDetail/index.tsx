@@ -1,9 +1,9 @@
 import { Button, Card, CardContent, CardHeader, Divider, Grid, IconButton, Typography } from "@material-ui/core";
-import { Add, Assignment, Clear } from '@material-ui/icons';
+import { Add, Assignment, Clear, KeyboardArrowRight } from '@material-ui/icons';
 import { DropzoneDialog } from 'material-ui-dropzone';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import attachmentApi from "../../api/attachment.api";
 import commentApi from "../../api/comment.api";
@@ -12,7 +12,7 @@ import submissionApi from "../../api/submission.api";
 import CircularLoading from '../../components/Loading';
 import ContentPost from "../../components/Post/ContentPost";
 import { uploadBulk } from "../../configs/firebase";
-import { FolderName, ReferenceType, SubmissionType } from "../../constants";
+import { FolderName, ReferenceType, SubmissionType, TYPEROLE } from "../../constants";
 import { IComment, ICreateSubmission, IExerciseDetail, ISubmissionResponse } from '../../interfaces';
 import { ICreateAttachment } from "../../interfaces/attachment.interface";
 import { UPDATE_SUCCESS } from "../../messages";
@@ -25,6 +25,8 @@ import "./index.scss";
 
 const PostDetail = () => {
     const { courseId, postId } = useParams<{ courseId: string, postId: string }>();
+    const history = useHistory();
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [exercise, setExercise] = useState<IExerciseDetail | null>(null);
     const [submission, setSubmission] = useState<ISubmissionResponse | null>(null);
@@ -56,9 +58,9 @@ const PostDetail = () => {
         }
 
         getExercise(+courseId, +postId);
-        //if (member && member.currentRole?.role === TYPEROLE.STUDENT) {
-        getSubmission();
-        //}
+        if (member && member.currentRole?.role === TYPEROLE.STUDENT) {
+            getSubmission();
+        }
     }, [])
 
 
@@ -230,13 +232,16 @@ const PostDetail = () => {
         setOpenDialog(false);
     }
 
+    const handleToSubmission = () => {
+        history.push(`/course/${courseId}/post/${postId}/submission`);
+    }
     return (
         <>
             {(exercise && !isLoading) ?
                 <div className="post-detail">
                     <Grid container spacing={2}>
-                        <Grid item xs={8}>
-                            <Card>
+                        <Grid item xs={8} >
+                            <Card style={{ padding: "0.5rem" }}>
                                 <CardHeader
                                     action={
                                         <Typography >Hạn nộp: {getDateTimeFormat(exercise.deadline)}</Typography>
@@ -259,68 +264,18 @@ const PostDetail = () => {
                                 <ContentPost commentList={exercise.commentList} isHiddenComment={true} clickCreateComment={handleCreateComment} content={exercise.description} />
                             </Card>
                         </Grid>
-                        <Grid item xs={4}>
-                            <Card>
-                                <CardHeader
-                                    title="Bài tập của bạn"
-                                >
+                        {member && member.currentRole && member.currentRole.role === TYPEROLE.STUDENT ?
+                            <Grid item xs={4} >
+                                <Card >
+                                    <CardHeader
+                                        title="Bài tập của bạn"
+                                    >
 
-                                </CardHeader>
-                                <CardContent>
+                                    </CardHeader>
+                                    <CardContent>
 
-                                    {(!submission && spendingFile.length === 0) ?
-                                        <>
-                                            <Button
-                                                variant="outlined"
-                                                fullWidth
-                                                onClick={() => setOpenDialog(true)}
-                                                startIcon={
-                                                    <Add />
-                                                }
-                                            >
-                                                Nộp bài tập
-                                            </Button>
-                                            <Button
-                                                style={{ marginTop: "1rem" }}
-                                                variant="contained"
-                                                onClick={() => createSubmission([])}
-                                                fullWidth
-                                            >
-                                                Đánh dấu là đã nộp
-                                            </Button>
-                                        </>
-                                        :
-                                        <>
-                                            {
-                                                spendingFile.map((file, index) => {
-                                                    if (file.type !== fileState.DELETE)
-                                                        return (
-                                                            <div className="submission-file">
-                                                                <div className="submission-file___avatar">
-                                                                    <Assignment />
-                                                                </div>
-
-                                                                <div className="submission-file___title">
-                                                                    {file.file.name}
-                                                                </div>
-                                                                <div className="submission-file___action">
-                                                                    {
-
-                                                                        (!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) &&
-                                                                        <IconButton onClick={() => handleEditFile(index)}>
-                                                                            <Clear />
-                                                                        </IconButton>
-                                                                    }
-                                                                </div>
-
-                                                            </div>
-
-
-                                                        )
-                                                })
-                                            }
-
-                                            {(!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) &&
+                                        {(!submission && spendingFile.length === 0) ?
+                                            <>
                                                 <Button
                                                     variant="outlined"
                                                     fullWidth
@@ -329,47 +284,113 @@ const PostDetail = () => {
                                                         <Add />
                                                     }
                                                 >
-                                                    Thêm mới
+                                                    Nộp bài tập
                                                 </Button>
-                                            }
-                                            {(!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) ?
                                                 <Button
-                                                    fullWidth
-                                                    variant="contained"
-                                                    onClick={handleSubmitAttachment}
-                                                    style={{ marginTop: "1rem", backgroundColor: "rgb(3, 169, 244)" }}
-
-                                                > Nộp bài</Button>
-                                                :
-                                                <Button
-                                                    fullWidth
-                                                    variant="contained"
-                                                    onClick={() => {
-                                                        handleUpdateStatusSubmission(SubmissionType.CANCELLED)
-
-                                                    }}
                                                     style={{ marginTop: "1rem" }}
+                                                    variant="contained"
+                                                    onClick={() => createSubmission([])}
+                                                    fullWidth
+                                                >
+                                                    Đánh dấu là đã nộp
+                                                </Button>
+                                            </>
+                                            :
+                                            <>
+                                                {
+                                                    spendingFile.map((file, index) => {
+                                                        if (file.type !== fileState.DELETE)
+                                                            return (
+                                                                <div className="submission-file">
+                                                                    <div className="submission-file___avatar">
+                                                                        <Assignment />
+                                                                    </div>
 
-                                                > Hủy nộp bài</Button>
-                                            }
-                                        </>
+                                                                    <div className="submission-file___title">
+                                                                        {file.file.name}
+                                                                    </div>
+                                                                    <div className="submission-file___action">
+                                                                        {
+
+                                                                            (!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) &&
+                                                                            <IconButton onClick={() => handleEditFile(index)}>
+                                                                                <Clear />
+                                                                            </IconButton>
+                                                                        }
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                            )
+                                                    })
+                                                }
+
+                                                {(!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) &&
+                                                    <Button
+                                                        variant="outlined"
+                                                        fullWidth
+                                                        onClick={() => setOpenDialog(true)}
+                                                        startIcon={
+                                                            <Add />
+                                                        }
+                                                    >
+                                                        Thêm mới
+                                                    </Button>
+                                                }
+                                                {(!isSubmitted || (submission?.type === SubmissionType.CANCELLED)) ?
+                                                    <Button
+                                                        fullWidth
+                                                        variant="contained"
+                                                        onClick={handleSubmitAttachment}
+                                                        style={{ marginTop: "1rem", backgroundColor: "rgb(3, 169, 244)" }}
+
+                                                    > Nộp bài</Button>
+                                                    :
+                                                    <Button
+                                                        fullWidth
+                                                        variant="contained"
+                                                        onClick={() => {
+                                                            handleUpdateStatusSubmission(SubmissionType.CANCELLED)
+
+                                                        }}
+                                                        style={{ marginTop: "1rem" }}
+
+                                                    > Hủy nộp bài</Button>
+                                                }
+                                            </>
+                                        }
+                                        <DropzoneDialog
+                                            open={openDialog}
+                                            onSave={handleSave}
+                                            acceptedFiles={[]}
+                                            showPreviews={true}
+                                            maxFileSize={5000000}
+                                            onClose={handleClose}
+                                            submitButtonText="Tải lên"
+                                            dialogTitle="Tải tệp lên"
+                                            cancelButtonText="Hủy bỏ"
+                                            dropzoneText="Kéo thả vào để tải tệp lên"
+                                        />
+
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+
+                            :
+                            <Grid item xs={4}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    endIcon={<KeyboardArrowRight />}
+                                    onClick={
+                                        handleToSubmission
                                     }
-                                    <DropzoneDialog
-                                        open={openDialog}
-                                        onSave={handleSave}
-                                        acceptedFiles={[]}
-                                        showPreviews={true}
-                                        maxFileSize={5000000}
-                                        onClose={handleClose}
-                                        submitButtonText="Tải lên"
-                                        dialogTitle="Tải tệp lên"
-                                        cancelButtonText="Hủy bỏ"
-                                        dropzoneText="Kéo thả vào để tải tệp lên"
-                                    />
-
-                                </CardContent>
-                            </Card>
-                        </Grid>
+                                >
+                                    Bài tập của học viên
+                                </Button>
+                            </Grid>
+                        }
                     </Grid>
                 </div>
                 :

@@ -1,4 +1,4 @@
-import { serializeAttachment, serializeComment, ICreateAttachment } from ".";
+import { ICreateAttachment, serializeAttachment, serializeComment } from ".";
 
 export interface ICreateSubmission {
     type?: string,
@@ -21,4 +21,25 @@ export const serializeSubmissionDetail = (model: any) => {
         attachmentList: model.attachmentList ? model.attachmentList.map(serializeAttachment) : [],
         commentList: model.commentList ? model.commentList.map(serializeComment) : [],
     }
+}
+
+export const serializeSubmissionSummary = (model: any) => {
+    return {
+        id: model.id,
+        type: model.type,
+        user: {
+            id: model.user.id,
+            firstName: model.user.firstName,
+            lastName: model.user.lastName,
+            avatarUrl: model.user.avatarUrl,
+            email: model.user.email,
+        },
+        updatedAt: model.updatedAt,
+        score: model.score,
+    }
+}
+
+export const serializeSubmissionList = (modelList: any) => {
+
+    return modelList.map(serializeSubmissionSummary)
 }
