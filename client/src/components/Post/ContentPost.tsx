@@ -1,15 +1,14 @@
 import { Avatar, Button, CardContent, CardHeader, Divider, Grid, IconButton, TextField, Typography } from "@material-ui/core";
 import { People, Send } from "@material-ui/icons";
 import { convertFromRaw, EditorState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
 import React, { useState } from "react";
-import { IComment, ICommentResponse } from "../../interfaces";
+import { Editor } from "react-draft-wysiwyg";
 import { useSelector } from "react-redux";
+import { ICommentResponse } from "../../interfaces";
 import { AppState } from "../../reducers";
 import Comment from "../Comment";
-import { ReferenceType } from "../../constants";
-
 import "./index.scss";
+
 
 interface IProps {
     commentList: ICommentResponse[],

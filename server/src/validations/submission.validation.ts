@@ -37,6 +37,21 @@ export class SubmissionValidation {
         })
     }
 
+    public getSubmissionDetail = () => {
+        return Joi.object().keys({
+            params: {
+                submissionId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ),
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                )
+            }
+        })
+    }
+
     public CreateSubmission = () => {
         return Joi.object().keys({
             params: {

@@ -14,6 +14,7 @@ export interface ISubmissionResponse {
     exerciseId: number,
     attachmentList: IAttachmentResponse[],
     commentList: ICommentResponse[],
+    updatedAt: Date;
 }
 
 export interface ISubmissionSummary {

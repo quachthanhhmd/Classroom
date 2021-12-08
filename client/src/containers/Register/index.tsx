@@ -67,7 +67,7 @@ const Register = () => {
                     Đăng Ký | EClassroom
                 </title>
             </Helmet>
-      
+
             <CardHeader className={classes.header} title="Đăng Ký" />
 
             <CardContent>
@@ -154,6 +154,17 @@ const Register = () => {
                             Giới tính
                         </InputLabel>
                         <Select
+                            MenuProps={{
+                                anchorOrigin: {
+                                    vertical: "bottom",
+                                    horizontal: "left"
+                                },
+                                transformOrigin: {
+                                    vertical: "top",
+                                    horizontal: "left"
+                                },
+                                getContentAnchorEl: null
+                            }}
                             id="signup_gender"
                             native
 

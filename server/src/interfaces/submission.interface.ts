@@ -1,4 +1,4 @@
-import { ICreateAttachment, serializeAttachment, serializeComment } from ".";
+import { serializeAttachment, serializeComment, ICreateAttachment } from ".";
 
 export interface ICreateSubmission {
     type?: string,
@@ -20,6 +20,7 @@ export const serializeSubmissionDetail = (model: any) => {
         exerciseId: model.exerciseId,
         attachmentList: model.attachmentList ? model.attachmentList.map(serializeAttachment) : [],
         commentList: model.commentList ? model.commentList.map(serializeComment) : [],
+        updatedAt: model.updatedAt,
     }
 }
 

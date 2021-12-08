@@ -23,7 +23,7 @@ const Authenticate = () => {
 
     const dispatch = useDispatch();
     const auth = useSelector((state: AppState) => state.auth);
-    const themeMode = useSelector((state: AppState) => state.themeMode!.toggleMode);
+    const themeMode = useSelector((state: AppState) => state.themeMode.toggleMode);
     const history = useHistory();
 
     useEffect(() => {

@@ -21,10 +21,18 @@ class SubmissionRoute {
         this.router.get(
             "/course/:courseId/exercise/:exerciseId",
             this._authenticate.authenticate(),
-            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._validation.getSubmission),
             this._controller.getSubmission
 
+        )
+
+        this.router.get(
+            "/:submissionId/course/:courseId",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
+            validate(this._validation.getSubmissionDetail),
+            this._controller.getSubmissionDetail
         )
 
         this.router.get(
@@ -34,6 +42,7 @@ class SubmissionRoute {
             validate(this._validation.getAllSubmission),
             this._controller.getAllSubmission
         )
+
         this.router.post(
             "/course/:courseId/exercise/:exerciseId",
             this._authenticate.authenticate(),

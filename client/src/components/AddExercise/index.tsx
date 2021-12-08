@@ -65,10 +65,10 @@ const AddExercise = (props: IPropsType) => {
         onClose();
         let newData = { ...data, topic };
         if (editorState.getCurrentContent().hasText()) {
-            newData = { ...newData, description: JSON.stringify(convertToRaw(editorState.getCurrentContent()))};
+            newData = { ...newData, description: JSON.stringify(convertToRaw(editorState.getCurrentContent())) };
         }
 
-      
+
         if (inputValue && inputValue > new Date()) {
             newData = { ...newData, deadline: inputValue };
         }
@@ -150,6 +150,17 @@ const AddExercise = (props: IPropsType) => {
                                                     <FormControl variant="standard" fullWidth>
                                                         <InputLabel id="uncontrolled-native-topic">Chủ đề</InputLabel>
                                                         <Select
+                                                            MenuProps={{
+                                                                anchorOrigin: {
+                                                                    vertical: "bottom",
+                                                                    horizontal: "left"
+                                                                },
+                                                                transformOrigin: {
+                                                                    vertical: "top",
+                                                                    horizontal: "left"
+                                                                },
+                                                                getContentAnchorEl: null
+                                                            }}
                                                             label="Chủ đề"
                                                             value={topic.id}
                                                             onChange={(e) => setTopic({ id: Number(e.target.value), topic: topic.topic })}
@@ -192,6 +203,17 @@ const AddExercise = (props: IPropsType) => {
                                                 <FormControl variant="standard" fullWidth>
                                                     <InputLabel id="uncontrolled-native-grade-structure">Phân loại</InputLabel>
                                                     <Select
+                                                        MenuProps={{
+                                                            anchorOrigin: {
+                                                                vertical: "bottom",
+                                                                horizontal: "left"
+                                                            },
+                                                            transformOrigin: {
+                                                                vertical: "top",
+                                                                horizontal: "left"
+                                                            },
+                                                            getContentAnchorEl: null
+                                                        }}
                                                         label="Phân loại"
                                                         {...register("typeId")}
                                                         variant="standard" labelId="uncontrolled-native-grade-structure"
@@ -212,20 +234,20 @@ const AddExercise = (props: IPropsType) => {
                                             <Divider />
                                             <Box sx={{ minWidth: 120 }} className="exercise___option">
                                                 <FormControl fullWidth>
-                                              
-                                                        <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
-                                                            <KeyboardDateTimePicker
-                                                                variant="inline"
-                                                                ampm={false}
-                                                                label="Hạn nộp"
-                                                                value={inputValue}
 
-                                                                onChange={(newDate: any) => setInputValue(newDate)}
-                                                                disablePast
-                                                            //rifmFormatter={dateFormatter}
-                                                            />
-                                                        </MuiPickersUtilsProvider >
-                                                 
+                                                    <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+                                                        <KeyboardDateTimePicker
+                                                            variant="inline"
+                                                            ampm={false}
+                                                            label="Hạn nộp"
+                                                            value={inputValue}
+
+                                                            onChange={(newDate: any) => setInputValue(newDate)}
+                                                            disablePast
+                                                        //rifmFormatter={dateFormatter}
+                                                        />
+                                                    </MuiPickersUtilsProvider >
+
                                                 </FormControl>
                                             </Box>
                                         </Card>

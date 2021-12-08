@@ -30,6 +30,7 @@ export class SubmissionController {
             return res.composer.otherException(err);
         }
     }
+
     public createNewSubmission = async (
         req: IAuthorizeRequest,
         res: IResponse,
@@ -55,6 +56,26 @@ export class SubmissionController {
         }
     }
 
+    public getSubmissionDetail = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const submissionId = +req.params.submissionId;
+
+            const submission = await this._submissionService.findSubmissionById(submissionId);
+
+            if (!submission) return res.composer.success();
+            const attachmentList =
+                await this._attachmentService.findAllAttachment(ReferenceType.SUBMISSION, submission.id)
+
+            return res.composer.success(serializeSubmissionDetail({ ...submission, attachmentList }))
+        } catch (err) {
+            console.log(err);
+
+            return res.composer.otherException(err);
+        }
+    }
     public getSubmission = async (
         req: IAuthorizeRequest,
         res: IResponse

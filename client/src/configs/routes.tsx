@@ -19,6 +19,7 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 const InviteByToken = lazy(() => import("../components/InviteByToken"));
 const PostDetail = lazy(() => import("../containers/PostDetail"));
 const SubmissionManage = lazy(() => import("../containers/SubmissionManage"));
+const Marking = lazy(() => import("../containers/Marking"));
 
 type IRoute = {
     path: string,
@@ -156,15 +157,21 @@ const courseRouteList = [
     },
     {
         path: ROUTES.detail,
-        exact: false,
+        exact: true,
         auth: true,
         main: () => <PostDetail />
     },
     {
         path: ROUTES.submission,
-        exact: false,
+        exact: true,
         auth: true,
         main: () => <SubmissionManage/>
+    },
+    {
+        path: ROUTES.mark,
+        exact: true,
+        auth: true,
+        main: () => <Marking />
     }
 ]
 

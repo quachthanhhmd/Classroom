@@ -237,6 +237,17 @@ const ProfileUser = (props: IOpenModal) => {
                                             Giới tính
                                         </InputLabel>
                                         <Select
+                                         MenuProps={{
+                                            anchorOrigin: {
+                                              vertical: "bottom",
+                                              horizontal: "left"
+                                            },
+                                            transformOrigin: {
+                                              vertical: "top",
+                                              horizontal: "left"
+                                            },
+                                            getContentAnchorEl: null
+                                          }}
                                             id="signup_gender"
                                             native
 

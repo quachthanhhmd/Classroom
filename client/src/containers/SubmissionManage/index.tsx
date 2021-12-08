@@ -1,5 +1,5 @@
 import { Avatar, Button, Card, CardContent, CardHeader, Checkbox, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField, Typography } from '@material-ui/core';
-import { EmailSharp, People, Search, Settings, KeyboardArrowLeft } from '@material-ui/icons';
+import { EmailSharp, KeyboardArrowLeft, People, Search, Settings } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import submissionApi from '../../api/submission.api';
@@ -85,7 +85,7 @@ const SubmissionManage = () => {
 
         getAllSubmission();
 
-    }, [studentList.length])
+    }, [studentList.length, checkedList, courseId, postId])
 
 
 
@@ -192,212 +192,234 @@ const SubmissionManage = () => {
                         </div>
                     </CardContent>
 
-         
-                        <Grid container spacing={2} className="manage-main___content" style={{paddingTop: "0.5rem"}}>
-                            <Grid item xs={4}
-                                style={{ borderRight: "1px solid #cacaca" }}
+
+                    <Grid container spacing={2} className="manage-main___content" style={{ paddingTop: "0.5rem" }}>
+                        <Grid item xs={4}
+                            style={{ borderRight: "1px solid #cacaca" }}
+                        >
+                            <div
+                                className="manage-main___content--manager"
                             >
-                                <div
-                                    className="manage-main___content--manager"
-                                >
-                                    <TextField
-                                        fullWidth
-                                        variant="outlined" size="small"
-                                        onKeyPress={(ev) => {
-                                            if (ev.key === 'Enter') {
-                                                // Do code here
-                                                ev.preventDefault();
-                                                handleSearchName(ev)
-                                            }
-                                        }}
-                                        onChange={(e) => handleSearchName(e)}
-                                        value={searchString}
-                                        label="Tìm kiếm học sinh"
-                                        InputProps={{
-                                            endAdornment: (
-                                                <IconButton onClick={(e) => handleSearchName(e)}>
-                                                    <Search />
-                                                </IconButton>
-                                            )
-                                        }}
-                                    />
-                                    <FormControl variant="standard" className="manage-main___content--manager--dropdown">
-                                        <InputLabel id="uncontrolled-native-topic">Chủ đề</InputLabel>
-                                        <Select
-                                            value={sortType}
-                                            defaultValue={3}
-                                            onChange={(e) => {
-                                                setSortType(Number(e.target.value));
-                                                sortStudent();
-                                            }}
-                                            variant="standard" labelId="uncontrolled-native-topic">
-                                            <MenuItem className="manage-main___content--manager--dropdown--option"
-                                                key="sort-firstName"
-                                                value={1}
-                                            >
-
-                                                Sắp xếp theo họ
-
-                                            </MenuItem>
-                                            <MenuItem className="manage-main___content--manager--dropdown--option"
-                                                key="sort-latName"
-                                                value={2}
-                                            >
-
-                                                Sắp xếp theo tên
-
-                                            </MenuItem>
-                                            <MenuItem className="manage-main___content--manager--dropdown--option"
-                                                key="sort-state"
-                                                value={3}>
-
-                                                Sắp xếp theo trạng thái
-
-                                            </MenuItem>
-                                        </Select>
-
-                                    </FormControl>
-                                </div>
-
-                                <div
-                                    className="manage-main___content--all"
-                                >
-                                    <Checkbox
-                                        onClick={handleCheckedAll}
-                                        checked={isCheckedAll} />
-                                    <Button
-                                        fullWidth
-                                        startIcon={
-                                            <People style={{ fontSize: "1.1rem" }} />
+                                <TextField
+                                    fullWidth
+                                    variant="outlined" size="small"
+                                    onKeyPress={(ev) => {
+                                        if (ev.key === 'Enter') {
+                                            // Do code here
+                                            ev.preventDefault();
+                                            handleSearchName(ev)
                                         }
-
-                                    >
-
-                                        Tất cả học viên
-                                    </Button>
-                                </div>
-                                <Divider />
-
-                                <div className="manage-main___content--all-student">
-                                    {searchData.map((student, index) => {
-
-                                        return (
-                                            <div key={`student-${index}`} className="manage-main___content--student">
-                                                <Checkbox
-                                                    edge="start"
-                                                    tabIndex={-1}
-                                                    disableRipple
-                                                    checked={checkedList[student.id] || false}
-                                                    onClick={() => {
-                                                        let newCheckedList = { ...checkedList };
-                                                        newCheckedList[student.id] = !checkedList[student.id];
-                                                        setCheckedList(newCheckedList);
-                                                    }} />
-                                                <Button
-                                                    fullWidth
-                                                    startIcon={
-                                                        <Avatar src={student.user.avatarUrl} style={{ fontSize: "1.1rem" }} />
-                                                    }
-                                                >
-                                                    {`${student.user.firstName} ${student.user.lastName}`}
-                                                </Button>
-                                            </div>
+                                    }}
+                                    onChange={(e) => handleSearchName(e)}
+                                    value={searchString}
+                                    label="Tìm kiếm học sinh"
+                                    InputProps={{
+                                        endAdornment: (
+                                            <IconButton onClick={(e) => handleSearchName(e)}>
+                                                <Search />
+                                            </IconButton>
                                         )
-                                    })}
-                                </div>
+                                    }}
+                                />
+                                <FormControl variant="standard" className="manage-main___content--manager--dropdown">
+                                    <InputLabel id="uncontrolled-native-topic">Chủ đề</InputLabel>
+                                    <Select
+                                        MenuProps={{
+                                            anchorOrigin: {
+                                                vertical: "bottom",
+                                                horizontal: "left"
+                                            },
+                                            transformOrigin: {
+                                                vertical: "top",
+                                                horizontal: "left"
+                                            },
+                                            getContentAnchorEl: null
+                                        }}
+                                        value={sortType}
+                                        defaultValue={3}
+                                        onChange={(e) => {
+                                            setSortType(Number(e.target.value));
+                                            sortStudent();
+                                        }}
+                                        variant="standard" labelId="uncontrolled-native-topic">
+                                        <MenuItem className="manage-main___content--manager--dropdown--option"
+                                            key="sort-firstName"
+                                            value={1}
+                                        >
 
-                            </Grid>
-                            <Grid item xs={8} style={{ overflow: "scroll", height: "80vh" }}>
-                                {studentList.length !== 0 ?
-                                    <>
-                                        <CardContent>
-                                            <Grid container spacing={2}>
-                                                <Grid item xs={5}>
-                                                    <Typography variant="h4" component="h1">Reactjs</Typography>
-                                                </Grid>
-                                                <Grid item xs={7} style={{ display: "inline" }}>
-                                                    <Button
-                                                        style={{ backgroundColor: "#33DCFF", marginRight: "1rem" }}
-                                                        variant="contained"
-                                                        onClick={() => setMarkType(SubmissionType.SUBMITTED)}
-                                                    >
-                                                        Đã nộp: {countTypeSubmission(SubmissionType.SUBMITTED)}
-                                                    </Button>
+                                            Sắp xếp theo họ
 
-                                                    <Button
-                                                        style={{ backgroundColor: "#33DCFF", marginRight: "1rem" }}
-                                                        variant="contained"
-                                                        onClick={() => setMarkType(SubmissionType.COMPLETED)}
-                                                    >
-                                                        Đã trả bài: {countTypeSubmission(SubmissionType.COMPLETED)}
-                                                    </Button>
-                                                    <Button
-                                                        style={{ backgroundColor: "#33DCFF" }}
-                                                        variant="contained"
-                                                        onClick={() => setMarkType(SubmissionType.SCORED)}
-                                                    >
-                                                        Đã chấm điểm: {countTypeSubmission(SubmissionType.SCORED)}
-                                                    </Button>
+                                        </MenuItem>
+                                        <MenuItem className="manage-main___content--manager--dropdown--option"
+                                            key="sort-latName"
+                                            value={2}
+                                        >
 
+                                            Sắp xếp theo tên
 
-                                                </Grid>
-                                            </Grid>
-                                            <FormControl variant="standard" style={{ width: "20%" }}>
-                                                <InputLabel id="uncontrolled-native-topic">Chủ đề</InputLabel>
-                                                <Select
-                                                    value={markType}
-                                                    defaultValue={1}
-                                                    onChange={(e) => handleChangeSubmission(e)}
-                                                    variant="standard" labelId="uncontrolled-native-topic">
-                                                    <MenuItem className="manage-main___content--manager--dropdown--option"
-                                                        key="all-state"
-                                                        value={"all"}
-                                                    >
-                                                        Tất cả
-                                                    </MenuItem>
-                                                    <MenuItem className="manage-main___content--manager--dropdown--option"
-                                                        key="submitted-state"
-                                                        value={SubmissionType.SUBMITTED}
-                                                    >
-                                                        Đã nộp
-                                                    </MenuItem>
-                                                    <MenuItem className="manage-main___content--manager--dropdown--option"
-                                                        key="completed-state"
-                                                        value={SubmissionType.COMPLETED}>
+                                        </MenuItem>
+                                        <MenuItem className="manage-main___content--manager--dropdown--option"
+                                            key="sort-state"
+                                            value={3}>
 
-                                                        Đã trả bài
+                                            Sắp xếp theo trạng thái
 
-                                                    </MenuItem>
-                                                    <MenuItem className="manage-main___content--manager--dropdown--option"
-                                                        key="state-scored"
-                                                        value={SubmissionType.SCORED}>
+                                        </MenuItem>
+                                    </Select>
 
-                                                        Đã chấm điểm
+                                </FormControl>
+                            </div>
 
-                                                    </MenuItem>
-                                                </Select>
+                            <div
+                                className="manage-main___content--all"
+                            >
+                                <Checkbox
+                                    onClick={handleCheckedAll}
+                                    checked={isCheckedAll} />
+                                <Button
+                                    fullWidth
+                                    startIcon={
+                                        <People style={{ fontSize: "1.1rem" }} />
+                                    }
 
-                                            </FormControl>
+                                >
 
-                                        </CardContent>
+                                    Tất cả học viên
+                                </Button>
+                            </div>
+                            <Divider />
 
-                                        {
-                                            studentList.map(student => {
-                                                if (markType === "all" || student.type === markType)
-                                                    return <ContainerSubmission student={student} />
-                                            })
-                                        }
-                                    </>
-                                    :
-                                    <Typography component="div" variant="h4" className="manage-main___content--no-submission">
-                                        Hiện chưa có thành viên nào nộp bài tập
-                                    </Typography>
-                                }
-                            </Grid>
+                            <div className="manage-main___content--all-student">
+                                {searchData.map((student, index) => {
+
+                                    return (
+                                        <div key={`student-${index}`} className="manage-main___content--student">
+                                            <Checkbox
+                                                edge="start"
+                                                tabIndex={-1}
+                                                disableRipple
+                                                checked={checkedList[student.id] || false}
+                                                onClick={() => {
+                                                    let newCheckedList = { ...checkedList };
+                                                    newCheckedList[student.id] = !checkedList[student.id];
+                                                    setCheckedList(newCheckedList);
+                                                }} />
+                                            <Button
+                                                fullWidth
+                                                startIcon={
+                                                    <Avatar src={student.user.avatarUrl} style={{ fontSize: "1.1rem" }} />
+                                                }
+                                            >
+                                                {`${student.user.firstName} ${student.user.lastName}`}
+                                            </Button>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+
                         </Grid>
+                        <Grid item xs={8} style={{ overflow: "scroll", height: "80vh" }}>
+                            {studentList.length !== 0 ?
+                                <>
+                                    <CardContent>
+                                        <Grid container spacing={2}>
+                                            <Grid item xs={5}>
+                                                <Typography variant="h4" component="h1">Reactjs</Typography>
+                                            </Grid>
+                                            <Grid item xs={7} style={{ display: "inline" }}>
+                                                <Button
+                                                    style={{ backgroundColor: "#33DCFF", marginRight: "1rem" }}
+                                                    variant="contained"
+                                                    onClick={() => setMarkType(SubmissionType.SUBMITTED)}
+                                                >
+                                                    Đã nộp: {countTypeSubmission(SubmissionType.SUBMITTED)}
+                                                </Button>
+
+                                                <Button
+                                                    style={{ backgroundColor: "#33DCFF", marginRight: "1rem" }}
+                                                    variant="contained"
+                                                    onClick={() => setMarkType(SubmissionType.COMPLETED)}
+                                                >
+                                                    Đã trả bài: {countTypeSubmission(SubmissionType.COMPLETED)}
+                                                </Button>
+                                                <Button
+                                                    style={{ backgroundColor: "#33DCFF" }}
+                                                    variant="contained"
+                                                    onClick={() => setMarkType(SubmissionType.SCORED)}
+                                                >
+                                                    Đã chấm điểm: {countTypeSubmission(SubmissionType.SCORED)}
+                                                </Button>
 
 
-           
+                                            </Grid>
+                                        </Grid>
+                                        <FormControl variant="standard" style={{ width: "20%" }}>
+                                            <InputLabel id="uncontrolled-native-topic">Chủ đề</InputLabel>
+                                            <Select
+                                                MenuProps={{
+                                                    anchorOrigin: {
+                                                        vertical: "bottom",
+                                                        horizontal: "left"
+                                                    },
+                                                    transformOrigin: {
+                                                        vertical: "top",
+                                                        horizontal: "left"
+                                                    },
+                                                    getContentAnchorEl: null
+                                                }}
+                                                value={markType}
+                                                defaultValue={1}
+                                                onChange={(e) => handleChangeSubmission(e)}
+                                                variant="standard" labelId="uncontrolled-native-topic">
+                                                <MenuItem className="manage-main___content--manager--dropdown--option"
+                                                    key="all-state"
+                                                    value={"all"}
+                                                >
+                                                    Tất cả
+                                                </MenuItem>
+                                                <MenuItem className="manage-main___content--manager--dropdown--option"
+                                                    key="submitted-state"
+                                                    value={SubmissionType.SUBMITTED}
+                                                >
+                                                    Đã nộp
+                                                </MenuItem>
+                                                <MenuItem className="manage-main___content--manager--dropdown--option"
+                                                    key="completed-state"
+                                                    value={SubmissionType.COMPLETED}>
+
+                                                    Đã trả bài
+
+                                                </MenuItem>
+                                                <MenuItem className="manage-main___content--manager--dropdown--option"
+                                                    key="state-scored"
+                                                    value={SubmissionType.SCORED}>
+
+                                                    Đã chấm điểm
+
+                                                </MenuItem>
+                                            </Select>
+
+                                        </FormControl>
+
+                                    </CardContent>
+
+                                    {
+                                        studentList.map(student => {
+                                            if (markType === "all" || student.type === markType)
+                                                return <ContainerSubmission student={student} />
+                                        })
+                                    }
+                                </>
+                                :
+                                <Typography component="div" variant="h4" className="manage-main___content--no-submission">
+                                    Hiện chưa có thành viên nào nộp bài tập
+                                </Typography>
+                            }
+                        </Grid>
+                    </Grid>
+
+
+
                 </Card>
                 : <CircularLoading />
             }

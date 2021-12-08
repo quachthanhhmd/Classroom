@@ -17,6 +17,10 @@ const submissionApi = {
     getAllInExercise: (courseId: number, exerciseId: number) => {
         const url = `/v1/submission/course/${courseId}/exercise/${exerciseId}/all`;
         return axiosClient.get<IHttpFormat<ISubmissionSummary[]>>(url);
+    },
+    getSubmissionDetail: (courseId: number, submissionId: number) => {
+        const url = `/v1/submission/${submissionId}/course/${courseId}`;
+        return axiosClient.get<IHttpFormat<ISubmissionResponse>>(url);
     }
 }
 

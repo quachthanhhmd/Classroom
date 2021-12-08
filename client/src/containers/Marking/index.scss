@@ -1,0 +1,93 @@
+.mark {
+    height: 87vh;
+    max-height: 87vh;
+
+    &___title {
+        padding: 0.5rem 1rem 0.5rem 1rem;
+        border-bottom: 1px solid #cacaca;
+    }
+
+    &___submit {
+        margin-left: 2rem;
+
+        &--button {
+            background-color: #1a73e8;
+        }
+    }
+
+    &___download {
+        align-items: center;
+        align-self: center;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        justify-content:center;
+        flex-direction: column;
+
+        &--text {
+          
+            font-size: 2rem;
+        }
+    }
+    &___preview {
+        > * {
+            height: 100%;
+        }
+        &___manager {
+            text-transform: none;
+            flex: 1;
+            justify-content: flex-start;
+            height: 3rem;
+            font-size: 1.2rem;
+
+            &___content {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                flex: 1;
+
+                &--title {
+                    width: 100%;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    align-items: center;
+                    align-self: center;
+                }
+            }
+        }
+    }
+    &___dropdown {
+        //width: 20rem;
+
+        &--menu {
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        &--item {
+            flex: 1;
+            padding: 0;
+            margin: 0;
+            height: 2.5rem;
+            display: flex;
+            justify-content: flex-start;
+            &--avatar {
+                padding: 0.1rem;
+                width: 15%;
+            }
+            &--name {
+                width: 50%;
+
+                text-align: left;
+                align-items: center;
+                align-self: center;
+            }
+            &--action {
+                flex: 1;
+                padding-right: 0.5rem;
+                text-align: right;
+            }
+        }
+    }
+}

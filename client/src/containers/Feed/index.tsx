@@ -83,7 +83,7 @@ const Feed = () => {
 
 
     useEffect(() => {
-        
+
         if (code) {
             dispatch(joinCourseByUrl(+courseId, code));
         }
@@ -294,18 +294,26 @@ const Feed = () => {
                                 }
                                 <Card className="feed-main___body___left--grade-structure">
                                     <CardHeader
-                                        title="Cấu trúc điểm"
-                                    />
-                                    <CardContent>
-                                        {
-                                            course && course.exerciseTypeList &&
-                                            course.exerciseTypeList.map((type, index) => (
-                                                <Typography>
-                                                    {`${type.name}: ${type.grade}`}
-                                                </Typography>
-                                            ))
+                                        title={<p className="feed-main___body___left--card-header">Cấu trúc điểm</p>}
+                                    >
+
+                                    </CardHeader>
+                                    <CardContent className="feed-main___body___left--deadline___content">
+                                        {course && course.exerciseTypeList && course.exerciseTypeList.length !== 0 ?
+                                            <>
+                                                {
+
+                                                    course.exerciseTypeList.map((type, index) => (
+                                                        <Typography>
+                                                            {`${type.name}: ${type.grade}`}
+                                                        </Typography>
+                                                    ))
 
 
+                                                }
+                                            </>
+                                            :
+                                            <Typography component="div" style={{ fontSize: "0.9rem", opacity: 0.8 }}>Giáo viên hiện chưa cập nhật cấu trúc điểm</Typography>
                                         }
                                     </CardContent>
                                 </Card>
@@ -316,19 +324,24 @@ const Feed = () => {
 
                                     </CardHeader>
                                     <CardContent className="feed-main___body___left--deadline___content">
-                                        {
-                                            deadlineList.map(exam => (
-                                                <div className="feed-main___body___left--deadline___content--item">
-                                                    <div className="feed-main___body___left--deadline___content--item___time">
-                                                        Đến hạn {getDayFormat(exam.deadline)} - {getTimeFormat(exam.deadline)}
-                                                    </div>
-                                                    <div className="feed-main___body___left--deadline___content--item___link">
-                                                        <Link to={`/course/${courseId}/post/${exam.id}/details`} className="feed-main___body___left--deadline___content--item___link--name overflow-text">
-                                                            {exam.title}
-                                                        </Link>
-                                                    </div>
-                                                </div>
-                                            ))
+                                        {deadlineList.length !== 0 ?
+                                            <>
+                                                {
+                                                    deadlineList.map(exam => (
+                                                        <div className="feed-main___body___left--deadline___content--item">
+                                                            <div className="feed-main___body___left--deadline___content--item___time">
+                                                                Đến hạn {getDayFormat(exam.deadline)} - {getTimeFormat(exam.deadline)}
+                                                            </div>
+                                                            <div className="feed-main___body___left--deadline___content--item___link">
+                                                                <Link to={`/course/${courseId}/post/${exam.id}/details`} className="feed-main___body___left--deadline___content--item___link--name overflow-text">
+                                                                    {exam.title}
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                }
+                                            </>
+                                            : <Typography component="div" style={{ fontSize: "0.9rem", opacity: 0.8 }}>Tuyệt vời, không có bài tập nào sắp đến hạn!</Typography>
                                         }
                                     </CardContent>
                                 </Card>
