@@ -1,18 +1,26 @@
-// export const formatDate = (date: Date | undefined) => {
-//     if (!date) return undefined;
-
-//     let month = '' + (date.getMonth() + 1);
-//     let day = '' + date.getDate();
-//     let year = date.getFullYear();
-
-//     if (month.length < 2)
-//         month = '0' + month;
-//     if (day.length < 2)
-//         day = '0' + day;
-
-//     return [year, month, day].join('-');
-// }
-
+export function removeAccents(str) {
+    var AccentsMap = [
+      "aàảãáạăằẳẵắặâầẩẫấậ",
+      "AÀẢÃÁẠĂẰẲẴẮẶÂẦẨẪẤẬ",
+      "dđ", "DĐ",
+      "eèẻẽéẹêềểễếệ",
+      "EÈẺẼÉẸÊỀỂỄẾỆ",
+      "iìỉĩíị",
+      "IÌỈĨÍỊ",
+      "oòỏõóọôồổỗốộơờởỡớợ",
+      "OÒỎÕÓỌÔỒỔỖỐỘƠỜỞỠỚỢ",
+      "uùủũúụưừửữứự",
+      "UÙỦŨÚỤƯỪỬỮỨỰ",
+      "yỳỷỹýỵ",
+      "YỲỶỸÝỴ"    
+    ];
+    for (var i=0; i<AccentsMap.length; i++) {
+      var re = new RegExp('[' + AccentsMap[i].substr(1) + ']', 'g');
+      var char = AccentsMap[i][0];
+      str = str.replace(re, char);
+    }
+    return str;
+  }
 export const getDateFormat = (date: Date) => {
     
     const newDate = new Date(date);
