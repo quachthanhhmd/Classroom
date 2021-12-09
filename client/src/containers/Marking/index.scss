@@ -2,6 +2,13 @@
     height: 87vh;
     max-height: 87vh;
 
+    &___manage {
+        height: 76vh;
+        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+
     &___title {
         padding: 0.5rem 1rem 0.5rem 1rem;
         border-bottom: 1px solid #cacaca;
@@ -21,11 +28,10 @@
         height: 100%;
         width: 100%;
         display: flex;
-        justify-content:center;
+        justify-content: center;
         flex-direction: column;
 
         &--text {
-          
             font-size: 2rem;
         }
     }
@@ -90,4 +96,22 @@
             }
         }
     }
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+    background: #ffffff;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(192, 192, 192);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(192, 192, 192);
+    border-radius: 10px;
 }

@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { ICommentResponse } from "../../interfaces";
 import { AppState } from "../../reducers";
 import Comment from "../Comment";
-import "./index.scss";
 
 
 interface IProps {

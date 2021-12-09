@@ -13,12 +13,18 @@ import { isEmpty } from '../../utils/object-solve';
 import "./index.scss";
 
 
-const ContainerSubmission = (props: { student: ISubmissionSummary }) => {
-    const { student } = props;
+const ContainerSubmission = (props: {courseId: string, postId: string, student: ISubmissionSummary }) => {
+    const { student, courseId, postId } = props;
+    const history = useHistory();
 
+    const handleRedirect = () => {
+        history.push(`/course/${courseId}/post/${postId}/marking`)
+    }
 
     return (
-        <Button style={{ textTransform: "none" }}>
+        <Button
+            onClick={handleRedirect}
+        style={{ textTransform: "none" }}>
             <Card variant="elevation" style={{ width: "100%", height: "7rem" }} >
 
                 <CardHeader
@@ -406,7 +412,7 @@ const SubmissionManage = () => {
                                     {
                                         studentList.map(student => {
                                             if (markType === "all" || student.type === markType)
-                                                return <ContainerSubmission student={student} />
+                                                return <ContainerSubmission postId={postId} courseId={courseId}  student={student} />
                                         })
                                     }
                                 </>

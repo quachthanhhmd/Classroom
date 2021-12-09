@@ -5,6 +5,7 @@ import {
 import {
     Event, Menu as MenuIcon
 } from "@material-ui/icons";
+import { withStyles } from "@material-ui/core/styles";
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -20,14 +21,23 @@ import "./index.scss";
 const LinkTab: React.ComponentType<TabProps & LinkProps> = Tab as React.ComponentType<TabProps & LinkProps>;
 
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
-const TYPE_PILL_FEED = "TYPE_PILL_FEED";
-const TYPE_PILL_EXAM = "TYPE_PILL_EXAM";
-const TYPE_PILL_MEMBER = "TYPE_PILL_MEMBER";
 
 interface ParamTypes {
     courseId: string,
 }
+
+const useStyles = withStyles({
+    root: {
+        minWidth: 200, // a number of your choice
+        width: 200, // a number of your choice
+    }
+});
+
+
 const Header = () => {
+    const classes = useStyles();
+
+
     const { courseId } = useParams<ParamTypes>();
     const styleScroll = useScrollHook();
     const [typePill, setTypePill] = useState<number>(0);
@@ -41,12 +51,15 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState("");
 
+ 
+
     useEffect(() => {
         window.location.pathname.includes("course") && setTypePill(0);
 
         window.location.pathname.includes("exercise") && setTypePill(1);
         window.location.pathname.includes("structure") && setTypePill(2);
         window.location.pathname.includes("member") && setTypePill(3);
+        window.location.pathname.includes("grade") && setTypePill(4);
 
     }, [window.location.pathname])
 
@@ -113,21 +126,20 @@ const Header = () => {
                         onChange={handleChangePill}
                         TabIndicatorProps={{ style: { background: 'white' } }}
                         textColor="inherit"
-
-                        // textColor="secondary"
+                        //style={{ width: "80%" }}
                         centered
-                    // style={navStyle}
                     >
-                        <LinkTab label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
+                        <LinkTab style={{ width: "5rem" }} label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
 
                         </LinkTab>
 
                         {member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
                             <>
-                                <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to={`/exercise/${courseId}`} />                               <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+                                <LinkTab style={{ width: "5rem" }} label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to={`/exercise/${courseId}`} />                               <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
                             </>
                         }
-                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
+                        <LinkTab style={{ width: "5rem" }} label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
+                        <LinkTab style={{ width: "5rem" }} label="Số điểm" component={Link} className={`${typePill === 4 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
                     </Tabs>
 
                 </div>

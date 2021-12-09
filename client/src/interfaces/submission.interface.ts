@@ -9,7 +9,7 @@ export interface ICreateSubmission {
 export interface ISubmissionResponse {
     id: number,
     type: string,
-    score: number,
+    score?: number,
     userId: number,
     exerciseId: number,
     attachmentList: IAttachmentResponse[],
@@ -28,5 +28,5 @@ export interface ISubmissionSummary {
         email: string,
     },
     updatedAt: Date,
-    score: Date,
+    score?: number,
 }

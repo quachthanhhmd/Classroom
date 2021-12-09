@@ -54,7 +54,7 @@ class SubmissionRoute {
         this.router.patch(
             "/:submissionId/course/:courseId",
             this._authenticate.authenticate(),
-            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._validation.UpdateSubmission),
             this._controller.updateSubmission
         )
@@ -63,9 +63,10 @@ class SubmissionRoute {
             "/:submissionId/course/:courseId/score",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
-            validate(this._validation.UpdateScore),
-            this._controller.updateSubmission
+            // validate(this._validation.UpdateScore),
+            this._controller.updateScore
         )
+
     }
 }
 

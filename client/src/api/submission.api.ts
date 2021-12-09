@@ -1,3 +1,4 @@
+import { SubmissionType } from "../constants";
 import { ICreateSubmission, IHttpFormat, ISubmissionResponse, ISubmissionSummary } from "../interfaces";
 import axiosClient from "./axios.client";
 
@@ -21,6 +22,10 @@ const submissionApi = {
     getSubmissionDetail: (courseId: number, submissionId: number) => {
         const url = `/v1/submission/${submissionId}/course/${courseId}`;
         return axiosClient.get<IHttpFormat<ISubmissionResponse>>(url);
+    },
+    updateScore: (courseId: number, submissionId: number, data: {type?: SubmissionType, score?: number}) => {
+        const url = `/v1/submission/${submissionId}/course/${courseId}/score`;
+        return axiosClient.patch<IHttpFormat<ISubmissionResponse>>(url, data);
     }
 }
 

@@ -101,7 +101,8 @@ export class SubmissionValidation {
                 ).required(),
             },
             body: {
-                score: Joi.number().required(),
+                score: Joi.number(),
+                type: Joi.string(),
             }
         })
     }

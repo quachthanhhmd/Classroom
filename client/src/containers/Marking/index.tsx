@@ -1,35 +1,19 @@
 import { Avatar, Button, Card, CardContent, CardHeader, Divider, FormControl, Grid, IconButton, InputAdornment, MenuItem, Select, TextField, Typography } from "@material-ui/core";
-import { KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, AttachFile, CloudDownload } from "@material-ui/icons";
+import { KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, AttachFile, CloudDownload, Send } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import "./index.scss";
 import submissionApi from "../../api/submission.api";
 import { useParams } from "react-router";
 import { ISubmissionResponse, ISubmissionSummary } from "../../interfaces";
 import { openInNewTab } from "../../utils/mail";
-
-
-interface IAttachment {
-    id: number,
-    url: string,
-}
-
-const attachmentListDefault = [
-    {
-        id: 1,
-        url: "https://drive.google.com/open?id=1oyjFtw6TBlWllaAPI9oNrYiZ5f64DX8c&authuser=0",
-        name: "abcd",
-    },
-    {
-        id: 2,
-        url: "https://drive.google.com/open?id=1exH05uXXjfxKfnIvLtiRSeevME1Yyj8R&authuser=0",
-        name: "eeee",
-    },
-    {
-        id: 3,
-        url: "https://drive.google.com/open?id=1YbnFpon6BPQOxvu2ePDDiR7hksfT8Shc&authuser=0",
-        name: "fffffd",
-    }
-]
+import { SCORED_FAIL, SCORED_SUCCESS, SubmissionMessage } from "../../messages";
+import { ReferenceType, SubmissionType } from "../../constants";
+import { useDispatch, useSelector } from "react-redux";
+import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
+import { Helmet } from "react-helmet";
+import Comment from "../../components/Comment";
+import { AppState } from "../../reducers";
+import commentApi from "../../api/comment.api";
 
 
 const StudentItem = (props: { student: ISubmissionSummary }) => {
@@ -47,10 +31,10 @@ const StudentItem = (props: { student: ISubmissionSummary }) => {
             </div>
             <div className="mark___dropdown--item--action">
                 <Typography style={{ fontSize: "0.9rem" }}>
-                    {student.score}/100
+                    {student.score}/10
                 </Typography>
                 <Typography style={{ fontSize: "0.9rem", fontStyle: "italic", opacity: "0.8" }}>
-                    {student.score ? student.score : "Chưa chấm điểm"}
+                    {SubmissionMessage[student.type]}
                 </Typography>
             </div>
         </div>
@@ -60,13 +44,17 @@ const StudentItem = (props: { student: ISubmissionSummary }) => {
 
 const Marking = () => {
     const { postId, courseId } = useParams<{ courseId: string, postId: string }>();
-    const [attachmentList, setAttachmentList] = useState(attachmentListDefault);
+    const dispatch = useDispatch();
+    const auth = useSelector((state: AppState) => state.auth);
+    const [comment, setComment] = useState<string>("");
+
     const [submissionView, setSubmissionView] = useState<number>(-1);
     const [submissionDetail, setSubmissionDetail] = useState<ISubmissionResponse | null>(null);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [studentList, setStudentList] = useState<ISubmissionSummary[]>([]);
 
+    const [score, setScore] = useState<string>("");
 
     useEffect(() => {
 
@@ -98,7 +86,6 @@ const Marking = () => {
                 const res = await submissionApi.getSubmissionDetail(+courseId, id);
 
                 if (!res || res.status !== 200) return;
-                console.log(res.data.payload)
                 setSubmissionDetail(res.data.payload);
 
             } catch (err) {
@@ -112,25 +99,92 @@ const Marking = () => {
                     getSubmissionDetail(studentList[0].id);
                 }
                 else {
+
                     getSubmissionDetail(studentList[submissionView].id);
                 }
             }
+            setComment("");
         }
     }, [submissionView])
 
+
+    const handleReturnSubmission = async () => {
+        if (!submissionDetail || typeof submissionDetail.score === "undefined") return;
+
+        try {
+            const res = await submissionApi.updateScore(+courseId, submissionDetail.id, { type: SubmissionType.SCORED, score: submissionDetail.score });
+
+            if (!res || res.status !== 200) throw new Error();
+
+            dispatch(showSuccessNotify(SCORED_SUCCESS));
+
+        } catch (err) {
+            dispatch(showErrorNotify(SCORED_FAIL))
+        }
+    }
+
     const handleChangeScore = (score: string) => {
 
-        if (Number(score) !== undefined && submissionDetail) {
-            const newSubmission: ISubmissionResponse = { ...submissionDetail };
-            newSubmission.score = +score;
+        const setScore = (grade: number | undefined) => {
+            const newSubmission: ISubmissionResponse = { ...submissionDetail! };
+            newSubmission.score = grade;
 
             setSubmissionDetail(newSubmission);
-        }
 
+            const newStudentList = [...studentList];
+            newStudentList[submissionView].score = grade;
+
+            setStudentList(newStudentList);
+        }
+        if (score === "") {
+            setScore(undefined);
+            return;
+        }
+        if (Number(score) && Number(score) <= 10 && Number(score) >= 0 && submissionDetail) {
+            setScore(Number(score));
+        }
     }
-    console.log(submissionDetail);
+    const handleArrowLeft = () => {
+        if (submissionView === 0) return;
+        setSubmissionView(submissionView - 1);
+    }
+
+    const handleArrowRight = () => {
+        if (submissionView === studentList.length - 1) {
+            return;
+        }
+        setSubmissionView(submissionView + 1);
+    }
+
+    const handleSubmitComment = async () => {
+
+        if (!submissionDetail || !comment) return;
+
+        try {
+            const res = await commentApi.createNewComment({
+                refType: ReferenceType.SUBMISSION,
+                refId: submissionDetail.id,
+                content: comment,
+            })
+
+            if (!res || res.status !== 200) throw new Error();
+
+            const newSubmission = { ...submissionDetail };
+            newSubmission.commentList.push(res.data.payload);
+
+            setSubmissionDetail(newSubmission);
+        } catch (err) {
+
+        }
+    }
+
     return (
         <>
+            <Helmet>
+                <title>
+                    Chấm điểm | EClassroom
+                </title>
+            </Helmet>
             {submissionDetail &&
                 <Card className="mark">
                     <Grid className="mark___title" container spacing={2}>
@@ -139,6 +193,11 @@ const Marking = () => {
                                 <Select
                                     displayEmpty
                                     className="mark___dropdown"
+                                    value={submissionView}
+                                    onChange={(e: any) => {
+                                        console.log(e.target.value);
+                                        setSubmissionView(+e.target.value)
+                                    }}
                                     MenuProps={{
                                         anchorOrigin: {
                                             vertical: "bottom",
@@ -155,7 +214,7 @@ const Marking = () => {
                                     {
                                         studentList.length !== 0 && studentList.map((student, index) => {
                                             return (
-                                                <MenuItem key={`student-dropdown-${index}`} className="mark___dropdown--menu">
+                                                <MenuItem key={`student-dropdown-${index}`} value={index} className="mark___dropdown--menu">
                                                     <StudentItem student={student} />
                                                 </MenuItem>
                                             )
@@ -165,10 +224,10 @@ const Marking = () => {
                                 </Select>
                             </FormControl>
 
-                            <IconButton style={{ marginLeft: "1rem" }}>
+                            <IconButton style={{ marginLeft: "1rem" }} onClick={handleArrowLeft} >
                                 <KeyboardArrowLeft />
                             </IconButton>
-                            <IconButton>
+                            <IconButton onClick={handleArrowRight} >
                                 <KeyboardArrowRight />
                             </IconButton>
 
@@ -182,10 +241,12 @@ const Marking = () => {
                                     color="primary"
                                     className="mark___submit--button"
                                     style={{ marginRight: "0.6rem" }}
+                                    onClick={handleReturnSubmission}
+                                    disabled={submissionDetail && submissionDetail.score ? false : true}
                                 >
                                     Trả Bài
                                 </Button>
-                                <Button
+                                {/* <Button
                                     variant="contained"
                                     color="primary"
                                     className="mark___submit--button"
@@ -193,13 +254,13 @@ const Marking = () => {
 
                                 >
                                     <KeyboardArrowDown />
-                                </Button>
+                                </Button> */}
                             </CardContent>
                         </Grid>
                     </Grid>
 
                     <Grid container spacing={2} style={{ height: "100%", paddingBottom: "1rem" }} >
-                        <Grid item xs={8}>
+                        <Grid item xs={9}>
 
                             <div className="mark___download">
                                 <div className="mark___download--text" style={{ marginTop: "-4rem" }}>
@@ -212,8 +273,8 @@ const Marking = () => {
 
 
                         </Grid>
-                        <Grid item xs={4}>
-                            <Card>
+                        <Grid item xs={3}>
+                            <Card className="mark___manage">
                                 <CardContent>
                                     <Typography style={{ fontSize: "1.2rem" }}>
                                         Tệp
@@ -261,17 +322,61 @@ const Marking = () => {
                                         Điểm
                                     </Typography>
                                     <TextField
+                                        fullWidth
                                         label="Điểm số"
                                         id="outlined-start-adornment"
-                                        value={submissionDetail.score}
-                                        onChange={(e) => handleChangeScore(e.target.value)}
+                                        type="number"
+                                        value={score}
+                                        onChange={(e) => {
+                                            if (e.target.value === "" || (Number(e.target.value) && Number(e.target.value) <= 10)) {
+                                                setScore(e.target.value);
+                                            }
+
+                                            handleChangeScore(e.target.value)
+                                        }}
                                         InputProps={{
+                                            inputProps: { min: 0, max: 10 },
                                             endAdornment: <InputAdornment position="end" style={{ fontSize: "1.2rem" }}>/10</InputAdornment>,
 
                                         }}
                                     />
                                 </CardContent>
+                                <Divider />
 
+                                <CardContent>
+                                    {
+                                        submissionDetail && submissionDetail.commentList && submissionDetail.commentList.map((comment, index) => (
+                                            <Comment comment={comment} index={index} />
+                                        ))
+                                    }
+                                </CardContent>
+                                <CardHeader
+                                    avatar={
+                                        <Avatar src={auth && auth.user?.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} aria-label="recipe" alt="avt-post">
+                                            R
+                                        </Avatar>
+                                    }
+                                    action={
+                                        <IconButton
+                                            onClick={
+                                                handleSubmitComment
+                                            } >
+                                            <Send />
+                                        </IconButton>
+                                    }
+                                    title={
+                                        <TextField
+                                            fullWidth
+                                            label="nhận xét riêng tự"
+                                            placeholder="Thêm nhận về bài tập"
+                                            value={comment}
+                                            onChange={(e) => {
+                                                setComment(e.target.value);
+                                            }}
+                                        />
+                                    }
+                                >
+                                </CardHeader>
                             </Card>
                         </Grid>
                     </Grid>
