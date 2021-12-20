@@ -1,4 +1,5 @@
-import { IOAuthRequest } from './';
+import { IOAuthRequest, INotification } from './';
+import { INotificationState } from './notification.interface';
 import { IRefreshToken, ITokenResponse } from './token.interface';
 
 export interface ISigninInput {
@@ -14,6 +15,7 @@ export interface IUserSummary {
     gender: string,
     email: string,
     avatarUrl?: string,
+    notifyList: INotification[]
 }
 
 export interface IUserHeader {
@@ -67,4 +69,4 @@ export interface ILogoutType {
     payload?: null,
 }
 
-export type IAuthenAction = ISignInType | IUserHeader | ISignUpType | ILogoutType | ILoginOAuthType;
+export type IAuthenAction = ISignInType | IUserHeader | ISignUpType | ILogoutType | ILoginOAuthType | INotificationState;

@@ -50,11 +50,15 @@ const PostDetail = () => {
 
         async function getExercise(courseId: number, postId: number) {
             setIsLoading(true);
-            const res = await exerciseApi.getOneExercise(courseId, postId);
-            setIsLoading(false);
-            if (!res || res.status !== 200) return;
+            try {
+                const res = await exerciseApi.getOneExercise(courseId, postId);
+                setIsLoading(false);
+                if (!res || res.status !== 200) return;
+    
+                setExercise(res.data.payload);
+            } catch (err) {
 
-            setExercise(res.data.payload);
+            }
         }
 
         getExercise(+courseId, +postId);

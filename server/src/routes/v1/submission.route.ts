@@ -21,7 +21,7 @@ class SubmissionRoute {
         this.router.get(
             "/course/:courseId/exercise/:exerciseId",
             this._authenticate.authenticate(),
-            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._validation.getSubmission),
             this._controller.getSubmission
 

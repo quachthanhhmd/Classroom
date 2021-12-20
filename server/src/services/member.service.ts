@@ -20,6 +20,39 @@ export class MemberService {
         return member && member.type === MEMBERSTATE.ACCEPT ? true : false;
     }
 
+    public findAllStudentInCourse = async (courseId: number) => {
+
+        return Member.findAll({
+            where: {
+                [Op.and]: {
+                    courseId,
+                    role: TYPEROLE.STUDENT,
+                    type: MEMBERSTATE.ACCEPT
+                }
+            },
+            attributes: ["id", "studentId", "userId"],
+        });
+    }
+    /**
+     * 
+     * @param courseId 
+     * @param role 
+     * @returns 
+     */
+    public findAllMemberByRole = async (courseId: number, role: string) => {
+        return Member.findAll({
+            where: {
+                [Op.and]: {
+                    courseId,
+                    role,
+                    type: MEMBERSTATE.ACCEPT
+                }
+            },
+            raw: false,
+            nest: true,
+        });
+    }
+
     /**
      * Check wonder member is belong to course or not
      * @param {number} userId 
@@ -28,9 +61,9 @@ export class MemberService {
      */
     public isActiveMember = async (userId: number, courseId: number): Promise<boolean> => {
         const member = await this.findMemberByUserAndCourseId(userId, courseId);
-        if (!member) return false;
+        if (!member) { return false; }
 
-        if (member.type === MEMBERSTATE.ACCEPT) return true;
+        if (member.type === MEMBERSTATE.ACCEPT) { return true; }
 
         return false;
     }
@@ -48,7 +81,7 @@ export class MemberService {
                     courseId,
                 }
             }
-        })
+        });
     }
 
     /**
@@ -60,7 +93,7 @@ export class MemberService {
     public findMemberState = async (userId: number, courseId: number): Promise<string | null> => {
         const member = await this.findMemberByUserAndCourseId(userId, courseId);
 
-        if (!member) return null;
+        if (!member) { return null; }
 
         return member.type;
     }
@@ -80,7 +113,7 @@ export class MemberService {
             courseId,
             role,
             type: state,
-        })
+        });
     }
 
     /**
@@ -98,9 +131,17 @@ export class MemberService {
             courseId,
             role,
             type: state,
-        })
+        });
     }
 
+    /**
+     * 
+     * @param userId 
+     * @param courseId 
+     * @param state 
+     * @param role 
+     * @returns 
+     */
     public updateMember = async (userId: number, courseId: number, state?: string, role?: string) => {
         const newBody = JSON.parse(JSON.stringify({ type: state, role }));
 
@@ -113,7 +154,7 @@ export class MemberService {
                         courseId,
                     }
                 }
-            })
+            });
     }
 
     /**
@@ -129,7 +170,7 @@ export class MemberService {
             courseId,
             studentId,
             type: MEMBERSTATE.ACCEPT
-        })
+        });
     }
 
     /**
@@ -147,9 +188,9 @@ export class MemberService {
                     role: TYPEROLE.STUDENT
                 }
             }
-        })
+        });
 
-        if (!student) return false;
+        if (!student) { return false; }
 
         return true;
     }
@@ -166,7 +207,7 @@ export class MemberService {
                 courseId,
                 studentId
             }
-        })
+        });
 
         return !!student;
     }
@@ -186,7 +227,7 @@ export class MemberService {
                     type: MEMBERSTATE.ACCEPT
                 }
             }
-        })
+        });
     }
 
     /**
@@ -204,7 +245,7 @@ export class MemberService {
                     courseId,
                 }
             }
-        })
+        });
     }
     /**
      * get ALl summary info member in course 
@@ -224,7 +265,7 @@ export class MemberService {
             }],
             raw: false,
             nest: true,
-        })
+        });
     }
     /**
      * 
@@ -241,7 +282,7 @@ export class MemberService {
                     type: MEMBERSTATE.SPENDING
                 }
             }
-        })
+        });
 
         return member ? true : false;
     }
@@ -267,4 +308,5 @@ export class MemberService {
 
         return !!member;
     }
+
 }

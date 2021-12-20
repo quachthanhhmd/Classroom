@@ -21,16 +21,16 @@
         display: flex;
         justify-content: flex-start;
         flex: 1 1 0.0625rem;
-        width: 30%;
+        width: 20%;
 
         &--menu {
             margin-right: 1rem;
             align-self: center;
         }
         &--logo-name {
-            font-size: 1rem;
+            font-size: 1rem !important;
             align-self: center;
-            width: 50%;
+            width: 100%;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
@@ -46,7 +46,7 @@
         color: white;
 
         &--click-pill {
-            backdrop-filter: contrast(0.5)
+            backdrop-filter: contrast(0.5);
         }
         > * {
             color: white !important;
@@ -81,7 +81,6 @@
         }
     }
 }
-
 
 .scroll-hidden {
     transform: translateY(-100%);

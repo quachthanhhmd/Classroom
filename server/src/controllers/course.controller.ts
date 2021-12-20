@@ -66,8 +66,9 @@ export class CourseController {
             const userId = req.currentUser?.id;
 
             const course = await this._courseService.getCourseByCode(code);
-            if (!course)
+            if (!course) {
                 return res.composer.notFound();
+            }
 
             await this._memberService.upsetMember(<number> userId, course.id, MEMBERSTATE.ACCEPT, TYPEROLE.STUDENT);
 
@@ -143,12 +144,12 @@ export class CourseController {
             const body = req.body;
 
             const isOwnCourse = await this._courseService.isOwnCourse(courseId, userId);
-            if (!isOwnCourse) return res.composer.forbidden();
+            if (!isOwnCourse) { return res.composer.forbidden(); }
 
             await this._courseService.updateCourse(courseId, body);
             const newCourse = await this._courseService.getCourseDetail(courseId);
 
-            return res.composer.success(serializeCourseDetail(newCourse))
+            return res.composer.success(serializeCourseDetail(newCourse));
         } catch (err) {
             console.log(err);
 
@@ -167,7 +168,7 @@ export class CourseController {
 
             const course = await this._courseService.getAllPost(courseId);
 
-            if (!course) return res.composer.notFound();
+            if (!course) { return res.composer.notFound(); }
 
             // const feedList = standardizedObjectArr<Feed>(course.feedList);
 
@@ -178,16 +179,28 @@ export class CourseController {
             const feedList = await this._feedService.getAllFeedInCourse(courseId);
             const exerciseList = await this._exerciseService.getAllExerciseInCourse(courseId);
 
-            const postList: (Exercise | Feed)[] =
+            const postList: Array<Exercise | Feed> =
                 [...feedList, ...exerciseList].sort(
                     (a, b) =>
                         new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
                 );
 
-            return res.composer.success(serializeFeedDetailList(postList))
+            return res.composer.success(serializeFeedDetailList(postList));
         } catch (err) {
             console.log(err);
             res.composer.otherException(err);
+        }
+    }
+
+    public exportGrade = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = +req.params.courseId;
+
+        } catch (err) {
+            return res.composer.otherException(err);
         }
     }
 }

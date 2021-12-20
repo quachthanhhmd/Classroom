@@ -65,14 +65,14 @@ export class SubmissionController {
 
             const submission = await this._submissionService.findSubmissionById(submissionId);
 
-            if (!submission) return res.composer.success();
+            if (!submission) { return res.composer.success(); }
             const attachmentList =
-                await this._attachmentService.findAllAttachment(ReferenceType.SUBMISSION, submission.id)
+                await this._attachmentService.findAllAttachment(ReferenceType.SUBMISSION, submission.id);
 
             const commentList =
                 await this._commentService.findCommentByRefType(ReferenceType.SUBMISSION, submission.id);
 
-            return res.composer.success(serializeSubmissionDetail({ ...submission, attachmentList, commentList }))
+            return res.composer.success(serializeSubmissionDetail({ ...submission, attachmentList, commentList }));
         } catch (err) {
             console.log(err);
 
@@ -89,13 +89,13 @@ export class SubmissionController {
 
             const submission = await this._submissionService.findByUserId(userId, exerciseId);
 
-            if (!submission) return res.composer.success();
+            if (!submission) { return res.composer.success(); }
             const attachmentList =
-                await this._attachmentService.findAllAttachment(ReferenceType.SUBMISSION, submission.id)
+                await this._attachmentService.findAllAttachment(ReferenceType.SUBMISSION, submission.id);
             const commentList =
                 await this._commentService.findCommentByRefType(ReferenceType.SUBMISSION, submission.id);
 
-            return res.composer.success(serializeSubmissionDetail({ ...submission, attachmentList, commentList }))
+            return res.composer.success(serializeSubmissionDetail({ ...submission, attachmentList, commentList }));
         } catch (err) {
             console.log(err);
 

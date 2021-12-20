@@ -20,6 +20,8 @@ const InviteByToken = lazy(() => import("../components/InviteByToken"));
 const PostDetail = lazy(() => import("../containers/PostDetail"));
 const SubmissionManage = lazy(() => import("../containers/SubmissionManage"));
 const Marking = lazy(() => import("../containers/Marking"));
+const Grade = lazy(() => import("../containers/GradeManage"));
+
 
 type IRoute = {
     path: string,
@@ -172,6 +174,12 @@ const courseRouteList = [
         exact: true,
         auth: true,
         main: () => <Marking />
+    },
+    {
+        path: ROUTES.grade,
+        exact: true,
+        auth: true,
+        main: () => <Grade/>
     }
 ]
 

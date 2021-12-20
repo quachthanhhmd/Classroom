@@ -1,15 +1,20 @@
 import { inject, injectable } from "inversify";
 import moment from "moment";
+import * as excel from "node-excel-export";
 import "reflect-metadata";
 import { Op } from "sequelize";
-import { CommentService } from ".";
+import { CommentService, MemberService, SubmissionService } from ".";
 import { Exercise, ExerciseType, ReferenceType, Topic, User } from "../models";
+import { getSpecification } from "../utils/excel-style";
+import { uploadNewFileFromBuffer } from "../utils/firebase";
 import { ICreateExercise } from "./../interfaces";
 
 @injectable()
 export class ExerciseService {
     constructor(
-        @inject("CommentService") private readonly _commentService: CommentService
+        @inject("CommentService") private readonly _commentService: CommentService,
+        @inject("MemberService") private readonly _memberService: MemberService,
+        @inject("SubmissionService") private readonly _submissionService: SubmissionService
     ) {
 
     }
@@ -41,7 +46,7 @@ export class ExerciseService {
                     }
                 }
             }
-        })
+        });
     }
 
     /**
@@ -64,13 +69,13 @@ export class ExerciseService {
             order: [["createdAt", "DESC"]],
             raw: true,
             nest: true,
-        })
+        });
 
         return Promise.all(exerciseList.map(async (feed) => {
             const allComment = await this._commentService.findCommentByRefType(ReferenceType.EXERCISE, feed.id);
 
-            return { ...feed, commentList: allComment }
-        }))
+            return { ...feed, commentList: allComment };
+        }));
     }
 
     public findAllInfoById = async (id: number) => {
@@ -91,7 +96,7 @@ export class ExerciseService {
             ],
             raw: true,
             nest: true,
-        })
+        });
     }
 
     /**
@@ -107,7 +112,7 @@ export class ExerciseService {
             order: [["createdAt", "ASC"]],
             raw: true,
             nest: false
-        })
+        });
     }
     /**
      * Create new Exercise
@@ -121,7 +126,7 @@ export class ExerciseService {
             ownerId,
             courseId,
             ...body
-        })
+        });
     }
 
     /**
@@ -138,7 +143,7 @@ export class ExerciseService {
                     id,
                 }
             }
-        )
+        );
     }
     /**
      * Delete Exercise
@@ -149,6 +154,61 @@ export class ExerciseService {
             where: {
                 id
             }
-        })
+        });
+    }
+
+    public exportGradeInExercise = async (exerciseId: number, courseId: number): Promise<null | string> => {
+
+        const studentList = await this._memberService.findAllStudentInCourse(courseId);
+        const exercise = await this.findExerciseById(exerciseId);
+
+        if (!exercise) { return null; }
+
+        if (studentList.length === 0) { return null; }
+
+        const studentGradeList = await this._submissionService.findAllScoreInExercise(exerciseId);
+        if (studentGradeList.length === 0) { return null; }
+
+        const fileName = `${moment(
+            new Date()
+        ).utc()}-export-student-grade-exercise.xlsx`;
+
+        const dataset = studentList.map((student) => {
+
+            const submissionGrade = studentGradeList.filter((submission) => submission.userId === student.userId);
+
+            const data = {
+                studentId: student.studentId,
+                name: exercise.title,
+                score: ""
+            };
+
+            if (submissionGrade.length !== 0) {
+                data.score = String(submissionGrade[0].score);
+            }
+
+            return data;
+        });
+
+        const specification = {
+            name: getSpecification("Tên bài tập", 180),
+            studentId: getSpecification("MSSV", 180),
+            score: getSpecification("Điểm số", 70),
+        };
+
+        const report = excel.buildExport([
+            {
+                specification,
+                name: `Điểm số bài tập ${exercise.title}`,
+                data: dataset,
+            },
+        ]);
+
+        const result = await uploadNewFileFromBuffer(report, {
+            fileName,
+            pathFile: `course-grade-${courseId}-exercise-${exerciseId}`,
+        });
+
+        return result.url;
     }
 }

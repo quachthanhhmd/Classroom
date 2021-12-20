@@ -6,7 +6,7 @@ import {
     CourseController,
     ExerciseController,
     ExerciseTypeController,
-    FeedController, MemberController, SubmissionController, UserController
+    FeedController, MemberController, NotificationController, SubmissionController, UserController
 } from "../controllers";
 import { AttachmentController } from "../controllers/attachment.controller";
 import { Authenticate } from "../middlewares";
@@ -16,7 +16,7 @@ import {
     CommentService,
     CourseService,
     ExerciseService,
-    FeedService, MemberService, OAuthService, SubmissionService, TokenService, TopicService,
+    FeedService, MemberService, NotificationService, OAuthService, SubmissionService, TokenService, TopicService,
     UserService,
 } from "../services";
 import { ExerciseTypeService } from "../services/exercise-type.service";
@@ -28,7 +28,7 @@ import {
     ExerciseTypeValidation,
     ExerciseValidation,
     FeedValidation,
-    MemberValidation, SubmissionValidation, UserValidation
+    MemberValidation, NotificationValidation, SubmissionValidation, UserValidation
 } from "../validations";
 
 const existContainer = new Container({ defaultScope: "Singleton" });
@@ -48,7 +48,7 @@ existContainer.bind<CourseService>("CourseService").to(CourseService);
 existContainer.bind<CourseValidation>("CourseValidation").to(CourseValidation);
 
 existContainer.bind<MemberService>("MemberService").to(MemberService);
-existContainer.bind<MemberController>("MemberController").to(MemberController)
+existContainer.bind<MemberController>("MemberController").to(MemberController);
 existContainer.bind<MemberValidation>("MemberValidation").to(MemberValidation);
 
 existContainer.bind<TokenService>("TokenService").to(TokenService);
@@ -77,6 +77,10 @@ existContainer.bind<ExerciseTypeController>("ExerciseTypeController").to(Exercis
 existContainer.bind<SubmissionService>("SubmissionService").to(SubmissionService);
 existContainer.bind<SubmissionController>("SubmissionController").to(SubmissionController);
 existContainer.bind<SubmissionValidation>("SubmissionValidation").to(SubmissionValidation);
+
+existContainer.bind<NotificationService>("NotificationService").to(NotificationService);
+existContainer.bind<NotificationValidation>("NotificationValidation").to(NotificationValidation);
+existContainer.bind<NotificationController>("NotificationController").to(NotificationController);
 
 existContainer.bind<TopicService>("TopicService").to(TopicService);
 

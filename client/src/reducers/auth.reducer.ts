@@ -1,9 +1,8 @@
-import { SIGNUP_SUCCESS } from './../messages/auth.message';
+import { INotification } from './../interfaces/notification.interface';
 import env from "../configs/env";
 import {
-    USER_INFO_FAIL, USER_INFO_REQUEST,
-    USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_OAUTH_FAIL, DELETE_MESSAGE,
-    USER_LOGIN_OAUTH_REQUEST,
+    DELETE_MESSAGE, UPDATE_NOTIFY, USER_INFO_FAIL, USER_INFO_REQUEST,
+    USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_OAUTH_FAIL, USER_LOGIN_OAUTH_REQUEST,
     USER_LOGIN_OAUTH_SUCCESS, USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS, USER_LOGOUT, USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
@@ -11,7 +10,8 @@ import {
     USER_UPDATE_HEADER
 } from "../constants";
 import { IAuthenAction, ISignInType, IUserSummary } from "../interfaces";
-import { LOGIN_FAIL, SIGNUP_FAIL, UPDATE_PROFILE_SUCCESS_MESSAGE } from "../messages";
+import { LOGIN_FAIL, SIGNUP_FAIL } from "../messages";
+import { SIGNUP_SUCCESS } from './../messages/auth.message';
 
 
 interface IAuthState {
@@ -130,7 +130,7 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 ...state,
                 user: (action.payload as IUserSummary),
             }
-        case USER_LOGOUT:
+        case USER_LOGOUT: {
             localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
             localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
             return {
@@ -141,7 +141,27 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 message: "",
                 isSuccess: true,
             }
+        }
+        case UPDATE_NOTIFY: {
+            const newState = state!.user;
+            const notifyId = action.payload as number;
 
+            if (newState?.notifyList) {
+                const newNotification = newState.notifyList.map((notify) => {
+                    if (notify.id === notifyId) {
+                        notify.isRead = true;
+                        return notify;
+                    }
+                    return notify;
+                });
+                newState.notifyList = [...newNotification];
+            }
+            console.log(newState);
+            return {
+                ...state,
+                user: newState,
+            }
+        }
         default:
             return {
                 ...state

@@ -11,7 +11,6 @@ export function useScrollHook() {
                 setStyle({ transform: "translateY(-100%)" });
             }
             scrollPos = document.body.getBoundingClientRect().top;
-            console.log(document.body.getBoundingClientRect().top);
         };
 
         let scrollPos = -1;

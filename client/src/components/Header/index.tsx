@@ -1,29 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Menu as MenuIcon,
-    Event,
-    Add
-} from "@material-ui/icons";
-
 import {
     Button,
-    IconButton,
-    MenuItem,
-    Menu
+    IconButton, Menu, MenuItem
 } from "@material-ui/core";
-
-import "./index.scss";
+import {
+    Add, Menu as MenuIcon
+} from "@material-ui/icons";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import ThemeMode from '../ThemeMode';
+import { useScrollHook } from "../../customs";
+import { AppState } from "../../reducers";
 import AddCourse from "../CreateCourse";
 import JoinCourse from '../JoinCourse';
-import Profile from "../Profile";
+import ThemeMode from '../ThemeMode';
+import "./index.scss";
+import InfoHeader from './infoHeader';
 
 
-import { useDispatch, useSelector } from "react-redux";
-import { signOut, getUserData } from "../../actions";
-import { AppState } from "../../reducers";
-import { useScrollHook } from "../../customs";
+
+
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
@@ -41,11 +36,7 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState<string>("");
 
-    useEffect(() => {
-        if (!auth.user) {
-            dispatch(getUserData())
-        }
-    }, [])
+
 
     const handleClick = (e: any, type: string) => {
         setAnchorEl(e.currentTarget);
@@ -57,10 +48,7 @@ const Header = () => {
         //setIsOpenCourse(0);
     };
 
-    const handleLogout = async () => {
-        await dispatch(signOut());
-        window.location.href = "/";
-    }
+
 
     const handleCloseModal = (openModal: boolean) => {
         setTypeOpen("");
@@ -73,7 +61,7 @@ const Header = () => {
     return (
         <>
             <AddCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 1} setIsOpenModal={handleCloseModal} />
-            <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />
+   
             <JoinCourse isOpenModal={typeOpen === TYPE_MODAL_COURSE && isOpenModal && isOpenCourse === 2} setIsOpenModal={handleCloseModal} />
 
             <div className="header-main" style={styleScroll}>
@@ -98,15 +86,7 @@ const Header = () => {
                     <div className="header-main___right--theme-mode">
                         <ThemeMode />
                     </div>
-                    <div className="header-main___right--calendar">
-                        <IconButton
-                            style={{
-                                color: "#ffffff"
-                            }}
-                        >
-                            <Event />
-                        </IconButton>
-                    </div>
+
                     <div className="header-main___right--more-features">
                         <IconButton
                             aria-controls="simple-menu"
@@ -126,6 +106,7 @@ const Header = () => {
                             keepMounted
                             open={Boolean(typeOpen === TYPE_MODAL_COURSE && isOpenModal === false && anchorEl != null)}
                             onClose={handleClose}
+                         
                         >
                             <MenuItem
                                 onClick={() => {
@@ -148,41 +129,7 @@ const Header = () => {
                         </Menu>
 
                     </div>
-                    <div className="header-main___right--avatar">
-                        <Button
-                            aria-controls="info-menu"
-                            aria-haspopup="true"
-                            onClick={(e) => handleClick(e, TYPE_MODAL_INFO)}
-                        >
-                            <img className="header-main___right--avatar___img" src={auth.user && auth.user.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} alt="avt" />
-                        </Button>
-
-                        <Menu
-                            id="info-menu"
-                            className="header-main___right--more-features___menu-info"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(typeOpen === TYPE_MODAL_INFO && isOpenModal === false && anchorEl != null)}
-                            onClose={handleClose}
-                        >
-                            <MenuItem
-                                onClick={() => {
-                                    setIsOpenModal(true);
-                                    handleClose();
-                                }}
-                            >
-                                Thông tin cá nhân
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    handleLogout();
-                                    handleClose();
-                                }}
-                            >
-                                Đăng xuất
-                            </MenuItem>
-                        </Menu>
-                    </div>
+                    <InfoHeader />
 
                 </div>
 

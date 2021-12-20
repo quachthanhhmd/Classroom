@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { CourseService, UserService } from "../services";
-import { IAuthorizeRequest, IPagingRequest, IRequest, IResponse } from "./../interfaces";
+import { CourseService, NotificationService, UserService } from "../services";
+import { serializeUserDetail, IAuthorizeRequest, IPagingRequest, IRequest, IResponse } from "./../interfaces";
 import { serializeCourseList } from "./../interfaces/course.interface";
 import { serializeUserProfile } from "./../interfaces/user.interface";
 
@@ -10,6 +10,7 @@ export class UserController {
 
     constructor(
         @inject("UserService") private readonly _userService: UserService,
+        @inject("NotificationService") private readonly _notificationService: NotificationService,
         @inject("CourseService") private readonly _courseService: CourseService) { }
 
     public getUser = async (
@@ -20,9 +21,12 @@ export class UserController {
             const id = +req.params.id;
 
             const user = await this._userService.getInforById(id);
+            if (!user) return res.composer.notFound();
+            const notificationList = await this._notificationService.getAllNotificationUser(user.id);
 
-            return res.composer.success(user);
+            return res.composer.success(serializeUserDetail({user, notificationList}));
         } catch (err) {
+            console.error(err);
             res.composer.otherException(err);
         }
     }

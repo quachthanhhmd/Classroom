@@ -18,6 +18,7 @@ interface IProps {
 
 const ContentPost = (props: IProps) => {
     const { commentList, content, isHiddenComment = false, clickCreateComment } = props
+
     const auth = useSelector((state: AppState) => state.auth);
 
     const [comment, setComment] = useState<string>("");
@@ -36,12 +37,14 @@ const ContentPost = (props: IProps) => {
     return (
         <>
             <div className="post-main___content">
-                <Editor readOnly={true}
-                    toolbarClassName='hide-toolbar'
-                    editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(content)))}
-                    toolbar={{
-                        options: []
-                    }} />
+                {content &&
+                    <Editor readOnly={true}
+                        toolbarClassName='hide-toolbar'
+                        editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(content ? content : "")))}
+                        toolbar={{
+                            options: []
+                        }} />
+                }
             </div>
 
 
@@ -51,7 +54,7 @@ const ContentPost = (props: IProps) => {
                     <Favorite />
                 </IconButton>
             </CardActions> */}
-            <Divider style={{marginTop: "1.5rem" }} />
+            <Divider style={{ marginTop: "1.5rem" }} />
 
             <Button style={{ textTransform: "none", marginLeft: "1rem", marginTop: "1rem" }} onClick={() => setIsShowAll(!isShowAll)}>
                 <Grid container direction="row" alignItems="center">

@@ -1,17 +1,18 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { INCORRECT_LOGIN, TYPETOKEN, USER_EXIST } from "../constants";
-import { AuthService, TokenService, UserService } from "../services";
+import { AuthService, NotificationService, TokenService, UserService } from "../services";
 import { UNAUTHENTICATED } from "./../constants/message/auth.message";
 import { serializeUserLogin, ICreateUser, IRequest, IResponse } from "./../interfaces";
 
 @injectable()
 export class AuthController {
-
     constructor(
         @inject("UserService") private readonly _userService: UserService,
         @inject("AuthService") private readonly _authService: AuthService,
         @inject("TokenService") private readonly _tokenService: TokenService,
+        @inject("NotificationService") private readonly _notificationService: NotificationService
+
     ) { }
 
     public signUp = async (
@@ -36,7 +37,7 @@ export class AuthController {
         } catch (err) {
             return res.composer.otherException(err);
         }
-    };
+    }
 
     public signIn = async (
         req: IRequest,
@@ -50,12 +51,14 @@ export class AuthController {
             if (!user) {
                 return res.composer.badRequest(INCORRECT_LOGIN);
             }
+            const notificationList = await this._notificationService.getAllNotificationUser(user.id);
 
             const tokenCreate = await this._tokenService.generateTokenAuth(user.id);
 
             return res.composer.success(
                 serializeUserLogin({
                     user,
+                    notificationList,
                     token: tokenCreate,
                 })
             );
@@ -64,7 +67,7 @@ export class AuthController {
 
             return res.composer.otherException(err);
         }
-    };
+    }
 
     public refreshToken = async (
         req: IRequest,
@@ -74,7 +77,7 @@ export class AuthController {
             const refreshToken: string = req.body.refreshToken;
 
             const token = await this._tokenService.verifyToken(refreshToken, TYPETOKEN.REFRESH);
-            if (!token) return res.composer.unauthorized(UNAUTHENTICATED);
+            if (!token) { return res.composer.unauthorized(UNAUTHENTICATED); }
 
             const newToken = await this._tokenService.generateTokenAuth(token.userId);
 
@@ -82,7 +85,7 @@ export class AuthController {
         } catch (err) {
             return res.composer.unauthorized(UNAUTHENTICATED);
         }
-    };
+    }
 
     public loginByOAuth = async (
         req: IRequest,

@@ -3,14 +3,14 @@ import authApi from "../api/auth.api";
 import env from "../configs/env";
 import {
   NOTIFICATION_FAIL,
-  NOTIFICATION_SUCCESS, USER_INFO_FAIL, USER_INFO_REQUEST,
+  NOTIFICATION_SUCCESS, UPDATE_NOTIFY, USER_INFO_FAIL, USER_INFO_REQUEST,
   USER_INFO_SUCCESS, USER_LOGIN_FAIL, USER_LOGIN_OAUTH_FAIL, USER_LOGIN_OAUTH_REQUEST,
   USER_LOGIN_OAUTH_SUCCESS, USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS, USER_LOGOUT,
   USER_UPDATE_HEADER
 } from "../constants";
 import {
-  ILoginOAuth, IPayload, ISigninInput, ISignUpInput, IUserHeader, IUserSummary
+  ILoginOAuth, INotification, IPayload, ISigninInput, ISignUpInput, IUserHeader, IUserSummary
 } from "../interfaces";
 import { LOGIN_FAIL, LOGIN_SUCCESS, SIGNUP_SUCCESS } from '../messages';
 import { USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from './../constants';
@@ -160,3 +160,15 @@ export const loginOAuth = (data: ILoginOAuth) =>
     }
   }
 
+
+export const updateNotify = (notifyId: number) =>
+  async (dispatch) => {
+    try {
+      dispatch({
+        type: UPDATE_NOTIFY,
+        payload: notifyId
+      })
+    } catch (err) {
+
+    }
+  }

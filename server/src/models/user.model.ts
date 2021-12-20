@@ -77,15 +77,7 @@ export class User extends Model<IUser, IUserCreationAttibutes> {
 
     @AllowNull(false)
     @Column(DataType.STRING)
-    set password(value: string | undefined) {
-        console.log("3, ", value);
-        if (typeof value === "undefined") {
-            const passwordHashString: string = initPasswordHash(generateRandomPassword());
-            this.setDataValue("password", passwordHashString);
-
-            return
-        }
-
+    set password(value: string) {
         if (value.length < 8) {
             throw new Error("password must be at least 8 characters");
         }

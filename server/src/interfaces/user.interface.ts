@@ -1,4 +1,4 @@
-import { IOAuthRequest } from "./";
+import { serializeNotify, IOAuthRequest } from "./";
 
 export interface ICreateUser {
     email: string;
@@ -27,7 +27,7 @@ export interface IUpdateUser {
     birthDay?: Date,
     avatarUrl?: string,
 }
-export interface ILoginOAuth extends IOAuthRequest{
+export interface ILoginOAuth extends IOAuthRequest {
     firstName: string,
     lastName?: string,
     email: string,
@@ -46,16 +46,35 @@ export const serializeUserLogin = (model: any) => {
             birthDay: model.user.birthDay,
             avatarUrl: model.user.avatarUrl,
         },
+        notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
         token: model.token,
     }
 }
 
+export const serializeUserDetail = (model: any) => {
+    const body = {
+        user: {
+            id: model.user.id,
+            email: model.user.email,
+            firstName: model.user.firstName,
+            lastName: model.user.lastName,
+            gender: model.user.gender,
+            birthDay: model.user.birthDay,
+            avatarUrl: model.user.avatarUrl,
+        },
+        notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
+        token: model.token,
+    }
+    console.log(body);
+
+    return body;
+}
 export const serializeUserProfile = (model: any) => {
     return {
         firstName: model.firstName,
         lastName: model.lastName,
         birthDay: model.birthDay,
         gender: model.gender,
-        avatrUrl: model.avatarUrl,
+        avatarUrl: model.avatarUrl,
     }
 }

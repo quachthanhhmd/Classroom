@@ -1,9 +1,7 @@
 {
   "extends": [
     "tslint:latest",
-    "tslint:recommended",
-    "tslint-eslint-rules",
-    "tslint-consistent-codestyle"
+    "tslint:recommended"
   ],
   "rules": {
     "no-console": false,

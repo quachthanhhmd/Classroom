@@ -1,6 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import {
-  Attachment, Comment, Course, Exercise, ExerciseType, Feed, Member, OAuth, Submission, Token, Topic, User
+  Attachment, Comment, Course, Exercise, ExerciseType, Feed, Member, Notification, OAuth, Submission, Token, Topic, User
 } from "../models";
 import env from "./env";
 
@@ -11,7 +11,8 @@ export const sequelize = new Sequelize({
   username: env.DB.DB_USERNAME,
   password: env.DB.DB_PASSWORD,
   storage: ":memory:",
-  models: [Feed, User, Token, Member, Submission, Course, OAuth, Comment, Exercise, Topic, Attachment, ExerciseType],
+  models: [Feed,
+    User, Token, Member, Submission, Course, OAuth, Comment, Exercise, Topic, Attachment, ExerciseType, Notification],
   query: {
     raw: true,
   }

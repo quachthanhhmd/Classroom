@@ -35,7 +35,7 @@ export class SubmissionService {
             }],
             raw: false,
             nest: false,
-        })
+        });
     }
 
     /**
@@ -51,7 +51,7 @@ export class SubmissionService {
             exerciseId,
             userId,
             type
-        })
+        });
     }
 
     /**
@@ -71,7 +71,7 @@ export class SubmissionService {
                     }
                 }
             }
-        })
+        });
     }
 
     /**
@@ -90,7 +90,7 @@ export class SubmissionService {
                     id: submissionId,
                 }
             }
-        )
+        );
     }
 
     /**
@@ -117,7 +117,7 @@ export class SubmissionService {
                 id: submissionId,
                 userId
             }
-        })
+        });
 
         return !!submission;
     }
@@ -130,6 +130,25 @@ export class SubmissionService {
                     exerciseId,
                 }
             }
-        })
+        });
+    }
+
+    /**
+     * 
+     * @param {number} exerciseId 
+     * @returns 
+     */
+    public findAllScoreInExercise = async (exerciseId: number): Promise<Submission[]> => {
+        return Submission.findAll({
+            where: {
+                [Op.and]: {
+                    // need to check type
+                    exerciseId,
+                }
+            },
+            attributes: ["id", "exerciseId", "score", "userId"],
+            raw: true,
+            nest: false,
+        });
     }
 }

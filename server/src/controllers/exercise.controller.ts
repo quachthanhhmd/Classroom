@@ -1,12 +1,15 @@
 import { inject, injectable } from "inversify";
-import { ConsoleTransportOptions } from "winston/lib/winston/transports";
 import {
     serializeDeadlineList,
     serializeExerciseDetail,
     serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse
 } from "../interfaces";
-import { ReferenceType } from "../models";
-import { AttachmentService, CommentService, ExerciseService, MemberService, SubmissionService, TopicService } from "../services";
+import { NotificationType, ReferenceType } from "../models";
+import {
+    AttachmentService, CommentService,
+    ExerciseService, MemberService, NotificationService, SubmissionService, TopicService
+} from "../services";
+import { newExerciseMessage, uriNewExercise } from "./../constants/notify.constant";
 
 @injectable()
 export class ExerciseController {
@@ -16,7 +19,8 @@ export class ExerciseController {
         @inject("TopicService") private readonly _topicService: TopicService,
         @inject("CommentService") private readonly _commentService: CommentService,
         @inject("AttachmentService") private readonly _attachmentService: AttachmentService,
-        @inject("SubmissionService") private readonly _submissionService: SubmissionService
+        @inject("SubmissionService") private readonly _submissionService: SubmissionService,
+        @inject("NotificationService") private readonly _notificationService: NotificationService
     ) { }
 
     public getAllExercise = async (
@@ -44,19 +48,18 @@ export class ExerciseController {
         try {
             const userId = <number> req.currentUser?.id;
             const courseId = +req.params.courseId;
-            console.log(123);
+
             const exerciseList = await this._exerciseService.findAfterDate(courseId, new Date());
 
             if (exerciseList.length === 0) {
                 return res.composer.success();
             }
-            console.log(exerciseList);
+
             const exerciseIdList: number[] = exerciseList.map((exercise) => {
-                return exercise.id
+                return exercise.id;
             });
-            console.log(exerciseIdList);
+
             const submissionList = await this._submissionService.findSubmissionByExerciseId(userId, exerciseIdList);
-            console.log(submissionList);
 
             const newExerciseList = exerciseList.filter((exercise) => {
                 if (submissionList.some((submission) => submission.exerciseId === exercise.id)) {
@@ -64,8 +67,7 @@ export class ExerciseController {
                 }
 
                 return true;
-            })
-            console.log(newExerciseList);
+            });
 
             return res.composer.success(serializeDeadlineList(newExerciseList));
         } catch (err) {
@@ -82,7 +84,7 @@ export class ExerciseController {
         try {
             const postId = +req.params.postId;
 
-            const exercise = await this._exerciseService.findAllInfoById(+postId); ;
+            const exercise = await this._exerciseService.findAllInfoById(+postId);
             if (!exercise) {
                 return res.composer.notFound();
             }
@@ -105,6 +107,7 @@ export class ExerciseController {
         try {
             const courseId = +req.params.courseId;
             const userId = <number> req.currentUser?.id;
+
             const bodyExercise = req.body;
 
             let topicId = -1;
@@ -119,15 +122,23 @@ export class ExerciseController {
             if (topicId === -1 && bodyExercise.topic.id !== -1) {
                 const topic = await this._topicService.findTopicById(bodyExercise.topic.id);
 
-                if (!topic) return res.composer.badRequest();
+                if (!topic) { return res.composer.badRequest(); }
                 topicId = topic.id;
             }
 
             delete bodyExercise.topic;
+
             const newExercise =
                 await this._exerciseService.createExercise(userId, courseId, { ...bodyExercise, topicId });
 
-            if (!newExercise) return res.composer.internalServerError();
+            if (!newExercise) { return res.composer.internalServerError(); }
+
+            await this._notificationService.createNewNotification(courseId, {
+                content: newExerciseMessage(`${req.currentUser?.firstName} ${req.currentUser?.lastName}`),
+                uri: uriNewExercise(courseId, newExercise.id),
+                refType: NotificationType.COURSE,
+                refId: courseId
+            });
 
             return res.composer.success(serializeExerciseThumbnail(newExercise));
         } catch (err) {
@@ -149,12 +160,12 @@ export class ExerciseController {
 
             const isPermitToCRUD = await this._memberService.isPermitToCRUD(courseId, userId);
 
-            if (!isPermitToCRUD) return res.composer.forbidden();
+            if (!isPermitToCRUD) { return res.composer.forbidden(); }
 
             await this._exerciseService.updateExercise(id, body);
 
             const updateExercise = await this._exerciseService.findExerciseById(id);
-            if (!updateExercise) return res.composer.notFound();
+            if (!updateExercise) { return res.composer.notFound(); }
 
             return res.composer.success(serializeExerciseDetail(updateExercise));
         } catch (err) {
@@ -173,16 +184,38 @@ export class ExerciseController {
 
             const isPermitToCRUD = await this._memberService.isPermitToCRUD(courseId, userId);
 
-            if (!isPermitToCRUD) return res.composer.forbidden();
+            if (!isPermitToCRUD) { return res.composer.forbidden(); }
 
             await this._exerciseService.deleteExercise(id);
 
             const updateExercise = await this._exerciseService.findExerciseById(id);
-            if (!updateExercise) return res.composer.notFound();
+            if (!updateExercise) { return res.composer.notFound(); }
 
             return res.composer.success();
         } catch (err) {
             return res.composer.otherException(err);
         }
     }
+
+    public exportGradeInExercise = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            console.log(12439273491273);
+            const courseId = +req.params.courseId;
+            const exerciseId = +req.params.exerciseId;
+            console.log(courseId, exerciseId);
+            const excelUrl = await this._exerciseService.exportGradeInExercise(exerciseId, courseId);
+
+            if (excelUrl === null) { return res.composer.badRequest(); }
+
+            return res.composer.success(excelUrl);
+        } catch (err) {
+            console.log(err);
+
+            return res.composer.otherException(err);
+        }
+    }
+
 }

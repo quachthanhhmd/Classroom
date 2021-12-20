@@ -8,3 +8,4 @@ export * from "./attachment.controller";
 export * from "./comment.controller";
 export * from "./exercise-type.controller";
 export * from "./submission.controller"
+export * from "./notification.controller";

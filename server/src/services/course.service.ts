@@ -25,7 +25,7 @@ export class CourseService {
         const newCourse = await Course.create({
             ...courseBody,
             ownerId
-        })
+        });
 
         await this._memberService.addMember(ownerId, newCourse.id, TYPEROLE.TEACHER, MEMBERSTATE.ACCEPT);
 
@@ -62,7 +62,7 @@ export class CourseService {
                 code,
             },
             raw: true,
-        })
+        });
     }
 
     /**
@@ -79,7 +79,7 @@ export class CourseService {
             },
             raw: true
         });
-        if (course) return true;
+        if (course) { return true; }
 
         return false;
     }
@@ -109,7 +109,7 @@ export class CourseService {
                 }
             },
             raw: true,
-        })
+        });
 
         return course ? true : false;
     }
@@ -130,7 +130,7 @@ export class CourseService {
                 },
 
             }
-        )
+        );
     }
 
     public getAllPost = async (courseId: number) => {
@@ -160,6 +160,7 @@ export class CourseService {
             ],
             raw: false,
             nest: true,
-        })
+        });
     }
+
 }

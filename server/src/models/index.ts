@@ -11,3 +11,4 @@ export * from "./exercise.model";
 export * from "./comment.model";
 export * from "./exercise-type.model";
 export * from "./submission.model";
+export * from "./notification.model";

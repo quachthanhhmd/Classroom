@@ -15,3 +15,4 @@ export * from "./comment.interface";
 export * from "./topic.interface";
 export * from "./attachment.interface";
 export * from "./submission.interface";
+export * from "./notification.interface"

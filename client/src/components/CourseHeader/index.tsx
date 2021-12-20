@@ -1,11 +1,7 @@
 import {
-    Button,
-    IconButton, Menu, MenuItem, Tab, TabProps, Tabs
+    Button, Tab, TabProps, Tabs
 } from "@material-ui/core";
-import {
-    Event, Menu as MenuIcon
-} from "@material-ui/icons";
-import { withStyles } from "@material-ui/core/styles";
+import { Menu as MenuIcon } from "@material-ui/icons";
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -14,6 +10,7 @@ import { getAllCourseInfo, getUserData, signOut } from "../../actions";
 import { TYPEROLE } from "../../constants";
 import { useScrollHook } from "../../customs";
 import { AppState } from "../../reducers";
+import InfoHeader from "../Header/infoHeader";
 import Profile from "../Profile";
 import ThemeMode from '../ThemeMode';
 import "./index.scss";
@@ -26,16 +23,7 @@ interface ParamTypes {
     courseId: string,
 }
 
-const useStyles = withStyles({
-    root: {
-        minWidth: 200, // a number of your choice
-        width: 200, // a number of your choice
-    }
-});
-
-
 const Header = () => {
-    const classes = useStyles();
 
 
     const { courseId } = useParams<ParamTypes>();
@@ -51,7 +39,7 @@ const Header = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState("");
 
- 
+
 
     useEffect(() => {
         window.location.pathname.includes("course") && setTypePill(0);
@@ -73,20 +61,6 @@ const Header = () => {
         dispatch(getAllCourseInfo(Number(courseId)))
     }, [])
 
-    const handleClick = (e: any, type: string) => {
-
-        setAnchorEl(e.currentTarget);
-        setTypeOpen(type);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
-    const handleLogout = async () => {
-        await dispatch(signOut());
-        window.location.href = "/";
-    }
 
     const handleCloseModal = (openModal: boolean) => {
         setTypeOpen("");
@@ -117,7 +91,7 @@ const Header = () => {
                         </Button>
                     </div>
                     <div className="header-main___left--logo-name">
-                        <p>{course.course?.name}</p>
+                        {course.course?.name}
                     </div>
                 </div>
                 <div className="header-main___middle">
@@ -129,17 +103,18 @@ const Header = () => {
                         //style={{ width: "80%" }}
                         centered
                     >
-                        <LinkTab style={{ width: "5rem" }} label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
+                        <LinkTab label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
 
                         </LinkTab>
 
                         {member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
                             <>
-                                <LinkTab style={{ width: "5rem" }} label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to={`/exercise/${courseId}`} />                               <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+                                <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to={`/exercise/${courseId}`} />
+                                <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
                             </>
                         }
-                        <LinkTab style={{ width: "5rem" }} label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
-                        <LinkTab style={{ width: "5rem" }} label="Số điểm" component={Link} className={`${typePill === 4 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
+                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
+                        <LinkTab label="Số điểm" component={Link} className={`${typePill === 4 ? "header-main___middle--click-pill" : ""}`} to={`/grade/${courseId}`} />
                     </Tabs>
 
                 </div>
@@ -148,50 +123,7 @@ const Header = () => {
                         <ThemeMode />
                     </div>
 
-                    <div className="header-main___right--calendar">
-                        <IconButton
-                            style={{
-                                color: "#ffffff"
-                            }}
-                        >
-                            <Event />
-                        </IconButton>
-                    </div>
-                    <div className="header-main___right--avatar">
-                        <Button
-                            aria-controls="info-menu"
-                            aria-haspopup="true"
-                            onClick={(e) => handleClick(e, TYPE_MODAL_INFO)}
-                        >
-                            <img className="header-main___right--avatar___img" src={auth.user && auth.user.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} alt="avt" />
-                        </Button>
-
-                        <Menu
-                            id="info-menu"
-                            className="header-main___right--more-features___menu-info"
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={Boolean(typeOpen === TYPE_MODAL_INFO && isOpenModal === false && anchorEl != null)}
-                            onClose={handleClose}
-                        >
-                            <MenuItem
-                                onClick={() => {
-                                    setIsOpenModal(true);
-                                    handleClose();
-                                }}
-                            >
-                                Thông tin cá nhân
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    handleLogout();
-                                    handleClose();
-                                }}
-                            >
-                                Đăng xuất
-                            </MenuItem>
-                        </Menu>
-                    </div>
+                    <InfoHeader />
 
                 </div>
 

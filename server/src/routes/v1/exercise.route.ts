@@ -20,19 +20,27 @@ class ExerciseRoute {
     public initializeRoutes(): void {
 
         this.router.get(
+            "/:exerciseId/course/:courseId/export-grade-exercise",
+            // this._authenticate.authenticate(),
+            // this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            // validate(this._exerciseValidation.exportGradeInExercise),
+            this._exerciseController.exportGradeInExercise
+        );
+
+        this.router.get(
             "/course/:courseId/post/:postId",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._exerciseValidation.getOneExercise),
             this._exerciseController.getOneExercise
-        )
+        );
         this.router.get(
             "/course/:courseId",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(...Object.values(TYPEROLE)),
             validate(this._exerciseValidation.getAll),
             this._exerciseController.getAllExercise
-        )
+        );
 
         this.router.get(
             "/course/:courseId/deadline",
@@ -40,7 +48,7 @@ class ExerciseRoute {
             this._authenticate.courseAuthentication(TYPEROLE.STUDENT),
             validate(this._exerciseValidation.getDeadlineList),
             this._exerciseController.getDeadlineList
-        )
+        );
 
         this.router.post(
             "/course/:courseId",
@@ -48,21 +56,22 @@ class ExerciseRoute {
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._exerciseValidation.CreateExercise()),
             this._exerciseController.createNewExercise,
-        )
+        );
         this.router.patch(
             "/:id/course/:courseId",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._exerciseValidation.UpdateExercise()),
             this._exerciseController.updateExercise
-        )
+        );
         this.router.delete(
             "/:id/course/:courseId/",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             validate(this._exerciseValidation.DeleteExercise()),
             this._exerciseController.deleteExercise
-        )
+        );
+
     }
 }
 

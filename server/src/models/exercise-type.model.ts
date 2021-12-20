@@ -25,29 +25,29 @@ export class ExerciseType extends Model<IExerciseType, IExerciseCreationAttribut
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER.UNSIGNED)
-    id!: number;
+    public id!: number;
 
     @AllowNull(false)
     @Column(DataType.TEXT)
-    name!: string;
+    public name!: string;
 
     @AllowNull(true)
     @Column(DataType.TEXT)
-    description!: string;
+    public description!: string;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
-    orderIndex!: number;
+    public orderIndex!: number;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
-    grade!: number;
+    public grade!: number;
 
     @HasMany(() => Exercise)
-    exerciseList?: Exercise[];
+    public exerciseList?: Exercise[];
 
     @ForeignKey(() => Course)
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
-    courseId!: string;
+    public courseId!: string;
 }

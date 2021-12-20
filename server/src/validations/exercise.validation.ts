@@ -12,7 +12,7 @@ export class ExerciseValidation {
                     Joi.number(),
                 )
             }
-        })
+        });
     }
     public getOneExercise = () => {
         return Joi.object().keys({
@@ -22,7 +22,7 @@ export class ExerciseValidation {
                     Joi.number(),
                 )
             }
-        })
+        });
     }
 
     public getAll = () => {
@@ -33,7 +33,7 @@ export class ExerciseValidation {
                     Joi.number(),
                 )
             }
-        })
+        });
     }
     public CreateExercise = () => {
         return Joi.object().keys({
@@ -53,7 +53,7 @@ export class ExerciseValidation {
                     Joi.number()
                 ).required(),
             }
-        })
+        });
     }
     public UpdateExercise = () => {
         return Joi.object().keys({
@@ -73,7 +73,7 @@ export class ExerciseValidation {
                     Joi.number()
                 )
             }
-        })
+        });
     }
     public DeleteExercise = () => {
         return Joi.object().keys({
@@ -87,6 +87,21 @@ export class ExerciseValidation {
                     Joi.number()
                 )
             }
-        })
+        });
+    }
+
+    public exportGradeInExercise = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                ).required(),
+                exerciseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                ).required(),
+            }
+        });
     }
 }

@@ -23,8 +23,9 @@ export class AuthService {
     public loginWithEmailAndPassword = async (email: string, password: string): Promise<User | null> => {
         const user = await this._userService.findUserbyEmail(email);
 
-        if (!user || !this._userService.isPasswordMatch(user.password, password))
+        if (!user || !this._userService.isPasswordMatch(user.password, password)) {
             return null;
+        }
 
         return user;
     }
@@ -47,7 +48,7 @@ export class AuthService {
         const userExist = await this._userService.findUserbyEmail(bodyCreate.email);
 
         if (userExist) {
-            await this._oAuthService.checkOrCreateOAuth(userExist.id, { type: bodyCreate.type, uid: bodyCreate.uid })
+            await this._oAuthService.checkOrCreateOAuth(userExist.id, { type: bodyCreate.type, uid: bodyCreate.uid });
 
             if (userExist.firstName === "" && userExist.lastName === "") {
                 await this._userService.updateProfile(userExist.id, bodyCreate);
@@ -62,8 +63,8 @@ export class AuthService {
             lastName: (bodyCreate.lastName) ? bodyCreate.lastName : "",
             avatarUrl: bodyCreate.avatarUrl,
             password: generateRandomPassword(),
-        })
-        await this._oAuthService.checkOrCreateOAuth(newUser.id, { type: bodyCreate.type, uid: bodyCreate.uid })
+        });
+        await this._oAuthService.checkOrCreateOAuth(newUser.id, { type: bodyCreate.type, uid: bodyCreate.uid });
 
         return newUser;
     }

@@ -1,8 +1,15 @@
+import * as firebase from "firebase-admin";
 import { createServer } from "http";
 import App from "./app";
 import { logger } from "./config";
 import { applyHttpResponseCompose } from "./exceptions/http-response.exception";
 import IndexRoutes from "./routes/v1/index";
+
+const serviceAccount = require("./google-cert.json");
+
+firebase.initializeApp({
+    credential: firebase.credential.cert(serviceAccount),
+});
 
 const port = Number(process.env.PORT) || 5000;
 

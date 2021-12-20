@@ -38,36 +38,36 @@ export class Attachment extends Model<IAttachment, IAttachmentCreationAttributes
     @PrimaryKey
     @AutoIncrement
     @Column(DataType.INTEGER.UNSIGNED)
-    id!: number;
+    public id!: number;
 
     @Column(DataType.TEXT)
-    name!: string;
+    public name!: string;
 
     @Column(DataType.ENUM(...Object.values(FileType)))
-    type!: string;
+    public type!: string;
 
     @AllowNull(false)
     @Column(DataType.TEXT)
-    url!: string;
+    public url!: string;
 
     @Column(DataType.TEXT)
-    extension!: string;
+    public extension!: string;
 
     @Column(DataType.TEXT)
-    thumbnailUrl!: string;
+    public thumbnailUrl!: string;
 
     @Column(DataType.TEXT)
-    description!: string;
+    public description!: string;
 
     @Column(DataType.BIGINT)
-    size!: number;
+    public size!: number;
 
     @AllowNull(false)
     @Column(DataType.TEXT)
-    refType!: string;
+    public refType!: string;
 
     @AllowNull(false)
     @Column(DataType.INTEGER.UNSIGNED)
-    refId!: number;
+    public refId!: number;
 
 }
