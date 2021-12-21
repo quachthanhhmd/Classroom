@@ -20,6 +20,28 @@ export class MemberService {
         return member && member.type === MEMBERSTATE.ACCEPT ? true : false;
     }
 
+    /**
+     * 
+     * @param studentId 
+     * @returns 
+     */
+    public findMemberByStudentId = async (studentId: string) => {
+
+        return Member.findOne({
+            where: {
+                [Op.and]: {
+                    studentId,
+                    type: MEMBERSTATE.ACCEPT
+                }
+            }
+        })
+    }
+
+    /**
+     * 
+     * @param courseId 
+     * @returns 
+     */
     public findAllStudentInCourse = async (courseId: number) => {
 
         return Member.findAll({

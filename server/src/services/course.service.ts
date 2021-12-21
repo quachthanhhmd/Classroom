@@ -6,7 +6,7 @@ import { Op } from "sequelize";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { ICreateCourse } from "../interfaces";
 import { Course, Exercise, Feed, Topic, User } from "../models";
-import { getSpecification } from "../utils/excel-style";
+import { getSpecification } from "../utils/excel";
 import { uploadNewFileFromBuffer } from "../utils/firebase";
 import { ExerciseService, FeedService, MemberService } from "./";
 import { IUpdateCourse } from "./../interfaces/course.interface";

@@ -5,7 +5,7 @@ import "reflect-metadata";
 import { Op } from "sequelize";
 import { CommentService, MemberService, SubmissionService } from ".";
 import { Exercise, ExerciseType, ReferenceType, Submission, Topic, User } from "../models";
-import { getSpecification } from "../utils/excel-style";
+import { getDataFromExcelUrl, getSpecification } from "../utils/excel";
 import { uploadNewFileFromBuffer } from "../utils/firebase";
 import { ICreateExercise } from "./../interfaces";
 
@@ -235,5 +235,34 @@ export class ExerciseService {
         });
 
         return result.url;
+    }
+
+    public importGradeInExercise = async (exerciseId: number, url: string) => {
+
+        const dataset = await getDataFromExcelUrl(url);
+        console.log(dataset.data[0].data);
+
+        const dataGrade = await Promise.all(dataset.data[0].data.map(async (student: any) => {
+            const member = await this._memberService.findMemberByStudentId(student.MSSV);
+            if (!member) return;
+
+            const submission = await this._submissionService.findByUserId(member.userId, exerciseId);
+
+            if (submission)  {
+                await this._submissionService.updateSubmission(submission.id, {score: student["Điểm số"]});
+            }
+            else
+                await this._submissionService.createSubmission(exerciseId, member.userId, student["Điểm số"]);
+
+            return {
+                userId: member.userId,
+                score: student["Điểm số"]
+            }
+        }))
+
+        return {
+            exerciseId,
+            dataGrade
+        }
     }
 }

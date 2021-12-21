@@ -54,6 +54,17 @@ export class SubmissionService {
         });
     }
 
+    public createScoreSubmission = async (
+        exerciseId: number, userId: number, score :number
+    ): Promise<Submission> => {
+        return Submission.create({
+            exerciseId,
+            userId,
+            score,
+            type: SubmissionType.SCORED,
+        })
+    }
+
     /**
      * 
      * @param userId 

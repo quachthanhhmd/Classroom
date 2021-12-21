@@ -218,4 +218,20 @@ export class ExerciseController {
         }
     }
 
+    public uploadGradeFromSheet = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = +req.params.courseId;
+            const exerciseId = +req.params.exerciseId;
+            const { url } = req.body;
+
+            const gradeData = await this._exerciseService.importGradeInExercise(exerciseId, url);
+
+            return res.composer.success(gradeData);
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 }
