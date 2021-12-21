@@ -57,6 +57,14 @@ class MemberRoute {
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER),
             this._memberController.updateStateMember
         )
+
+        this.router.post(
+            "/course/:courseId/import-student-list",
+            // this._authenticate.authenticate(),
+            // this._authenticate.courseAuthentication(TYPEROLE.TEACHER),
+            validate(this._memberValidation.importStudentList),
+            this._memberController.importAuthMember
+        )
     }
 }
 

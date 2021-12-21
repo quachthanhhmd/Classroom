@@ -66,4 +66,18 @@ export class MemberValidation {
             }
         })
     }
+
+    public importStudentList = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            },
+            body: {
+                url: Joi.string().required(),
+            }
+        })
+    }
 }

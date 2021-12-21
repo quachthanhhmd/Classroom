@@ -366,10 +366,14 @@ export class MemberService {
     }
 
     public importAuthMember = async (url: string, courseId: number) => {
+        console.log(url);
         const dataset = await getDataFromExcelUrl(url);
         const dataSheet: any[] = dataset.data[0].data;
+        console.log(dataSheet);
+        console.log(dataSheet.length === 0 ||
+            dataSheet[0].hasOwnProperty("MSSV") && dataSheet[0].hasOwnProperty("Họ và tên"))
         if (dataSheet.length === 0 ||
-            dataSheet[0].hasOwnProperty("MSSV") && dataSheet[0].hasOwnProperty("Họ và tên")) { return false; }
+            !dataSheet[0].hasOwnProperty("MSSV") || !dataSheet[0].hasOwnProperty("Họ và tên")) { return false; }
 
         await Promise.all(dataSheet.map(async (data) => {
             await this.updateAuthMember(data.MSSV, courseId);
