@@ -3,7 +3,7 @@ import { Notifications } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { getUserData, signOut, updateNotify } from "../../actions";
+import { getUserData, signOut, updateNotifyState } from "../../actions";
 import notificationApi from "../../api/notification.api";
 import { INotification } from '../../interfaces';
 import { AppState } from '../../reducers';
@@ -74,7 +74,7 @@ const InfoHeader = () => {
 
                 if (!res || res.status !== 200) return;
 
-                updateNotify(notifyId);
+                dispatch(updateNotifyState(notifyId));
                 const notify = auth.user?.notifyList.filter(notify => notify.id === notifyId);
 
                 if (notify && notify.length > 0)

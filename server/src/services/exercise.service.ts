@@ -7,7 +7,7 @@ import { CommentService, MemberService, SubmissionService } from ".";
 import { Exercise, ExerciseType, ReferenceType, Submission, Topic, User } from "../models";
 import { getDataFromExcelUrl, getSpecification } from "../utils/excel";
 import { uploadNewFileFromBuffer } from "../utils/firebase";
-import { ICreateExercise } from "./../interfaces";
+import { ICreateExercise, IUpdateExercise } from "./../interfaces";
 
 @injectable()
 export class ExerciseService {
@@ -154,7 +154,7 @@ export class ExerciseService {
      * @param body 
      * @returns 
      */
-    public updateExercise = async (id: number, body: ICreateExercise) => {
+    public updateExercise = async (id: number, body: IUpdateExercise) => {
         return Exercise.update(
             body,
             {
@@ -240,7 +240,6 @@ export class ExerciseService {
     public importGradeInExercise = async (exerciseId: number, url: string) => {
 
         const dataset = await getDataFromExcelUrl(url);
-        console.log(dataset.data[0].data);
 
         const dataGrade = await Promise.all(dataset.data[0].data.map(async (student: any) => {
             const member = await this._memberService.findMemberByStudentId(student.MSSV);

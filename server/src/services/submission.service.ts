@@ -92,8 +92,6 @@ export class SubmissionService {
      * @param body 
      */
     public updateSubmission = async (submissionId: number, body: IUpdateSubmission): Promise<void> => {
-        console.log(body);
-        console.log(submissionId);
         await Submission.update(
             body,
             {

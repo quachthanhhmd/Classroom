@@ -8,6 +8,14 @@ export interface ICreateExercise {
     typeId: number
 }
 
+export interface IUpdateExercise {
+    title?: string,
+    description?: string,
+    deadline?: Date,
+    topicId?: number,
+    typeId?: number
+}
+
 export interface IImportGradeResponse {
     exerciseId: number,
     dataGrade: {

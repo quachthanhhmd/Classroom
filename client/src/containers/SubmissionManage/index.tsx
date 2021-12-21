@@ -91,7 +91,7 @@ const SubmissionManage = () => {
 
         getAllSubmission();
 
-    }, [studentList.length, checkedList, courseId, postId])
+    }, [studentList.length])
 
 
 
