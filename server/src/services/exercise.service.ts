@@ -4,7 +4,7 @@ import * as excel from "node-excel-export";
 import "reflect-metadata";
 import { Op } from "sequelize";
 import { CommentService, MemberService, SubmissionService } from ".";
-import { Exercise, ExerciseType, ReferenceType, Topic, User } from "../models";
+import { Exercise, ExerciseType, ReferenceType, Submission, Topic, User } from "../models";
 import { getSpecification } from "../utils/excel-style";
 import { uploadNewFileFromBuffer } from "../utils/firebase";
 import { ICreateExercise } from "./../interfaces";
@@ -49,6 +49,25 @@ export class ExerciseService {
         });
     }
 
+    /**
+     * 
+     * @param courseId 
+     * @returns 
+     */
+    public findAllExerciseSubmissionByCourseId = async (courseId: number): Promise<any[]> => {
+        return Exercise.findAll({
+            where: {
+                courseId
+            },
+            attributes: ["id", "title"],
+            include: [{
+                model: Submission,
+                attributes: ["userId", "score"]
+            }],
+            raw: true,
+            nest: true,
+        })
+    }
     /**
      * 
      * @param courseId 
@@ -157,6 +176,12 @@ export class ExerciseService {
         });
     }
 
+    /**
+     * 
+     * @param exerciseId 
+     * @param courseId 
+     * @returns 
+     */
     public exportGradeInExercise = async (exerciseId: number, courseId: number): Promise<null | string> => {
 
         const studentList = await this._memberService.findAllStudentInCourse(courseId);
