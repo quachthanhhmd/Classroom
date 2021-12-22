@@ -1,9 +1,14 @@
 import { Optional } from "sequelize";
 import {
-    AllowNull, AutoIncrement, BelongsTo, Column, DataType, ForeignKey, HasMany, Model, PrimaryKey, Table
+    AllowNull, AutoIncrement, BelongsTo, Column, DataType, Default, ForeignKey, HasMany, Model, PrimaryKey, Table
 } from "sequelize-typescript";
 import { Course, ExerciseType, Submission, User } from ".";
 import { Topic } from "./topic.model";
+
+export enum ExerciseState {
+    COMPLETED = "completed",
+    SPENDING = "spending",
+}
 
 interface IExercise {
     id?: number,
@@ -38,6 +43,11 @@ export class Exercise extends Model<IExercise, IExerciseCreationAttributes> {
     @AllowNull(true)
     @Column(DataType.TEXT)
     description!: string;
+
+    @AllowNull(false)
+    @Default(ExerciseState.SPENDING)
+    @Column(DataType.TEXT)
+    state!: string;
 
     @AllowNull(true)
     @Column(DataType.DATE)

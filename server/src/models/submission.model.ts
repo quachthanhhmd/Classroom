@@ -23,7 +23,7 @@ interface ISubmissionCreationAttributes extends Optional<ISubmission, "id">{}
 
 @Table({
     paranoid: true,
-    timestamps: true,
+    // timestamps: true,
     tableName: "submission",
 })
 export class Submission extends Model<ISubmission, ISubmissionCreationAttributes> {

@@ -4,7 +4,8 @@ import "reflect-metadata";
 import { Op } from "sequelize";
 import { MEMBERSTATE } from "../constants";
 import { Member, User } from "../models";
-import { TYPEROLE } from "./../constants/role.constant";
+import { getDataFromExcelUrl } from "../utils/excel";
+import { StudentType, TYPEROLE } from "./../constants/role.constant";
 
 @injectable()
 export class MemberService {
@@ -20,6 +21,44 @@ export class MemberService {
         return member && member.type === MEMBERSTATE.ACCEPT ? true : false;
     }
 
+    /**
+     * 
+     * @param studentId 
+     * @returns 
+     */
+    public findMemberByStudentId = async (studentId: string) => {
+
+        return Member.findOne({
+            where: {
+                [Op.and]: {
+                    studentId,
+                    type: MEMBERSTATE.ACCEPT
+                }
+            }
+        })
+    }
+
+    // /**
+    //  * 
+    //  * @param courseId 
+    //  * @returns 
+    //  */
+    // public findAllMemberAuth = async (courseId: number) => {
+    //     return Member.findAll({
+    //         where: {
+    //             [Op.and]: {
+    //                 courseId,
+    //                 authType: StudentType.AUTH
+    //             }
+    //         }
+    //     })
+    // }
+
+    /**
+     * 
+     * @param courseId 
+     * @returns 
+     */
     public findAllStudentInCourse = async (courseId: number) => {
 
         return Member.findAll({
@@ -157,6 +196,20 @@ export class MemberService {
             });
     }
 
+    public updateAuthMember = async (studentId: string, courseId: number, authType = StudentType.AUTH) => {
+        return Member.update(
+            { authType },
+            {
+                where: {
+                    [Op.and]: {
+                        studentId,
+                        courseId,
+                    }
+                }
+            }
+        )
+    }
+
     /**
      * Add id for student if member is student
      * @param {number} userId 
@@ -252,12 +305,15 @@ export class MemberService {
      * @param courseId 
      * @returns 
      */
-    public getAllSummaryMember = async (courseId: number) => {
+    public getAllSummaryMember = async (courseId: number, authType?: string) => {
+        const data = JSON.parse(JSON.stringify({authType}));
+
         return Member.findAll({
             attributes: ["id", "studentId", "type", "role"],
             where: {
                 courseId,
-                type: MEMBERSTATE.ACCEPT
+                type: MEMBERSTATE.ACCEPT,
+                ...data
             },
             include: [{
                 model: User,
@@ -309,4 +365,20 @@ export class MemberService {
         return !!member;
     }
 
+    public importAuthMember = async (url: string, courseId: number) => {
+        console.log(url);
+        const dataset = await getDataFromExcelUrl(url);
+        const dataSheet: any[] = dataset.data[0].data;
+        console.log(dataSheet);
+        console.log(dataSheet.length === 0 ||
+            dataSheet[0].hasOwnProperty("MSSV") && dataSheet[0].hasOwnProperty("Họ và tên"))
+        if (dataSheet.length === 0 ||
+            !dataSheet[0].hasOwnProperty("MSSV") || !dataSheet[0].hasOwnProperty("Họ và tên")) { return false; }
+
+        await Promise.all(dataSheet.map(async (data) => {
+            await this.updateAuthMember(data.MSSV, courseId);
+        }))
+
+        return true;
+    }
 }

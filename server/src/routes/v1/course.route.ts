@@ -64,7 +64,16 @@ class CourseRoute {
             "/:courseId/post",
             this._authenticate.authenticate(),
             validate(this._courseValidation.getAllPost),
-            this._courseController.getAllPost
+            this._courseController.getAllPost,
+
+        )
+
+        this.router.get(
+            "/:courseId/grade-board",
+            // this._authenticate.authenticate(),
+            // this._authenticate.courseAuthentication(TYPEROLE.ASSISTANT, TYPEROLE.TEACHER),
+            validate(this._courseValidation.exportGradeBoard),
+            this._courseController.exportGrade
         )
     }
 

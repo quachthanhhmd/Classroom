@@ -54,6 +54,17 @@ export class SubmissionService {
         });
     }
 
+    public createScoreSubmission = async (
+        exerciseId: number, userId: number, score :number
+    ): Promise<Submission> => {
+        return Submission.create({
+            exerciseId,
+            userId,
+            score,
+            type: SubmissionType.SCORED,
+        })
+    }
+
     /**
      * 
      * @param userId 
@@ -81,8 +92,6 @@ export class SubmissionService {
      * @param body 
      */
     public updateSubmission = async (submissionId: number, body: IUpdateSubmission): Promise<void> => {
-        console.log(body);
-        console.log(submissionId);
         await Submission.update(
             body,
             {

@@ -13,6 +13,7 @@ import {
 } from "sequelize-typescript";
 import { Course, User } from "./";
 import { MEMBERSTATE, TYPEROLE } from "./../constants";
+import { StudentType } from "./../constants/role.constant";
 
 interface IMember {
     id?: number;
@@ -21,6 +22,7 @@ interface IMember {
     role?: string;
     studentId?: string;
     type?: string;
+    authType?: string;
 }
 
 interface IMemberCreationAttributes extends Optional<IMember, "id"> { }
@@ -56,6 +58,11 @@ export class Member extends Model<IMember, IMemberCreationAttributes> {
     @AllowNull(false)
     @Column(DataType.ENUM(TYPEROLE.ASSISTANT, TYPEROLE.STUDENT, TYPEROLE.TEACHER))
     role!: string;
+
+    @AllowNull(false)
+    @Default(StudentType.NOT_AUTH)
+    @Column(DataType.ENUM(StudentType.NOT_AUTH, StudentType.AUTH))
+    authType!: string
 
     @AllowNull(true)
     @Column(DataType.STRING(10))

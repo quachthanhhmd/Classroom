@@ -8,6 +8,22 @@ export interface ICreateExercise {
     typeId: number
 }
 
+export interface IUpdateExercise {
+    title?: string,
+    description?: string,
+    deadline?: Date,
+    topicId?: number,
+    typeId?: number
+}
+
+export interface IImportGradeResponse {
+    exerciseId: number,
+    dataGrade: {
+        userId: number,
+        score: number
+    }[]
+}
+
 export const serializeExerciseThumbnail = (model: any) => {
     return {
         id: model.id,

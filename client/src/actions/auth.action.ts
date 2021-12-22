@@ -161,7 +161,7 @@ export const loginOAuth = (data: ILoginOAuth) =>
   }
 
 
-export const updateNotify = (notifyId: number) =>
+export const updateNotifyState = (notifyId: number) =>
   async (dispatch) => {
     try {
       dispatch({

@@ -179,7 +179,7 @@ export class CourseController {
             const feedList = await this._feedService.getAllFeedInCourse(courseId);
             const exerciseList = await this._exerciseService.getAllExerciseInCourse(courseId);
 
-            const postList: Array<Exercise | Feed> =
+            const postList: (Exercise | Feed)[] =
                 [...feedList, ...exerciseList].sort(
                     (a, b) =>
                         new Date(b.createdAt).valueOf() - new Date(a.createdAt).valueOf()
@@ -199,6 +199,10 @@ export class CourseController {
         try {
             const courseId = +req.params.courseId;
 
+            const urlGradeBoard = await this._courseService.exportGradeBoard(courseId);
+            if (urlGradeBoard === null) return res.composer.badRequest();
+
+            return res.composer.success(urlGradeBoard);
         } catch (err) {
             return res.composer.otherException(err);
         }

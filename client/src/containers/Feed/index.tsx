@@ -324,7 +324,7 @@ const Feed = () => {
 
                                     </CardHeader>
                                     <CardContent className="feed-main___body___left--deadline___content">
-                                        {deadlineList.length !== 0 ?
+                                        {deadlineList && deadlineList.length !== 0 ?
                                             <>
                                                 {
                                                     deadlineList.map(exam => (

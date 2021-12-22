@@ -87,4 +87,15 @@ export class CourseValidation {
             },
         })
     }
+
+    public exportGradeBoard = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            },
+        })
+    }
 }

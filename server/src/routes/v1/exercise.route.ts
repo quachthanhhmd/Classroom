@@ -26,6 +26,10 @@ class ExerciseRoute {
             // validate(this._exerciseValidation.exportGradeInExercise),
             this._exerciseController.exportGradeInExercise
         );
+        this.router.post(
+            "/:exerciseId/course/:courseId/import-grade-exercise",
+            this._exerciseController.uploadGradeFromSheet
+        )
 
         this.router.get(
             "/course/:courseId/post/:postId",

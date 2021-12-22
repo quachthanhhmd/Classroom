@@ -1,11 +1,16 @@
 import { inject, injectable } from "inversify";
+import moment from "moment";
+import * as excel from "node-excel-export";
 import "reflect-metadata";
 import { Op } from "sequelize";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
 import { ICreateCourse } from "../interfaces";
 import { Course, Exercise, Feed, Topic, User } from "../models";
+import { getSpecification } from "../utils/excel";
+import { uploadNewFileFromBuffer } from "../utils/firebase";
 import { ExerciseService, FeedService, MemberService } from "./";
 import { IUpdateCourse } from "./../interfaces/course.interface";
+import { SubmissionService } from "./submission.service";
 
 @injectable()
 export class CourseService {
@@ -13,6 +18,7 @@ export class CourseService {
     constructor(
         @inject("MemberService") private readonly _memberService: MemberService,
         @inject("FeedService") private readonly _feedService: FeedService,
+        @inject("SubmissionService") private readonly _submissionService: SubmissionService,
         @inject("ExerciseService") private readonly _exerciseService: ExerciseService) { }
 
     /**
@@ -163,4 +169,74 @@ export class CourseService {
         });
     }
 
+    public exportGradeBoard = async (courseId: number) => {
+        const studentList = await this._memberService.findAllStudentInCourse(courseId);
+
+        if (studentList.length === 0) { return null }
+
+        const exerciseList = await this._exerciseService.findAllExerciseSubmissionByCourseId(courseId);
+
+        const totalExercises = exerciseList.length;
+
+        const dataset = studentList.map((student) => {
+
+            const submissionList = exerciseList.map((exercise) => {
+
+                if (typeof exercise.submissionList === "object") {
+
+                    if (exercise.submissionList.userId === null) {
+                        return {
+                            score: 0,
+                            studentId: student.studentId,
+                        }
+                    }
+                    exercise.submissionList = [exercise.submissionList];
+                }
+
+                const submissionStudent =
+                    exercise.submissionList.filter((submission) => submission.userId === student.userId)
+
+                const dataSubmission = <any> {
+                    score: 0,
+                    studentId: student.studentId,
+                }
+                if (submissionStudent.length > 0) {
+                    dataSubmission.score = submissionStudent[0].score;
+                }
+
+                return dataSubmission;
+            })
+
+            const totalScore = submissionList.reduce((a, b) => a + b.score, 0) / totalExercises;
+
+            return {
+                studentId: student.studentId,
+                score: totalScore,
+            }
+        })
+
+        const fileName = `${moment(
+            new Date()
+        ).utc()}-export-grade-broad.xlsx`;
+
+        const specification = {
+            studentId: getSpecification("MSSV", 180),
+            score: getSpecification("Điểm số", 70),
+        };
+
+        const report = excel.buildExport([
+            {
+                specification,
+                name: `Bảng điểm của khóa học`,
+                data: dataset,
+            },
+        ]);
+
+        const result = await uploadNewFileFromBuffer(report, {
+            fileName,
+            pathFile: `course-grade-board-${courseId}`,
+        });
+
+        return result.url;
+    }
 }

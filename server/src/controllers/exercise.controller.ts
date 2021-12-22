@@ -4,7 +4,7 @@ import {
     serializeExerciseDetail,
     serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse
 } from "../interfaces";
-import { NotificationType, ReferenceType } from "../models";
+import { NotificationType, ReferenceType, SubmissionType } from "../models";
 import {
     AttachmentService, CommentService,
     ExerciseService, MemberService, NotificationService, SubmissionService, TopicService
@@ -167,6 +167,13 @@ export class ExerciseController {
             const updateExercise = await this._exerciseService.findExerciseById(id);
             if (!updateExercise) { return res.composer.notFound(); }
 
+            if (body.hasOwnProperty("state")) {
+                const submissionList = await this._submissionService.findAllSubmissionExercise(id);
+                await Promise.all(submissionList.map(async (submission) => {
+                    await this._submissionService.updateSubmission(submission.id, {type: SubmissionType.COMPLETED})
+                }))
+            }
+
             return res.composer.success(serializeExerciseDetail(updateExercise));
         } catch (err) {
             return res.composer.otherException(err);
@@ -218,4 +225,20 @@ export class ExerciseController {
         }
     }
 
+    public uploadGradeFromSheet = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = +req.params.courseId;
+            const exerciseId = +req.params.exerciseId;
+            const { url } = req.body;
+
+            const gradeData = await this._exerciseService.importGradeInExercise(exerciseId, url);
+
+            return res.composer.success(gradeData);
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 }

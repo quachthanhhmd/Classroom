@@ -1,5 +1,5 @@
-import { Card, Grid, CardContent, CardHeader, Divider, Button, IconButton, Typography } from '@material-ui/core';
-import { Add, MoreVert, Assignment } from '@material-ui/icons';
+import { Button, Card, CardContent, CardHeader, Divider, Grid, IconButton } from '@material-ui/core';
+import { Add, Assignment, MoreVert } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
@@ -8,13 +8,13 @@ import { showErrorNotify, showSuccessNotify } from '../../actions/notification.a
 import exerciseApi from '../../api/exercise.api';
 import AddExercise from '../../components/AddExercise';
 import CircularLoading from '../../components/Loading';
-import { ICreateExercise, IExerciseThumbnail, IExerciseTypeDetail } from '../../interfaces';
+import { ICreateExercise, IExerciseThumbnail } from '../../interfaces';
 import { AppState } from '../../reducers';
 import { getDateFormat } from '../../utils/converter';
-
-
-
 import "./index.scss";
+
+
+
 
 
 interface IPropsExam {

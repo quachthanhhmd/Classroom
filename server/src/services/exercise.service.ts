@@ -4,10 +4,10 @@ import * as excel from "node-excel-export";
 import "reflect-metadata";
 import { Op } from "sequelize";
 import { CommentService, MemberService, SubmissionService } from ".";
-import { Exercise, ExerciseType, ReferenceType, Topic, User } from "../models";
-import { getSpecification } from "../utils/excel-style";
+import { Exercise, ExerciseType, ReferenceType, Submission, Topic, User } from "../models";
+import { getDataFromExcelUrl, getSpecification } from "../utils/excel";
 import { uploadNewFileFromBuffer } from "../utils/firebase";
-import { ICreateExercise } from "./../interfaces";
+import { ICreateExercise, IUpdateExercise } from "./../interfaces";
 
 @injectable()
 export class ExerciseService {
@@ -49,6 +49,25 @@ export class ExerciseService {
         });
     }
 
+    /**
+     * 
+     * @param courseId 
+     * @returns 
+     */
+    public findAllExerciseSubmissionByCourseId = async (courseId: number): Promise<any[]> => {
+        return Exercise.findAll({
+            where: {
+                courseId
+            },
+            attributes: ["id", "title"],
+            include: [{
+                model: Submission,
+                attributes: ["userId", "score"]
+            }],
+            raw: true,
+            nest: true,
+        })
+    }
     /**
      * 
      * @param courseId 
@@ -135,7 +154,7 @@ export class ExerciseService {
      * @param body 
      * @returns 
      */
-    public updateExercise = async (id: number, body: ICreateExercise) => {
+    public updateExercise = async (id: number, body: IUpdateExercise) => {
         return Exercise.update(
             body,
             {
@@ -157,6 +176,12 @@ export class ExerciseService {
         });
     }
 
+    /**
+     * 
+     * @param exerciseId 
+     * @param courseId 
+     * @returns 
+     */
     public exportGradeInExercise = async (exerciseId: number, courseId: number): Promise<null | string> => {
 
         const studentList = await this._memberService.findAllStudentInCourse(courseId);
@@ -210,5 +235,33 @@ export class ExerciseService {
         });
 
         return result.url;
+    }
+
+    public importGradeInExercise = async (exerciseId: number, url: string) => {
+
+        const dataset = await getDataFromExcelUrl(url);
+
+        const dataGrade = await Promise.all(dataset.data[0].data.map(async (student: any) => {
+            const member = await this._memberService.findMemberByStudentId(student.MSSV);
+            if (!member) return;
+
+            const submission = await this._submissionService.findByUserId(member.userId, exerciseId);
+
+            if (submission)  {
+                await this._submissionService.updateSubmission(submission.id, {score: student["Điểm số"]});
+            }
+            else
+                await this._submissionService.createSubmission(exerciseId, member.userId, student["Điểm số"]);
+
+            return {
+                userId: member.userId,
+                score: student["Điểm số"]
+            }
+        }))
+
+        return {
+            exerciseId,
+            dataGrade
+        }
     }
 }

@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { sendInviteMember } from "../config/nodemailer";
-import { MEMBER_EXISTS, TYPEROLE } from "../constants";
+import { MEMBER_EXISTS, StudentType, TYPEROLE } from "../constants";
 import { serializeGetRole, serializeGetSummaryMember, IUpsertStudentID } from "../interfaces/member.interface";
 import { CourseService, MemberService, TokenService, UserService } from "../services";
 import { MEMBERSTATE } from "./../constants/state.constant";
@@ -168,6 +168,33 @@ export class MemberController {
 
             return res.composer.success({ userId });
         } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public importAuthMember = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            // const userId = <number> req.currentUser?.id;
+            const courseId = +req.params.courseId;
+            const { url } = req.body;
+
+            // const isOwnCourse = await this._courseService.isOwnCourse(courseId, userId);
+            // if (!isOwnCourse) return res.composer.forbidden();
+
+            const isSuccessImport = await this._memberService.importAuthMember(url, courseId);
+
+            if (!isSuccessImport) {
+                return res.composer.badRequest();
+            }
+            const memberAuthList = await this._memberService.getAllSummaryMember(courseId, StudentType.AUTH);
+
+            return res.composer.success(serializeGetSummaryMember(memberAuthList));
+        } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }
