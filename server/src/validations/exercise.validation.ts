@@ -62,6 +62,7 @@ export class ExerciseValidation {
                 description: Joi.string(),
                 deadline: Joi.date(),
                 topicId: Joi.number(),
+                state: Joi.string(),
             },
             params: {
                 courseId: Joi.alternatives(
@@ -101,6 +102,24 @@ export class ExerciseValidation {
                     Joi.string(),
                     Joi.number()
                 ).required(),
+            }
+        });
+    }
+
+    public importGradeInExercise = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                ).required(),
+                exerciseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number()
+                ).required(),
+            },
+            body: {
+                url: Joi.string().required()
             }
         });
     }

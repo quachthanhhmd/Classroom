@@ -39,6 +39,14 @@ const courseApi = {
     getAllPost: (courseId: number) => {
         const url = `v1/course/${courseId}/post`;
         return axiosClient.get<IHttpFormat<IPostResponse>>(url);
+    },
+    getStudentList: (courseId: number) => {
+        const url = `v1/course/${courseId}/member/student-auth`;
+        return axiosClient.get<IHttpFormat<any[]>>(url);
+    },
+    exportGradeBoard: (courseId: number) => {
+        const url = `v1/course/${courseId}/grade-board`;
+        return axiosClient.get<IHttpFormat<string>>(url);
     }
 }
 

@@ -21,13 +21,16 @@ class ExerciseRoute {
 
         this.router.get(
             "/:exerciseId/course/:courseId/export-grade-exercise",
-            // this._authenticate.authenticate(),
-            // this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
-            // validate(this._exerciseValidation.exportGradeInExercise),
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            validate(this._exerciseValidation.exportGradeInExercise),
             this._exerciseController.exportGradeInExercise
         );
         this.router.post(
             "/:exerciseId/course/:courseId/import-grade-exercise",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
+            validate(this._exerciseValidation.importGradeInExercise),
             this._exerciseController.uploadGradeFromSheet
         )
 

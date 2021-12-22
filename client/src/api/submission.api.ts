@@ -23,8 +23,8 @@ const submissionApi = {
         const url = `/v1/submission/${submissionId}/course/${courseId}`;
         return axiosClient.get<IHttpFormat<ISubmissionResponse>>(url);
     },
-    updateScore: (courseId: number, submissionId: number, data: {type?: SubmissionType, score?: number}) => {
-        const url = `/v1/submission/${submissionId}/course/${courseId}/score`;
+    updateScore: (courseId: number, userId: number, exerciseId: number, data: {type?: SubmissionType, score?: number}) => {
+        const url = `/v1/submission/course/${courseId}/exercise/${exerciseId}/user/${userId}/score`;
         return axiosClient.patch<IHttpFormat<ISubmissionResponse>>(url, data);
     }
 }

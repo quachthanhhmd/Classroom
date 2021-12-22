@@ -126,7 +126,7 @@ const InfoHeader = () => {
                                 width: 400,
                             },
                         }}
-                        getContentAnchorEl={null}
+                       // getContentAnchorEl={null}
                         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                         transformOrigin={{ vertical: "top", horizontal: "right" }}
                         open={Boolean(typeOpen === TYPE_MODAL_NOTIFY && isOpenModal === false && anchorEl != null)}

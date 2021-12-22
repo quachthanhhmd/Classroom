@@ -1,5 +1,5 @@
 import { CssBaseline } from "@material-ui/core";
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter } from "react-router-dom";
@@ -12,7 +12,7 @@ import { AppState } from "./reducers";
 function App() {
   const themeMode = useSelector((state: AppState) => state.themeMode?.toggleMode);
 
-  const darkTheme = createTheme({
+  const darkTheme = createMuiTheme({
     palette: {
       type: "dark",
       primary: {
@@ -26,7 +26,7 @@ function App() {
       }
     }
   });
-  const lightTheme = createTheme({
+  const lightTheme = createMuiTheme({
     palette: {
       type: "light",
       primary: {

@@ -1,19 +1,19 @@
 import { Avatar, Button, Card, CardContent, CardHeader, Divider, FormControl, Grid, IconButton, InputAdornment, MenuItem, Select, TextField, Typography } from "@material-ui/core";
-import { KeyboardArrowDown, KeyboardArrowLeft, KeyboardArrowRight, AttachFile, CloudDownload, Send } from "@material-ui/icons";
+import { AttachFile, CloudDownload, KeyboardArrowLeft, KeyboardArrowRight, Send } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import "./index.scss";
-import submissionApi from "../../api/submission.api";
-import { useParams } from "react-router";
-import { ISubmissionResponse, ISubmissionSummary } from "../../interfaces";
-import { openInNewTab } from "../../utils/mail";
-import { SCORED_FAIL, SCORED_SUCCESS, SubmissionMessage } from "../../messages";
-import { ReferenceType, SubmissionType } from "../../constants";
-import { useDispatch, useSelector } from "react-redux";
-import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import { Helmet } from "react-helmet";
-import Comment from "../../components/Comment";
-import { AppState } from "../../reducers";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import commentApi from "../../api/comment.api";
+import submissionApi from "../../api/submission.api";
+import Comment from "../../components/Comment";
+import { ReferenceType, SubmissionType } from "../../constants";
+import { ISubmissionResponse, ISubmissionSummary } from "../../interfaces";
+import { SCORED_FAIL, SCORED_SUCCESS, SubmissionMessage } from "../../messages";
+import { AppState } from "../../reducers";
+import { openInNewTab } from "../../utils/mail";
+import "./index.scss";
 
 
 const StudentItem = (props: { student: ISubmissionSummary }) => {
@@ -112,7 +112,7 @@ const Marking = () => {
         if (!submissionDetail || typeof submissionDetail.score === "undefined") return;
 
         try {
-            const res = await submissionApi.updateScore(+courseId, submissionDetail.id, { type: SubmissionType.SCORED, score: submissionDetail.score });
+            const res = await submissionApi.updateScore(+courseId, submissionDetail.userId, submissionDetail.exerciseId, { type: SubmissionType.SCORED, score: submissionDetail.score });
 
             if (!res || res.status !== 200) throw new Error();
 
@@ -232,7 +232,7 @@ const Marking = () => {
                             </IconButton>
 
                         </Grid>
-                        <Grid container item xs={6} justifyContent="flex-end">
+                        <Grid item xs={6} justifyContent="flex-end">
                             <CardContent
                                 className="mark___submit"
                                 style={{ padding: "0", alignSelf: "center", alignItems: "center" }}>

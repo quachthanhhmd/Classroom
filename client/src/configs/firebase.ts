@@ -1,20 +1,13 @@
 import firebase from "firebase/compat/app";
-import "firebase/compat/storage";
 import "firebase/compat/auth";
 import "firebase/compat/firestore";
-
-import env from "../configs/env";
+import "firebase/compat/storage";
+import {
+    getDownloadURL, ref, getStorage,
+    uploadBytesResumable, getMetadata
+} from 'firebase/storage';
 import { ICreateAttachment } from "../interfaces/attachment.interface";
 
-// const firebaseConfig = {
-//     apiKey: env.FIREBASE.API_KEY,
-//     authDomain: env.FIREBASE.DOMAIN,
-//     projectId: env.FIREBASE.PROJECT_ID,
-//     storageBucket: env.FIREBASE.BUCKET,
-//     messagingSenderId: env.FIREBASE.SENDER_ID,
-//     appId: env.FIREBASE.APP_ID,
-//     measurementId: env.FIREBASE.MEASUREMENT_ID,
-// };
 
 const firebaseConfig = {
     apiKey: "AIzaSyCrBlrKbmy7W2uDM8T8kDKQNgEThLYsmJ4",
@@ -33,7 +26,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 
-const storage = app.storage();
+const storage = getStorage(app);
 const db = app.firestore();
 const auth = app.auth();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -72,16 +65,18 @@ const signInWithGoogle = async () => {
 
 const uploadBulk = async (folderName: string, fileList: File[], callback: (data: ICreateAttachment[]) => void) => {
 
-    const dataList: ICreateAttachment[] = await Promise.all(fileList.map((file) => uploadFile(folderName, file)));
+    const dataList: ICreateAttachment[] = await Promise.all(fileList.map((file) => uploadFileAttachment(folderName, file)));
     console.log(dataList.length);
     callback(dataList);
 }
 
-const uploadFile = async (folderName: string, file: File) => {
-    const uploadTask =  await storage.ref(`${folderName}/${file.name}`).put(file);
+const uploadFileAttachment = async (folder: string, file: File) => {
+    const fileName = folder ? `${folder}/${file.name}` : `${file.name}`;
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
 
-    const url = await uploadTask.ref.getDownloadURL()
-    const metaData = await uploadTask.ref.getMetadata()
+    const url = await getDownloadURL(uploadTask.snapshot.ref);
+    const metaData = await getMetadata(uploadTask.snapshot.ref);
     return {
         url,
         name: metaData.name,
@@ -92,8 +87,79 @@ const uploadFile = async (folderName: string, file: File) => {
 
 }
 
+const uploadFile = (folder: string, file: any): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const fileName = folder ? `${folder}/${file.name}` : `${file.name}`;
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, file);
+
+        uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+                const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            },
+            (error) => {
+                // Handle unsuccessful uploads
+                reject('Error uploading file');
+            },
+            () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>{
+
+                    resolve(downloadURL)
+                }
+                );
+            }
+        );
+    });
+};
+
+const downloadFile = (fileName: string, folderName?: string) => {
+    const name = folderName ? `${folderName}/${fileName}` : fileName;
+    const starsRef = ref(storage, name);
+
+    getDownloadURL(starsRef)
+        .then((url) => {
+            const xhr = new XMLHttpRequest();
+            xhr.responseType = 'blob';
+            xhr.onload = (event) => {
+                let blob = new Blob([xhr.response]);
+                let href = URL.createObjectURL(blob);
+                let a = document.createElement('a') as HTMLAnchorElement;
+                a.href = href;
+                a.setAttribute('download', fileName);
+                a.click();
+                URL.revokeObjectURL(href);
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
+        })
+        .catch((error) => {
+            console.log('download error code', error.code);
+            switch (error.code) {
+                case 'storage/object-not-found':
+                    // File doesn't exist
+                    break;
+                case 'storage/unauthorized':
+                    // User doesn't have permission to access the object
+                    break;
+                case 'storage/canceled':
+                    // User canceled the upload
+                    break;
+
+                // ...
+
+                case 'storage/unknown':
+                    // Unknown error occurred, inspect the server response
+                    break;
+            }
+        });
+};
+
+
 const logout = () => {
     auth.signOut();
 };
 // const storage = app.
-export { storage, uploadBulk, auth, uploadFile, signInWithGoogle, logout, firebase as default };
+export { storage, uploadBulk, auth, uploadFile, signInWithGoogle, downloadFile, logout};

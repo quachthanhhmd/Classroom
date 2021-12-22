@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { updateCourseInfo } from '../../actions';
-import { storage } from "../../configs/firebase";
+import { uploadFile } from "../../configs/firebase";
 import { ICourseInfo } from "../../interfaces";
 import { objectFieldChange } from '../../utils/object-solve';
 import { ChangeCourseInfoValidate } from "../../utils/validation";
@@ -53,28 +53,11 @@ const CourseInfo = (props: IPropType) => {
     const { onChange, ...rest } = register("studentLimit");
 
     const handleUpload = async () => {
-        const uploadTask = storage.ref(`course-images/${selectedFile!.name}`).put(selectedFile!);
-        uploadTask.on(
-            "state_changed",
-            (snapShot) => {
-                //takes a snap shot of the process as it is happening
-                console.log(snapShot)
-            },
-            (error: any) => {
-                console.log(error);
-            },
-            () => {
+        const url: string = await uploadFile("course-images", selectedFile!.name);
 
-                storage
-                    .ref("images")
-                    .child(selectedFile!.name)
-                    .getDownloadURL()
-                    .then((url: string) => {
-                        dispatch(updateCourseInfo(+courseId, { avatarUrl: url }));
-                        setPreview(url);
-                    });
-            }
-        );
+        dispatch(updateCourseInfo(+courseId, { avatarUrl: url }));
+        setPreview(url);
+        
         return true;
     };
 

@@ -18,6 +18,10 @@ const memberApi = {
     updateMemberState: (userId: number, courseId: number, state: string) => {
         const url = `/v1/member/update/${courseId}/${userId}`;
         return axiosClient.patch<IHttpFormat<{userId: number}>>(url, {state});
+    },
+    importMemberList: (courseId: number, data: any) => {
+        const url = `/v1/member/course/${courseId}/import-student-list`;
+        return axiosClient.post(url, data)
     }
 }
 export default memberApi;

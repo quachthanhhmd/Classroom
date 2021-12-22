@@ -60,7 +60,7 @@ class SubmissionRoute {
         )
 
         this.router.patch(
-            "/:submissionId/course/:courseId/score",
+            "/course/:courseId/exercise/:exerciseId/user/:userId/score",
             this._authenticate.authenticate(),
             this._authenticate.courseAuthentication(TYPEROLE.TEACHER, TYPEROLE.ASSISTANT),
             // validate(this._validation.UpdateScore),

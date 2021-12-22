@@ -264,4 +264,21 @@ export class ExerciseService {
             dataGrade
         }
     }
+
+    public findAllSubmissionOfUserInCourse = async (courseId: number, userId: number) => {
+
+        return Exercise.findAll({
+            where: {
+                courseId,
+            },
+            include: {
+                model: Submission,
+                where: {
+                    userId,
+                }
+            },
+            raw: false,
+            nest: false,
+        })
+    }
 }

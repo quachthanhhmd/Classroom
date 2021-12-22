@@ -159,7 +159,7 @@ const AddExercise = (props: IPropsType) => {
                                                                     vertical: "top",
                                                                     horizontal: "left"
                                                                 },
-                                                                getContentAnchorEl: null
+                                            
                                                             }}
                                                             label="Chủ đề"
                                                             value={topic.id}
@@ -212,7 +212,7 @@ const AddExercise = (props: IPropsType) => {
                                                                 vertical: "top",
                                                                 horizontal: "left"
                                                             },
-                                                            getContentAnchorEl: null
+                                                            //getContentAnchorEl: null
                                                         }}
                                                         label="Phân loại"
                                                         {...register("typeId")}
@@ -232,7 +232,7 @@ const AddExercise = (props: IPropsType) => {
                                             </Box>
 
                                             <Divider />
-                                            <Box sx={{ minWidth: 120 }} className="exercise___option">
+                                            <Box style={{ minWidth: 120 }} className="exercise___option">
                                                 <FormControl fullWidth>
 
                                                     <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>

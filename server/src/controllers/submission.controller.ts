@@ -126,14 +126,23 @@ export class SubmissionController {
         res: IResponse,
     ): Promise<void> => {
         try {
-            const submissionId = +req.params.submissionId;
             const score = +req.body.score;
+            const userId = +req.params.userId;
+            const exerciseId = +req.params.exerciseId;
 
-            await this._submissionService.updateSubmission(submissionId, { score, type: SubmissionType.SCORED });
+            const submissionExist = await this._submissionService.findByUserId(userId, exerciseId);
 
-            // const submission = await this._submissionService.findSubmissionById(submissionId);
+            if (!submissionExist) {
+                const newSubmission = await this._submissionService.createScoreSubmission(exerciseId, userId, score);
 
-            return res.composer.success();
+                return res.composer.success(serializeSubmissionDetail(newSubmission));
+            }
+
+            await this._submissionService.updateSubmission(submissionExist.id, { score, type: SubmissionType.SCORED });
+
+            const submission = await this._submissionService.findSubmissionById(submissionExist.id);
+
+            return res.composer.success(serializeSubmissionDetail(submission));
         } catch (err) {
             console.log(err);
 

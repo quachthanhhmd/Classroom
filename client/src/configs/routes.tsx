@@ -178,7 +178,7 @@ const courseRouteList = [
     {
         path: ROUTES.grade,
         exact: true,
-        auth: false,
+        auth: true,
         main: () => <Grade/>
     }
 ]

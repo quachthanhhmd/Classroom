@@ -164,7 +164,8 @@ export class ExerciseController {
 
             await this._exerciseService.updateExercise(id, body);
 
-            const updateExercise = await this._exerciseService.findExerciseById(id);
+            const updateExercise = await this._exerciseService.findAllInfoById(id);
+
             if (!updateExercise) { return res.composer.notFound(); }
 
             if (body.hasOwnProperty("state")) {
@@ -176,6 +177,8 @@ export class ExerciseController {
 
             return res.composer.success(serializeExerciseDetail(updateExercise));
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }

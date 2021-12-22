@@ -83,17 +83,19 @@ export const serializeCourseDetail = (model: any) => {
     }
 }
 
-export const serializeStudentList = (model: any) => {
-    return model.map(serializeStudentAuth);
+export const serializeStudentList = (model: any[], gradeList: any[]) => {
+    return model.map((item) => serializeStudentAuth(item, gradeList));
 }
 
-const serializeStudentAuth = (model: any) => {
-    console.log(model.course.exerciseList);
+const serializeStudentAuth = (model: any, gradeList: any[]) => {
+    const totalScore = gradeList.filter((student) => student.id === model.id);
 
     return {
         id: model.id,
         role: model.role,
         authType: model.authType,
+        studentId: model.studentId,
+        totalScore: !totalScore || totalScore.length === 0 ? 0 : totalScore[0].totalScore,
         user: {
             userId: model.user.id,
             firstName: model.user.firstName,
@@ -102,16 +104,11 @@ const serializeStudentAuth = (model: any) => {
             email: model.user.email
         },
         exerciseList: model.course.exerciseList ? model.course.exerciseList.map((exercise) => {
-            // console.log(exercise);
-            // const submissionList: any[] = [];
-            // if (typeof exercise.submissionList === "object") {
-            //     if (typeof exercise.submissionList.id !== null) {
-            //         submissionList.push(exercise.submissionList);
-            //     }
-            // }
-
             return {
                 exerciseId: exercise.id,
+                state: exercise.state,
+                title: exercise.title,
+                typeId: exercise.typeId,
                 submissionList: exercise.submissionList.map((submission) => {
                     return {
                         id: submission.id,

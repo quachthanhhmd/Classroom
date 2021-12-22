@@ -1,5 +1,5 @@
 import { Snackbar } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { closeNotify } from '../../actions/notification.action';

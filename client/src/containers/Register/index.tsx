@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         loginBtn: {
             marginTop: theme.spacing(2),
-            flexGrow: 1
+            flexGrow: 1,
         },
         header: {
             textAlign: 'center',

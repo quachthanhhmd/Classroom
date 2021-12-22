@@ -214,11 +214,15 @@ export class CourseController {
     ): Promise<void> => {
         try {
             const courseId = +req.params.courseId;
-
             const data = await this._memberService.findAllStudentAuth(courseId);
 
-            return res.composer.success(serializeStudentList(data));
+            const studentTotalGrade = await this._courseService.calculateTotalGrade(courseId);
+            const gradeList = await this._courseService.calculateTotalGrade(courseId);
+
+            return res.composer.success(serializeStudentList(data, gradeList));
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }

@@ -1,4 +1,4 @@
-import { NOTIFICATION_SUCCESS, CLOSE_NOTIFICATION, NOTIFICATION_FAIL } from "../constants"
+import { NOTIFICATION_SUCCESS, CLOSE_NOTIFICATION, NOTIFICATION_FAIL, NOTIFICATION_INFO } from "../constants"
 
 export const showSuccessNotify = (message: string) =>
     async (dispatch: any) => {
@@ -18,6 +18,15 @@ export const showErrorNotify = (message: string) =>
         })
     }
 
+
+export const showInfoNotify = (message: string) =>
+    async (dispatch: any) => {
+
+        dispatch({
+            type: NOTIFICATION_INFO,
+            payload: message
+        })
+    }
 
 export const closeNotify = () =>
     async (dispatch: any) => {

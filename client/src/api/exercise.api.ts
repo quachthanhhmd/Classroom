@@ -35,6 +35,18 @@ const exerciseApi = {
     getDeadlineList: (courseId: number) => {
         const url = `/v1/exercise/course/${courseId}/deadline`;
         return axiosClient.get<IHttpFormat<IDeadlineResponse[]>>(url);
+    },
+    importExercise: (courseId: number, exerciseId: number, data: any) => {
+        const url = `/v1/exercise/${exerciseId}/course/${courseId}/import-grade-exercise`;
+        return axiosClient.post(url, data);
+    },
+    exportExercise: (courseId: number, exerciseId: number) => {
+        const url = `/v1/exercise/${exerciseId}/course/${courseId}/export-grade-exercise`;
+        return axiosClient.get<IHttpFormat<string>>(url);
+    },
+    updateExercise: (courseId: number, exerciseId: number, data) => {
+        const url = `/v1/exercise/${exerciseId}/course/${courseId}`;
+        return axiosClient.patch<IHttpFormat<null>>(url, data);
     }
 }
 

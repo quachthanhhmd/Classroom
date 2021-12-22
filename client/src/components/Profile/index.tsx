@@ -10,7 +10,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile, updateUserHeader } from "../../actions";
-import { storage } from "../../configs/firebase";
+import { storage, uploadFile } from "../../configs/firebase";
 import { IProfileBody } from "../../interfaces";
 import { AppState } from "../../reducers";
 import { objectFieldChange } from "../../utils/object-solve";
@@ -108,28 +108,11 @@ const ProfileUser = (props: IOpenModal) => {
     }
 
     const handleUpload = async () => {
-        const uploadTask = storage.ref(`images/${selectedFile!.name}`).put(selectedFile!);
-        uploadTask.on(
-            "state_changed",
-            (snapShot) => {
-                //takes a snap shot of the process as it is happening
-                console.log(snapShot)
-            },
-            (error: any) => {
-                console.log(error);
-            },
-            () => {
 
-                storage
-                    .ref("images")
-                    .child(selectedFile!.name)
-                    .getDownloadURL()
-                    .then((url: string) => {
-                        dispatchProfileAndUpdate({ avatarUrl: url })
-                        setPreview(url);
-                    });
-            }
-        );
+        const url = await uploadFile("images", selectedFile!.name);
+        dispatchProfileAndUpdate({ avatarUrl: url })
+        setPreview(url);
+      
     };
 
     const handleUpdateProfile = (data: IProfileBody) => {

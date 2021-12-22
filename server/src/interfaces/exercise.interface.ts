@@ -55,12 +55,12 @@ export const serializeExerciseDetail = (model: any) => {
         deadline: model.deadline,
         courseId: model.courseId,
         topic: {
-            topic: model.topic.topic,
-            id: model.topic.id,
+            topic: model?.topic?.topic,
+            id: model?.topic?.id,
         },
         type: {
-            name: model.type.name,
-            id: model.type.id
+            name: model.type?.name,
+            id: model.type?.id
         },
         user: {
             id: model.user.id,

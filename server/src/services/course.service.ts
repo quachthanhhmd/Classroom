@@ -169,33 +169,6 @@ export class CourseService {
         });
     }
 
-    // /**
-    //  * 
-    //  * @param courseId 
-    //  * @returns 
-    //  */
-    // public findAllMemberAuth = async (courseId: number) => {
-    //     return Course.findAll({
-    //         where: {
-    //             id: courseId,
-    //         },
-    //         include: [
-
-    //             {
-    //                 model: Exercise,
-    //                 include: [
-    //                     {
-    //                         model: Submission
-    //                     }
-    //                 ]
-    //             }
-
-    //         ],
-    //         raw: true,
-    //         nest: true,
-    //     })
-    // }
-
     public exportGradeBoard = async (courseId: number) => {
         const studentList = await this._memberService.findAllStudentInCourse(courseId);
 
@@ -265,5 +238,28 @@ export class CourseService {
         });
 
         return result.url;
+    }
+
+    public calculateTotalGrade = async (courseId: number) => {
+        const memberAuthList = await this._memberService.findAllStudentAuthSummary(courseId);
+        const countExercise = (await this._exerciseService.findAllExerciseByCourseId(courseId)).length;
+
+        if (countExercise === 0) return [];
+        const gradeList = await Promise.all(memberAuthList.map(async (member) => {
+
+            const exerciseList = await this._exerciseService.findAllSubmissionOfUserInCourse(courseId, member.userId);
+            const totalScore = exerciseList.map((exercise) => {
+                if (!exercise?.submissionList || exercise?.submissionList.length === 0) return 0;
+
+                return exercise.submissionList[0].score;
+            })
+
+            return {
+                id: member.id,
+                totalScore: totalScore.reduce((a, b) => a + b, 0) / countExercise,
+            }
+        }))
+
+        return gradeList;
     }
 }
