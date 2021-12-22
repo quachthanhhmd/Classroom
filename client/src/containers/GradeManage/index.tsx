@@ -241,6 +241,39 @@ const GradeManage = () => {
                                     </div>
                                 </div>
                             </th>
+                            <th role="columnheader" style={{ transform: "translate(0, 0)" }}>
+                                <div className="VUfVlb">
+                                    <div className="MMshld">
+                                        <div className="Cep97e">
+                                            <div className="dDKhVc YVvGBb">29 thg 12</div>
+                                            <a href="" className="onkcGd u0DHe ViCi4 VnOHwf-Tvm9db VBEdtc-Wvd9Cc" target="_self" aria-label='Bài tập 2'
+                                                title='Bài tập 2'>Bài tập 3</a>
+                                        </div>
+                                        <div className="CmLZs Cbgu2e" id='ow273'>
+                                            <span>
+                                                <div className="U26fgb JRtysb WzwrXb I12f0b K2mXPb rGxdsf" role="button" aria-label='Menu hành động của tiêu đề'
+                                                    tabIndex={0} aria-haspopup="true" aria-expanded="false">
+                                                    <div className="NWlf3e MbhUzd" style={{ top: 15, left: 15, width: 40, height: 40 }}></div>
+                                                    <span className="MhXXcc oJeWuf">
+                                                        <span className='Lw7GHd snByac'>
+                                                            <span className='DPvwYc' aria-hidden="true">?</span>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="VTvzRc dDKhVc">
+                                        <div>
+                                            <div className="YVvGBb YglcOe "></div>
+                                        </div>
+                                        <div>
+                                            trong tổng số
+                                            100
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
                             <th className="L5Faxf" aria-hidden="true" style={{ transform: "translate(0, 0)" }}>
                                 <div className="qwFLJb"></div>
                             </th>
@@ -260,6 +293,11 @@ const GradeManage = () => {
                                     </div>
                                 </div>
                             </th>
+                            <td role="gridcell">
+                                <div className="Je07k kTKNNc KT7tvf iLjzDc QRiHXd" tabIndex={0} aria-label="Chưa học viên nào có điểm" role="note">
+                                    <span></span>
+                                </div>
+                            </td>
                             <td role="gridcell">
                                 <div className="Je07k kTKNNc KT7tvf iLjzDc QRiHXd" tabIndex={0} aria-label="Chưa học viên nào có điểm" role="note">
                                     <span></span>
@@ -293,6 +331,36 @@ const GradeManage = () => {
                                     </div>
                                 </div>
                             </th>
+                            <td role="gridcell">
+                                <div className="Je07k">
+                                    <div className="PDpaTd WLsCn i5aS4e" tabIndex={0}>
+                                        <div className="QRiHXd gRisWe">
+                                            <span className="rRimpd neggzd asQXV" aria-hidden="true" tabIndex={0}>Estigfend</span>
+                                            <span className="hDVLxe">
+                                                <span className="SxMnzc">
+                                                    <span className="PazDv">Ðã giao</span>
+                                                    <span className="NhG04b asQXV" aria-hidden="true">
+                                                        <span className="cL8LOd">&nbsp;</span>
+                                                        <span className="">/100</span>
+                                                    </span>
+                                                </span>
+                                                <span className="dDKhVc YVvGBb"></span>
+                                            </span>
+                                            <span className="NhG04b CG2qQ">
+                                                <div role="button" className="U26fgb JRtysb WzwrXb I12f0b K2mXPb UNDeAc" aria-label="Menu thao tác" aria-disabled="false" tabIndex={0} aria-haspopup="true" aria-expanded="false">
+                                                    <div className="NWlf3e MbhUzd" >
+                                                    </div>
+                                                    <span className="MhXXcc oJeWuf">
+                                                        <span className="Lw7GHd snByac">
+                                                            <span className="DPvwYc" aria-hidden="true"></span>
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                             <td role="gridcell">
                                 <div className="Je07k">
                                     <div className="PDpaTd WLsCn i5aS4e" tabIndex={0}>
