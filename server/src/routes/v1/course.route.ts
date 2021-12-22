@@ -70,10 +70,18 @@ class CourseRoute {
 
         this.router.get(
             "/:courseId/grade-board",
-            // this._authenticate.authenticate(),
-            // this._authenticate.courseAuthentication(TYPEROLE.ASSISTANT, TYPEROLE.TEACHER),
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.ASSISTANT, TYPEROLE.TEACHER),
             validate(this._courseValidation.exportGradeBoard),
             this._courseController.exportGrade
+        )
+
+        this.router.get(
+            "/:courseId/member/student-auth",
+            this._authenticate.authenticate(),
+            // this._authenticate.courseAuthentication(TYPEROLE.ASSISTANT, TYPEROLE.TEACHER),
+            validate(this._courseValidation.getCourse),
+            this._courseController.getAllOAuthMember
         )
     }
 

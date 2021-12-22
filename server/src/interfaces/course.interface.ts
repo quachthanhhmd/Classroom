@@ -82,3 +82,43 @@ export const serializeCourseDetail = (model: any) => {
         topicList: model.topicList,
     }
 }
+
+export const serializeStudentList = (model: any) => {
+    return model.map(serializeStudentAuth);
+}
+
+const serializeStudentAuth = (model: any) => {
+    console.log(model.course.exerciseList);
+
+    return {
+        id: model.id,
+        role: model.role,
+        authType: model.authType,
+        user: {
+            userId: model.user.id,
+            firstName: model.user.firstName,
+            lastName: model.user.lastName,
+            avatarUrl: model.user.avatarUrl,
+            email: model.user.email
+        },
+        exerciseList: model.course.exerciseList ? model.course.exerciseList.map((exercise) => {
+            // console.log(exercise);
+            // const submissionList: any[] = [];
+            // if (typeof exercise.submissionList === "object") {
+            //     if (typeof exercise.submissionList.id !== null) {
+            //         submissionList.push(exercise.submissionList);
+            //     }
+            // }
+
+            return {
+                exerciseId: exercise.id,
+                submissionList: exercise.submissionList.map((submission) => {
+                    return {
+                        id: submission.id,
+                        score: submission.score
+                    }
+                })
+            }
+        }) : [],
+    }
+}

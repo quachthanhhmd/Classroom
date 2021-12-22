@@ -1,9 +1,11 @@
+import { Course } from "./../models/course.model";
+import { Submission } from "./../models/submission.model";
 
 import { injectable } from "inversify";
 import "reflect-metadata";
 import { Op } from "sequelize";
 import { MEMBERSTATE } from "../constants";
-import { Member, User } from "../models";
+import { Exercise, Member, User } from "../models";
 import { getDataFromExcelUrl } from "../utils/excel";
 import { StudentType, TYPEROLE } from "./../constants/role.constant";
 
@@ -38,22 +40,6 @@ export class MemberService {
         })
     }
 
-    // /**
-    //  * 
-    //  * @param courseId 
-    //  * @returns 
-    //  */
-    // public findAllMemberAuth = async (courseId: number) => {
-    //     return Member.findAll({
-    //         where: {
-    //             [Op.and]: {
-    //                 courseId,
-    //                 authType: StudentType.AUTH
-    //             }
-    //         }
-    //     })
-    // }
-
     /**
      * 
      * @param courseId 
@@ -72,6 +58,40 @@ export class MemberService {
             attributes: ["id", "studentId", "userId"],
         });
     }
+
+    public findAllStudentAuth = async (courseId: number) => {
+
+        return Member.findAll({
+            where: {
+                [Op.and]: {
+                    courseId,
+                    role: TYPEROLE.STUDENT,
+                    type: MEMBERSTATE.ACCEPT,
+                    authType: StudentType.AUTH
+                }
+            },
+            include: [
+            {
+            model: User,
+            attributes: ["firstName", "lastName", "id", "avatarUrl", "email"],
+        },
+            {
+                model: Course,
+                include: [
+                    {
+                        model: Exercise,
+                        include: [{
+                            model: Submission
+                        }]
+                    }
+                ]
+            }
+            ],
+            raw: false,
+            nest: true,
+        })
+    }
+
     /**
      * 
      * @param courseId 
@@ -366,12 +386,8 @@ export class MemberService {
     }
 
     public importAuthMember = async (url: string, courseId: number) => {
-        console.log(url);
         const dataset = await getDataFromExcelUrl(url);
         const dataSheet: any[] = dataset.data[0].data;
-        console.log(dataSheet);
-        console.log(dataSheet.length === 0 ||
-            dataSheet[0].hasOwnProperty("MSSV") && dataSheet[0].hasOwnProperty("Họ và tên"))
         if (dataSheet.length === 0 ||
             !dataSheet[0].hasOwnProperty("MSSV") || !dataSheet[0].hasOwnProperty("Họ và tên")) { return false; }
 
@@ -381,4 +397,5 @@ export class MemberService {
 
         return true;
     }
+
 }

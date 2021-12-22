@@ -177,12 +177,12 @@ export class MemberController {
         res: IResponse
     ): Promise<void> => {
         try {
-            // const userId = <number> req.currentUser?.id;
+            const userId = <number> req.currentUser?.id;
             const courseId = +req.params.courseId;
             const { url } = req.body;
 
-            // const isOwnCourse = await this._courseService.isOwnCourse(courseId, userId);
-            // if (!isOwnCourse) return res.composer.forbidden();
+            const isOwnCourse = await this._courseService.isOwnCourse(courseId, userId);
+            if (!isOwnCourse) return res.composer.forbidden();
 
             const isSuccessImport = await this._memberService.importAuthMember(url, courseId);
 

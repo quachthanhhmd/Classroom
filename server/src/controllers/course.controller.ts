@@ -5,7 +5,7 @@ import { Exercise, Feed, ReferenceType } from "../models";
 import { CommentService, CourseService, ExerciseService, FeedService, MemberService, TokenService, UserService } from "../services";
 import { standardizedObjectArr } from "../utils/object";
 import { compareDate } from "../utils/time";
-import { serializeCourseDetail, serializeFeedDetailList, IAuthorizeRequest, IResponse } from "./../interfaces";
+import { serializeCourseDetail, serializeFeedDetailList, serializeStudentList, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
 
 @injectable()
@@ -203,6 +203,21 @@ export class CourseController {
             if (urlGradeBoard === null) return res.composer.badRequest();
 
             return res.composer.success(urlGradeBoard);
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public getAllOAuthMember = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const courseId = +req.params.courseId;
+
+            const data = await this._memberService.findAllStudentAuth(courseId);
+
+            return res.composer.success(serializeStudentList(data));
         } catch (err) {
             return res.composer.otherException(err);
         }

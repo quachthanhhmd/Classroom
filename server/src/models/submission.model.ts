@@ -54,4 +54,7 @@ export class Submission extends Model<ISubmission, ISubmissionCreationAttributes
 
     @BelongsTo(() => User)
     user!: User;
+
+    @BelongsTo(() => Exercise)
+    exercise!: Exercise;
 }

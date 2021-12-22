@@ -3,9 +3,9 @@ import moment from "moment";
 import * as excel from "node-excel-export";
 import "reflect-metadata";
 import { Op } from "sequelize";
-import { MEMBERSTATE, TYPEROLE } from "../constants";
+import { MEMBERSTATE, StudentType, TYPEROLE } from "../constants";
 import { ICreateCourse } from "../interfaces";
-import { Course, Exercise, Feed, Topic, User } from "../models";
+import { Course, Exercise, Feed, Member, Submission, Topic, User } from "../models";
 import { getSpecification } from "../utils/excel";
 import { uploadNewFileFromBuffer } from "../utils/firebase";
 import { ExerciseService, FeedService, MemberService } from "./";
@@ -168,6 +168,33 @@ export class CourseService {
             nest: true,
         });
     }
+
+    // /**
+    //  * 
+    //  * @param courseId 
+    //  * @returns 
+    //  */
+    // public findAllMemberAuth = async (courseId: number) => {
+    //     return Course.findAll({
+    //         where: {
+    //             id: courseId,
+    //         },
+    //         include: [
+
+    //             {
+    //                 model: Exercise,
+    //                 include: [
+    //                     {
+    //                         model: Submission
+    //                     }
+    //                 ]
+    //             }
+
+    //         ],
+    //         raw: true,
+    //         nest: true,
+    //     })
+    // }
 
     public exportGradeBoard = async (courseId: number) => {
         const studentList = await this._memberService.findAllStudentInCourse(courseId);
