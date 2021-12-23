@@ -148,10 +148,9 @@ const GradeBoard = (props: Props) => {
      
             try {   
                 const res = await exerciseApi.updateExercise(+courseId, exerciseId, {state: "completed"});
-                console.log(res);
                 if (!res || res.status !== 200) throw new Error();
 
-                dispatch(showErrorNotify("Trả bài thành công"));
+                dispatch(showSuccessNotify("Trả bài thành công"));
             } catch(err) {
                 dispatch(showErrorNotify("Cập nhật thất bại, vui lòng thử lại sau"));
             }
@@ -333,7 +332,7 @@ const GradeBoard = (props: Props) => {
                                 <span
                                     className={`${styles.mark} ${styles['mark--cursor']}`}
                                     onClick={markClick}
-                                >
+                            >
                                     {item.submissionList.length === 0 ? 'Chưa chấm điểm' : item.submissionList[0].score}
                                 </span>
                                 <div className={`${styles.input} ${styles['input--hide']}`}>

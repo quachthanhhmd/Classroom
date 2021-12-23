@@ -119,3 +119,20 @@ const serializeStudentAuth = (model: any, gradeList: any[]) => {
         }) : [],
     }
 }
+
+// export const serializeGradeDetail = (
+//     exerciseList: any[], exerciseTypeList: any[], submissionList: any[],  totalScore: number) => {
+//     return {
+//         totalScore,
+//         submissionList: exerciseList.map((exercise) => {
+//             const typeName = exerciseTypeList.filter((item) => item.id === exercise.typeId)[0];
+
+//             return {
+//                 exerciseId: exercise.id,
+//                 title: exercise.title,
+//                 typeName,
+//                 score: 
+//             }
+//         })
+//     }
+// }

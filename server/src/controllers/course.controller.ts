@@ -1,11 +1,11 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
-import { Exercise, ExerciseState, Feed, ReferenceType } from "../models";
-import { CommentService,
-    CourseService, ExerciseService, FeedService, MemberService, SubmissionService, TokenService, UserService } from "../services";
-import { standardizedObjectArr } from "../utils/object";
-import { compareDate } from "../utils/time";
+import { Exercise, ExerciseState, Feed } from "../models";
+import {
+    CommentService,
+    CourseService, ExerciseService, ExerciseTypeService, FeedService, MemberService, SubmissionService, TokenService, UserService
+} from "../services";
 import { serializeCourseDetail, serializeFeedDetailList, serializeStudentList, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
 
@@ -20,7 +20,8 @@ export class CourseController {
         @inject("FeedService") private readonly _feedService: FeedService,
         @inject("CommentService") private readonly _commentService: CommentService,
         @inject("ExerciseService") private readonly _exerciseService: ExerciseService,
-        @inject("SubmissionService") private readonly _submissionService: SubmissionService
+        @inject("SubmissionService") private readonly _submissionService: SubmissionService,
+        @inject("ExerciseTypeService") private readonly _exerciseTypeService: ExerciseTypeService
     ) { }
 
     public addCourse = async (
@@ -238,31 +239,68 @@ export class CourseController {
             const courseId = +req.params.courseId;
 
             const exerciseList = await this._exerciseService.findAllExerciseByCourseId(courseId);
-
+            const exerciseTypeList = await this._exerciseTypeService.findAllExerciseDetail(courseId);
+            const totalMaxScore = exerciseTypeList.reduce((a, b) => a + b.grade, 0);
             const scoreList = await Promise.all(exerciseList.map(async (exercise) => {
+                const exerciseType = exerciseTypeList.filter((item) => item.id === exercise.typeId);
+                const typeName = `${exerciseType[0].name} - ${exerciseType[0].grade} điểm`;
+
                 const initResponse = {
-                    id: null,
-                    score: null,
-                    typeId: null,
+                    id: exercise.id,
+                    score: 0,
+                    typeId: exercise.typeId,
                     submissionId: null,
-                    title: null
+                    title: exercise.title,
+                    typeName
                 }
 
                 if (exercise.state === ExerciseState.SPENDING) return initResponse;
 
                 const submission = await this._submissionService.findByUserId(userId, exercise.id);
+
                 if (submission) {
                     return {
                         id: exercise.id,
                         title: exercise.title,
                         submissionId: submission.id,
                         score: submission.score,
-                        typeId: exercise.typeId
+                        typeId: exercise.typeId,
+                        typeName
                     }
                 }
 
                 return initResponse;
             }))
+
+            const typeTotalScoreList = exerciseTypeList.map((item) => {
+                let countGradeType = 0;
+
+                const totalScoreType = scoreList.reduce((a, b) => {
+                    if (b.typeId === item.id && b.submissionId !== null) {
+                        countGradeType++;
+
+                        return a + b.score;
+                    }
+
+                    return a;
+                }, 0);
+
+                return {
+                    id: item.id,
+                    totalScoreType:
+                        totalScoreType === 0 || countGradeType === 0 ? 0 :
+                            totalScoreType / (countGradeType * totalMaxScore),
+                    maxScore: item.grade,
+                }
+            })
+
+            const totalScore = typeTotalScoreList.reduce((a, b) => a + b.totalScoreType * b.maxScore, 0);
+
+            return res.composer.success({
+                totalScore,
+                totalMaxScore,
+                scoreList: scoreList.filter((score) => score.submissionId !== null)
+            })
         } catch (err) {
             return res.composer.otherException(err);
         }

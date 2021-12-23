@@ -65,7 +65,6 @@ export const serializeUserDetail = (model: any) => {
         notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
         token: model.token,
     }
-    console.log(body);
 
     return body;
 }

@@ -1,5 +1,4 @@
 export const serializeNotify = (model: any) => {
-    console.log(model);
 
     return {
         id: model.id,

@@ -3,6 +3,18 @@ import { IChangeOrderState, ICreateExerciseTypeState, IDeleteExerciseTypeState, 
 import { IPostDetail } from './post.interface';
 import { ITopicDetail } from './topic.interface';
 
+export interface IGradeCourse {
+    totalScore: number,
+    totalMaxScore: number,
+    scoreList: {
+        id: number, 
+        title: string,
+        submissionId: number | null, 
+        score: number,
+        typeId: number,
+        typeName: string
+    }[]
+}
 
 export interface IUserCourse {
     courses: ICourseSummary[],

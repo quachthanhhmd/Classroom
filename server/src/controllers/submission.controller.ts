@@ -1,8 +1,11 @@
 import { inject, injectable } from "inversify";
+import { UpdateScore } from "../constants";
 import { serializeSubmissionList, IAuthorizeRequest, IResponse } from "../interfaces";
-import { ReferenceType, SubmissionType } from "../models";
-import { AttachmentService, CommentService, ExerciseService, SubmissionService } from "../services";
+import { ExerciseType, NotificationType, ReferenceType, SubmissionType } from "../models";
+import { AttachmentService, CommentService,
+    ExerciseService, NotificationService, SubmissionService } from "../services";
 import { serializeSubmissionDetail } from "./../interfaces/submission.interface";
+import { ExerciseState } from "./../models/exercise.model";
 
 @injectable()
 export class SubmissionController {
@@ -10,7 +13,8 @@ export class SubmissionController {
         @inject("SubmissionService") private readonly _submissionService: SubmissionService,
         @inject("AttachmentService") private readonly _attachmentService: AttachmentService,
         @inject("CommentService") private readonly _commentService: CommentService,
-        @inject("ExerciseService") private readonly _exerciseService: ExerciseService
+        @inject("ExerciseService") private readonly _exerciseService: ExerciseService,
+        @inject("NotificationService") private readonly _notificationService: NotificationService
     ) { }
 
     public getAllSubmission = async (
@@ -127,8 +131,12 @@ export class SubmissionController {
     ): Promise<void> => {
         try {
             const score = +req.body.score;
+            const courseId = +req.params.courseId;
             const userId = +req.params.userId;
             const exerciseId = +req.params.exerciseId;
+            const exercise = await this._exerciseService.findExerciseById(exerciseId);
+
+            if (!exercise) return res.composer.notFound();
 
             const submissionExist = await this._submissionService.findByUserId(userId, exerciseId);
 
@@ -141,6 +149,15 @@ export class SubmissionController {
             await this._submissionService.updateSubmission(submissionExist.id, { score, type: SubmissionType.SCORED });
 
             const submission = await this._submissionService.findSubmissionById(submissionExist.id);
+
+            if (exercise.state === ExerciseState.COMPLETED) {
+                await this._notificationService.createNewNotification(courseId, {
+                    content: UpdateScore,
+                    refType: NotificationType.COURSE,
+                    refId: courseId,
+                    uri: `/grade/${courseId}`,
+                })
+            }
 
             return res.composer.success(serializeSubmissionDetail(submission));
         } catch (err) {

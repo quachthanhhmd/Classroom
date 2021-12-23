@@ -1,4 +1,4 @@
-import { ICourseInfo, ICreateCourse, IHttpFormat, IMemberSummary, IPostResponse, IUserCourse } from './../interfaces';
+import { ICourseInfo, ICreateCourse, IHttpFormat, IMemberSummary, IPostResponse, IUserCourse, IGradeCourse } from './../interfaces';
 import { IUpdateCourseInput } from './../interfaces/course.interface';
 import axiosClient from "./axios.client";
 
@@ -47,6 +47,10 @@ const courseApi = {
     exportGradeBoard: (courseId: number) => {
         const url = `v1/course/${courseId}/grade-board`;
         return axiosClient.get<IHttpFormat<string>>(url);
+    },
+    getStudentGrade: (courseId: number) => {
+        const url = `v1/course/${courseId}/get-one-grade`;
+        return axiosClient.get<IHttpFormat<IGradeCourse>>(url);
     }
 }
 

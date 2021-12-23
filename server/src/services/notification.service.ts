@@ -10,7 +10,7 @@ export class NotificationService {
         @inject("MemberService") private readonly _memberService: MemberService,
         @inject("CourseService") private readonly _courseService: CourseService,
         @inject("UserService") private readonly _userService: UserService
-    ) {}
+    ) { }
 
     public createNewNotification = async (courseId: number, data: ICreateNotification) => {
 
@@ -45,6 +45,7 @@ export class NotificationService {
                     }
                 }
             }
+
             const courseInfo = await this._courseService.getCourseDetail(notification.refId);
 
             return {
@@ -58,6 +59,7 @@ export class NotificationService {
                     avatarUrl: courseInfo?.avatarUrl
                 }
             }
+
         }));
 
     }

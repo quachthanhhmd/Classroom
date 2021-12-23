@@ -382,6 +382,7 @@ export class MemberService {
      * @returns 
      */
     public isPermitToCRUD = async (courseId: number, userId: number): Promise<boolean> => {
+        console.log(courseId, userId);
         const member = await Member.findOne({
             where: {
                 [Op.and]: {
@@ -393,6 +394,7 @@ export class MemberService {
                 }
             }
         });
+        console.log(member);
 
         return !!member;
     }

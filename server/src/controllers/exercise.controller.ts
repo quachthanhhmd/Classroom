@@ -156,7 +156,7 @@ export class ExerciseController {
         try {
             const body: ICreateExercise = req.body;
             const id = +req.params.id;
-            const courseId = +req.params.id;
+            const courseId = +req.params.courseId;
             const userId = <number> req.currentUser?.id;
 
             const isPermitToCRUD = await this._memberService.isPermitToCRUD(courseId, userId);
@@ -175,8 +175,8 @@ export class ExerciseController {
                     await this._submissionService.updateSubmission(submission.id, {type: SubmissionType.COMPLETED});
                     await this._notificationService.createNewNotification(courseId, {
                         content: CompletedExercise,
-                        refType: ReferenceType.EXERCISE,
-                        refId: submission.exerciseId,
+                        refType: NotificationType.COURSE,
+                        refId: courseId,
                         uri: `/grade/${courseId}`,
 
                     })
@@ -220,10 +220,10 @@ export class ExerciseController {
         res: IResponse
     ): Promise<void> => {
         try {
-            console.log(12439273491273);
+
             const courseId = +req.params.courseId;
             const exerciseId = +req.params.exerciseId;
-            console.log(courseId, exerciseId);
+
             const excelUrl = await this._exerciseService.exportGradeInExercise(exerciseId, courseId);
 
             if (excelUrl === null) { return res.composer.badRequest(); }
