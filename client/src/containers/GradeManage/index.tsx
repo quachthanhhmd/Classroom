@@ -10,6 +10,7 @@ import { downloadFile, uploadFile } from "../../configs/firebase";
 import { TYPEROLE } from '../../constants';
 import { AppState } from '../../reducers';
 import GradeBoard from "./GradeBoard";
+import GradeStudent from './GradeStudent';
 import GradingOption from "./GradingOption";
 import styles from "./index.module.scss";
 
@@ -77,22 +78,29 @@ const GradeManage = () => {
             </Helmet>
 
 
-            <main >
-                {member && member.currentRole && member.currentRole.role === TYPEROLE.TEACHER &&
-                    <div className={styles.top}>
-                        <span> Chỉnh sửa thông tin</span>
+            <main>
+                {member && member.currentRole ? member.currentRole.role === TYPEROLE.TEACHER ?
+                    <>
+                        <div className={styles.top}>
+                            <span> Chỉnh sửa thông tin người quản trị</span>
 
-                        <GradingOption
-                            onDownloadStudentListTemplate={onDownloadStudentListTemplate}
-                            onUploadStudentList={onUploadStudentList}
+                            <GradingOption
+                                onDownloadStudentListTemplate={onDownloadStudentListTemplate}
+                                onUploadStudentList={onUploadStudentList}
 
-                            onDownLoadGradeBoard={onDownloadGradingBoard}
+                                onDownLoadGradeBoard={onDownloadGradingBoard}
+                            />
+
+                        </div>
+                        <GradeBoard
                         />
-
-                    </div>
+                    </>
+                    :
+                    <GradeStudent />
+                    :
+                    <></>
                 }
-                <GradeBoard
-                />
+
             </main>
 
         </>

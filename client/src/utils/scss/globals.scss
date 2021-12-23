@@ -1,0 +1,21 @@
+:root {
+    --bg-color-main: rgb(248, 248, 248);
+    --bg-color-secondary: #fcfcfc;
+
+    --text-color: #1e1e1e;
+    --text-color-secondary: #1967d2;
+    --label-color: #6e6e6e;
+
+    --hover-color: #ececec;
+}
+
+[theme="dark"] {
+    --bg-color-main: #192238;
+    --bg-color-secondary: #272e48;
+
+    --text-color: #ffffff;
+    --text-color-secondary: #bdd1f8;
+    --label-color: #dedede;
+
+    --hover-color: #343b53;
+}

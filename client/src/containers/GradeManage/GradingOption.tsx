@@ -53,6 +53,8 @@ const GradingOption = (props: any) => {
         <>
             <Button
                 aria-label="more"
+                variant="contained"
+                color="primary"
                 aria-controls={open ? 'composition-menu' : undefined}
                 aria-expanded={open ? 'true' : undefined}
                 aria-haspopup="true"

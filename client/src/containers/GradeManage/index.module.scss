@@ -1,110 +1,141 @@
 .board {
-    table {
-      border-collapse: collapse;
-      width: 100%;
-  
-      td,
-      th {
-        position: relative;
-        border: 1px solid var(--label-color);
-        text-align: left;
-        padding: 8px;
-      }
-  
-      tr:hover {
-        transition: 0.2s all ease;
-        background-color: var(--hover-color);
-      }
-  
-      input[type='number']::-webkit-inner-spin-button,
-      input[type='number']::-webkit-outer-spin-button {
-        display: none;
-      }
-  
-      .user {
-        display: flex;
-        flex-wrap: wrap;
-  
-        div {
-          cursor: pointer;
-  
-          &:first-child {
-            margin-right: 0.5rem;
-          }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+
+    td,
+    th {
+      position: relative;
+      border: 1px solid;
+      text-align: left;
+      padding: 8px;
+      margin-left: 1px;
+    }
+
+    tr:hover {
+      transition: 0.2s all ease;
+      background-color: rgba(172, 172, 172, 0.349);
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      display: none;
+    }
+
+    .user {
+      display: flex;
+      flex-wrap: wrap;
+
+      div {
+        cursor: pointer;
+
+        &:first-child {
+          margin-right: 0.5rem;
         }
-      }
-  
-      .option {
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 10;
-      }
-  
-      .text-small {
-        display: block;
-        font-size: 0.8rem;
-        font-weight: 400;
       }
     }
-  
-    .mark {
-      cursor: initial;
-  
-      &--cursor {
-        cursor: pointer;
-      }
-  
-      &--hide {
-        display: none;
-      }
+
+    .option {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 10;
     }
-  
-    .input {
-      &__input {
-        max-width: 130px;
-        line-height: 1.5;
-        margin-right: 10px;
-        outline: none;
-        border: 0;
-        border-bottom: 1px solid black;
-        background-color: var(--hover-color);
-        color: var(--text-color);
-        font-size: unset;
-      }
-  
-      &__button {
-        width: fit-content;
-        height: fit-content;
-        outline: none;
-        border: 0;
-        color: white;
-        background-color: var(--text-color-secondary);
-        opacity: 0.9;
-        border-radius: 3px;
-        cursor: pointer;
-  
-        &--red {
-          opacity: 0.6;
-          background-color: red;
-        }
-        &--green {
-          opacity: 0.6;
-          background-color: green;
-        }
-  
-        &:hover {
-          opacity: 1;
-        }
-  
-        &:not(:last-child) {
-          margin-right: 10px;
-        }
-      }
-  
-      &--hide {
-        display: none;
-      }
+
+    .text-small {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 400;
     }
   }
-  
+
+  .mark {
+    cursor: initial;
+
+    &--cursor {
+      cursor: pointer;
+    }
+
+    &--hide {
+      display: none;
+    }
+  }
+
+  .input {
+    &__input {
+      max-width: 130px;
+      line-height: 1.5;
+      margin-right: 10px;
+      outline: none;
+      border: 0;
+      border-bottom: 1px solid black;
+      background-color: var(--hover-color);
+      color: var(--text-color);
+      font-size: unset;
+    }
+
+    &__button {
+      width: fit-content;
+      height: fit-content;
+      outline: none;
+      border: 0;
+      color: white;
+      background-color: var(--text-color-secondary);
+      opacity: 0.9;
+      border-radius: 3px;
+      cursor: pointer;
+
+      &--red {
+        opacity: 0.6;
+        background-color: red;
+      }
+      &--green {
+        opacity: 0.6;
+        background-color: green;
+      }
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+
+    &--hide {
+      display: none;
+    }
+  }
+}
+.top {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+  > span {
+    margin-right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+  }
+  > Button {
+    margin-right: 1rem;
+  }
+}
+
+
+.student {
+  width: 60%;
+  margin: 1rem auto;
+  &___header {
+    display: flex; 
+    justify-content: center;
+    font-size: 2rem;
+  }
+
+  &___main {
+    
+  }
+}

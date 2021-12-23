@@ -1,4 +1,5 @@
 import { inject, injectable } from "inversify";
+import { CompletedExercise } from "../constants";
 import {
     serializeDeadlineList,
     serializeExerciseDetail,
@@ -171,7 +172,14 @@ export class ExerciseController {
             if (body.hasOwnProperty("state")) {
                 const submissionList = await this._submissionService.findAllSubmissionExercise(id);
                 await Promise.all(submissionList.map(async (submission) => {
-                    await this._submissionService.updateSubmission(submission.id, {type: SubmissionType.COMPLETED})
+                    await this._submissionService.updateSubmission(submission.id, {type: SubmissionType.COMPLETED});
+                    await this._notificationService.createNewNotification(courseId, {
+                        content: CompletedExercise,
+                        refType: ReferenceType.EXERCISE,
+                        refId: submission.exerciseId,
+                        uri: `/grade/${courseId}`,
+
+                    })
                 }))
             }
 

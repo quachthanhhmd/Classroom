@@ -256,7 +256,7 @@ const GradeBoard = (props: Props) => {
         tableContent.push(
             <thead>
                 <tr>
-                    <th>Student Info</th>
+                    <th>Thông tin sinh viên</th>
                     {exerciseList.length > 0 ? (
                         exerciseList.map((item: IExerciseSummary, index: number) => (
                             <th key={`point-structure-${index + 1}`}>

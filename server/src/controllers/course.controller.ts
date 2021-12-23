@@ -1,8 +1,9 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { MEMBERSTATE, TYPEROLE } from "../constants";
-import { Exercise, Feed, ReferenceType } from "../models";
-import { CommentService, CourseService, ExerciseService, FeedService, MemberService, TokenService, UserService } from "../services";
+import { Exercise, ExerciseState, Feed, ReferenceType } from "../models";
+import { CommentService,
+    CourseService, ExerciseService, FeedService, MemberService, SubmissionService, TokenService, UserService } from "../services";
 import { standardizedObjectArr } from "../utils/object";
 import { compareDate } from "../utils/time";
 import { serializeCourseDetail, serializeFeedDetailList, serializeStudentList, IAuthorizeRequest, IResponse } from "./../interfaces";
@@ -18,7 +19,8 @@ export class CourseController {
         @inject("TokenService") private readonly _tokenService: TokenService,
         @inject("FeedService") private readonly _feedService: FeedService,
         @inject("CommentService") private readonly _commentService: CommentService,
-        @inject("ExerciseService") private readonly _exerciseService: ExerciseService
+        @inject("ExerciseService") private readonly _exerciseService: ExerciseService,
+        @inject("SubmissionService") private readonly _submissionService: SubmissionService
     ) { }
 
     public addCourse = async (
@@ -223,6 +225,45 @@ export class CourseController {
         } catch (err) {
             console.log(err);
 
+            return res.composer.otherException(err);
+        }
+    }
+
+    public getGradeStudent = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const userId = <number> req.currentUser?.id;
+            const courseId = +req.params.courseId;
+
+            const exerciseList = await this._exerciseService.findAllExerciseByCourseId(courseId);
+
+            const scoreList = await Promise.all(exerciseList.map(async (exercise) => {
+                const initResponse = {
+                    id: null,
+                    score: null,
+                    typeId: null,
+                    submissionId: null,
+                    title: null
+                }
+
+                if (exercise.state === ExerciseState.SPENDING) return initResponse;
+
+                const submission = await this._submissionService.findByUserId(userId, exercise.id);
+                if (submission) {
+                    return {
+                        id: exercise.id,
+                        title: exercise.title,
+                        submissionId: submission.id,
+                        score: submission.score,
+                        typeId: exercise.typeId
+                    }
+                }
+
+                return initResponse;
+            }))
+        } catch (err) {
             return res.composer.otherException(err);
         }
     }

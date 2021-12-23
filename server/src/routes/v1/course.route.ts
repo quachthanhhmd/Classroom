@@ -83,6 +83,14 @@ class CourseRoute {
             validate(this._courseValidation.getCourse),
             this._courseController.getAllOAuthMember
         )
+
+        this.router.get(
+            "/:courseId/get-one-grade",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.STUDENT),
+            validate(this._courseValidation.getCourse()),
+            this._courseController.getGradeStudent
+        )
     }
 
 }
