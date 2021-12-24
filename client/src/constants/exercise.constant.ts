@@ -11,3 +11,9 @@ export const DELETE_EXERCISE_TYPE_SUCCESS = "DELETE_EXERCISE_TYPE_SUCCESS";
 export const DELETE_EXERCISE_TYPE_FAIL = "DELETE_EXERCISE_TYPE_FAIL";
 
 export const UPDATE_ORDER_CHANGE_SUCCESS = "UPDATE_ORDER_CHANGE_SUCCESS";
+
+
+export enum ExerciseState {
+    COMPLETED = "completed",
+    SPENDING = "spending",
+}

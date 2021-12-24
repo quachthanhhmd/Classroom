@@ -15,4 +15,14 @@ export class NotificationValidation {
             }
         })
     }
+    public getNotification = () => {
+        return Joi.object().keys({
+            params: {
+                notifyId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            }
+        })
+    }
 }

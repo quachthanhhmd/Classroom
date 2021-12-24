@@ -51,14 +51,13 @@ export class AuthController {
             if (!user) {
                 return res.composer.badRequest(INCORRECT_LOGIN);
             }
-            const notificationList = await this._notificationService.getAllNotificationUser(user.id);
+            // const notificationList = await this._notificationService.getAllNotificationUser(user.id);
 
             const tokenCreate = await this._tokenService.generateTokenAuth(user.id);
 
             return res.composer.success(
                 serializeUserLogin({
                     user,
-                    notificationList,
                     token: tokenCreate,
                 })
             );

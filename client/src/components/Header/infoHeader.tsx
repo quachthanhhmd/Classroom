@@ -1,6 +1,6 @@
 import { Avatar, Badge, Button, IconButton, Menu, MenuItem } from '@material-ui/core';
 import { Notifications } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getUserData, signOut, updateNotifyState } from "../../actions";
@@ -9,25 +9,27 @@ import { INotification } from '../../interfaces';
 import { AppState } from '../../reducers';
 import { getDateFormat } from '../../utils/converter';
 import Profile from "../Profile";
+import env from "../../configs/env";
+import { Socket } from "../../configs/websocket";
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
 const TYPE_MODAL_NOTIFY = "TYPE_MODAL_NOTIFY";
 
 
-const NotifyItem = (props: { notify: INotification, updateNotification: (id: number) => void }) => {
+const NotifyItem = (props: { notify: INotification, updateNotification: (id: number, uri: string) => void }) => {
 
     const { notify, updateNotification } = props;
 
-    const handleUpdate = (id: number) => {
+    const handleUpdate = (id: number, uri: string) => {
 
-        updateNotification(id);
+        updateNotification(id, uri);
 
     }
 
 
     return (
-        <div className="notification" style={{ height: "4.5rem" }} onClick={() => handleUpdate(notify.id)}>
+        <div className="notification" style={{ height: "4.5rem" }} onClick={() => handleUpdate(notify.id, notify.uri)}>
             <div className="notification___avatar">
                 <Avatar src={notify.info.avatarUrl ? notify.info.avatarUrl : "/none-avt.png"} style={{ width: "4rem", height: "4rem" }} />
             </div>
@@ -55,17 +57,108 @@ const InfoHeader = () => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [typeOpen, setTypeOpen] = useState<string>("");
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [notifyList, setNotifyList] = useState<INotification[]>([]);
+    const OneSignal = window['OneSignal'] || [];
+    // useEffect(() => {
+    //   OneSignal.push(()=> {
+    //     OneSignal.init(
+    //       {
+    //         appId: "fbbfe69e-c4dc-43ee-b28f-2296d7071f98", //STEP 9
+    //         promptOptions: {
+    //           slidedown: {
+    //             enabled: true,
+    //             actionMessage: "We'd like to show you notifications for the latest news and updates about the following categories.",
+    //             acceptButtonText: "OMG YEEEEESS!",
+    //             cancelButtonText: "NAHHH",
+    //             categories: {
+    //                 tags: [
+    //                     {
+    //                         tag: "react",
+    //                         label: "ReactJS",
+    //                     },
+    //                     {
+    //                       tag: "angular",
+    //                       label: "Angular",
+    //                     },
+    //                     {
+    //                       tag: "vue",
+    //                       label: "VueJS",
+    //                     },
+    //                     {
+    //                       tag: "js",
+    //                       label: "JavaScript",
+    //                     }
+    //                 ]
+    //             }     
+    //         } 
+    //       },
+    //       welcomeNotification: {
+    //         "title": "One Signal",
+    //         "message": "Thanks for subscribing!",
+    //       } 
+    //     },
+    //       /**Automatically subscribe to the new_app_version tag */
+    //       OneSignal.sendTag("new_app_version", "new_app_version", tagsSent => {
+    //         // Callback called when tag has finished sending
+    //         console.log('new_app_version TAG SENT', tagsSent);
+    //       })
+    //     );
+    //   });
+    // }, []);
+
+    useEffect(() => {
+        if (auth.user) {
+            Socket.emit("update-user-id", auth.user?.id || -1);
+        }
+    }, [auth.user])
+    useEffect(() => {
+        Socket.on('notify-send-one-user', (data) => {
+            //Socket.onmessage = (event) => {
+            const notify: INotification = data;
+            const newList = [...notifyList];
+
+            setNotifyList([...newList, notify]);
+
+            //}
+        })
+        // return () => {
+        //     Socket.disconnected = () => {
+        //         console.log('WebSocket Disconnected');
+        //     }
+        // }
+        return () => {
+            Socket.off("notify-push")
+        }
+    }, [notifyList]);
+
+    useEffect(() => {
+        const getNotify = async () => {
+            try {
+                const res = await notificationApi.getNotificationUser();
+                if (!res || res.status !== 200) throw new Error();
+
+                setNotifyList(res.data.payload);
+            } catch (err) {
+
+            }
+        }
+        if (auth.user) {
+            getNotify();
+
+        }
+    }, [auth])
 
     const handleClick = (e: any, type: string) => {
         setAnchorEl(e.currentTarget);
         setTypeOpen(type);
     };
 
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    const updateNotification = async (id: number) => {
+    const updateNotification = async (id: number, uri: string) => {
 
         const updateState = async (notifyId: number) => {
 
@@ -74,16 +167,29 @@ const InfoHeader = () => {
 
                 if (!res || res.status !== 200) return;
 
-                dispatch(updateNotifyState(notifyId));
-                const notify = auth.user?.notifyList.filter(notify => notify.id === notifyId);
+                let uriChoose = "";
+                const newNotifyList = [...notifyList].map((item) => {
+                    if (item.id === notifyId) {
+                        item.isRead = true;
+                        uriChoose = item.uri;
+                    }
+                    return item;
+                })
+                setNotifyList(newNotifyList);
+                // const notify = notifyList.filter(notify => notify.id === notifyId);
 
-                if (notify && notify.length > 0)
-                    history.push(notify[0].uri)
+                if (uriChoose !== "")
+                    history.push(uriChoose)
             } catch (err) {
 
             }
         }
-        await updateState(id);
+        if (id !== 0) {
+            await updateState(id);
+        } else {
+            history.push(uri);
+        }
+
     }
 
     const handleCloseModal = (openModal: boolean) => {
@@ -112,11 +218,8 @@ const InfoHeader = () => {
                         color: "#ffffff"
                     }}
                 >
-                    <Badge badgeContent={!auth || !auth.user || !auth.user.notifyList || auth.user.notifyList.length === 0 ? 0 : auth.user.notifyList.filter((notify, index) => !notify.isRead).length} color="error">
-
+                    <Badge badgeContent={notifyList.filter((notify, index) => !notify.isRead).length} color="error">
                         <Notifications onClick={(e) => handleClick(e, TYPE_MODAL_NOTIFY)} />
-
-
                     </Badge>
                     <Menu
                         id="basic-menu"
@@ -126,7 +229,7 @@ const InfoHeader = () => {
                                 width: 400,
                             },
                         }}
-                       // getContentAnchorEl={null}
+                        // getContentAnchorEl={null}
                         anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                         transformOrigin={{ vertical: "top", horizontal: "right" }}
                         open={Boolean(typeOpen === TYPE_MODAL_NOTIFY && isOpenModal === false && anchorEl != null)}
@@ -136,10 +239,10 @@ const InfoHeader = () => {
                         }}
                     >
                         {
-                            auth && auth.user && auth.user.notifyList && auth.user.notifyList.length !== 0 ?
+                            auth && notifyList ?
                                 <>
                                     {
-                                        auth.user.notifyList.map((notify, index) => (
+                                        notifyList.map((notify, index) => (
                                             <MenuItem key={`notify-item-${1}`} onClick={handleClose}><NotifyItem updateNotification={updateNotification} notify={notify} /></MenuItem>
                                         ))
                                     }

@@ -5,7 +5,7 @@ import {
     serializeExerciseDetail,
     serializeExerciseList, serializeExerciseThumbnail, IAuthorizeRequest, ICreateExercise, IResponse
 } from "../interfaces";
-import { NotificationType, ReferenceType, SubmissionType } from "../models";
+import { ExerciseState, NotificationType, ReferenceType, SubmissionType } from "../models";
 import {
     AttachmentService, CommentService,
     ExerciseService, MemberService, NotificationService, SubmissionService, TopicService
@@ -154,7 +154,8 @@ export class ExerciseController {
         res: IResponse
     ): Promise<void> => {
         try {
-            const body: ICreateExercise = req.body;
+            const body = req.body;
+            console.log(body);
             const id = +req.params.id;
             const courseId = +req.params.courseId;
             const userId = <number> req.currentUser?.id;
@@ -169,7 +170,7 @@ export class ExerciseController {
 
             if (!updateExercise) { return res.composer.notFound(); }
 
-            if (body.hasOwnProperty("state")) {
+            if (body.hasOwnProperty("state") && body.state === ExerciseState.COMPLETED) {
                 const submissionList = await this._submissionService.findAllSubmissionExercise(id);
                 await Promise.all(submissionList.map(async (submission) => {
                     await this._submissionService.updateSubmission(submission.id, {type: SubmissionType.COMPLETED});

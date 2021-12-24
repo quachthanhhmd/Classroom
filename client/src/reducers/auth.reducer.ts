@@ -142,26 +142,6 @@ const authReducer = (state = initialState, action: IAuthenAction) => {
                 isSuccess: true,
             }
         }
-        case UPDATE_NOTIFY: {
-            const newState = state!.user;
-            const notifyId = action.payload as number;
-            console.log(123123);
-            if (newState?.notifyList) {
-                const newNotification = newState.notifyList.map((notify) => {
-                    if (notify.id === notifyId) {
-                        notify.isRead = true;
-                        return notify;
-                    }
-                    return notify;
-                });
-                newState.notifyList = [...newNotification];
-            }
-            console.log(newState);
-            return {
-                ...state,
-                user: newState,
-            }
-        }
         default:
             return {
                 ...state

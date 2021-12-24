@@ -8,7 +8,7 @@ interface Props {
     id: string;
     pointStructure: any;
     onExportPointGrading: (pointStructure: any) => void;
-    onToggleFinalizePoint: (pointStructure: any) => void;
+    onToggleFinalizePoint: (pointStructure: any, state: string) => void;
     onUploadExerciseGrade: (file: any, exerciseId: number) => void;
 }
 
@@ -72,8 +72,8 @@ const PointStructureColOption: React.FC<Props> = (props) => {
         handleClose(e);
     }
 
-    const toggleFinalizePoint = (e: any) => {
-        onToggleFinalizePoint(pointStructure.id);
+    const toggleFinalizePoint = (e: any, state: string) => {
+        onToggleFinalizePoint(pointStructure.id, state);
         handleClose(e);
     };
 
@@ -106,7 +106,7 @@ const PointStructureColOption: React.FC<Props> = (props) => {
                         <MenuItem onClick={exportPointGrading}>
                             Xuất điểm
                         </MenuItem>
-                        <MenuItem onClick={toggleFinalizePoint}>
+                        <MenuItem onClick={(e) => toggleFinalizePoint(e, pointStructure.state)}>
                             {pointStructure.state === "completed" ? 'Hủy hoàn thành' : 'Hoàn thành'}
                         </MenuItem>
                     </Card>

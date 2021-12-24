@@ -61,3 +61,4 @@ export const isRatherZero = (n: string) => {
     if (Number(n) && Number(n) > 0) return true;
     return false;
 }
+

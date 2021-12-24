@@ -4,6 +4,7 @@ import App from "./app";
 import { logger } from "./config";
 import { applyHttpResponseCompose } from "./exceptions/http-response.exception";
 import IndexRoutes from "./routes/v1/index";
+import { socketServer } from "./socket";
 
 const serviceAccount = require("./google-cert.json");
 
@@ -16,6 +17,7 @@ const port = Number(process.env.PORT) || 5000;
 const app: App = new App(IndexRoutes, [applyHttpResponseCompose])
 
 const server = createServer(app.httpServer);
+socketServer(server);
 
 server.listen(port, () => {
     logger.info(`Listening to port ${port}`);

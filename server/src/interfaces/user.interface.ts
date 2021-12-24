@@ -46,24 +46,20 @@ export const serializeUserLogin = (model: any) => {
             birthDay: model.user.birthDay,
             avatarUrl: model.user.avatarUrl,
         },
-        notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
+        // notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
         token: model.token,
     }
 }
 
 export const serializeUserDetail = (model: any) => {
     const body = {
-        user: {
-            id: model.user.id,
-            email: model.user.email,
-            firstName: model.user.firstName,
-            lastName: model.user.lastName,
-            gender: model.user.gender,
-            birthDay: model.user.birthDay,
-            avatarUrl: model.user.avatarUrl,
-        },
-        notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
-        token: model.token,
+        id: model.user.id,
+        email: model.user.email,
+        firstName: model.user.firstName,
+        lastName: model.user.lastName,
+        gender: model.user.gender,
+        birthDay: model.user.birthDay,
+        avatarUrl: model.user.avatarUrl,
     }
 
     return body;

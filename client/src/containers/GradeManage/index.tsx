@@ -2,7 +2,7 @@
 import React from 'react';
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { showErrorNotify, showInfoNotify } from "../../actions/notification.action";
 import courseApi from "../../api/course.api";
 import memberApi from '../../api/member.api';
@@ -19,6 +19,8 @@ const GradeManage = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const dispatch = useDispatch();
     const member = useSelector((state: AppState) => state.member);
+    const course = useSelector((state: AppState) => state.course);
+    const auth = useSelector((state: AppState) => state.auth);
 
     const onDownloadGradingBoard = async () => {
         try {
@@ -81,17 +83,19 @@ const GradeManage = () => {
             <main>
                 {member && member.currentRole ? member.currentRole.role === TYPEROLE.TEACHER ?
                     <>
-                        <div className={styles.top}>
-                            <span> Chỉnh sửa thông tin người quản trị</span>
+                        {course && course.course && course.course.ownerId === auth!.user?.id &&
+                            <div className={styles.top}>
+                                <span> Chỉnh sửa thông tin người quản trị</span>
 
-                            <GradingOption
-                                onDownloadStudentListTemplate={onDownloadStudentListTemplate}
-                                onUploadStudentList={onUploadStudentList}
+                                <GradingOption
+                                    onDownloadStudentListTemplate={onDownloadStudentListTemplate}
+                                    onUploadStudentList={onUploadStudentList}
 
-                                onDownLoadGradeBoard={onDownloadGradingBoard}
-                            />
+                                    onDownLoadGradeBoard={onDownloadGradingBoard}
+                                />
 
-                        </div>
+                            </div>
+                        }
                         <GradeBoard
                         />
                     </>

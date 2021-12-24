@@ -61,12 +61,13 @@ const Header = () => {
         dispatch(getAllCourseInfo(Number(courseId)))
     }, [])
 
-
+    console.log(typePill);
     const handleCloseModal = (openModal: boolean) => {
         setTypeOpen("");
         setIsOpenModal(false);
     }
     const handleChangePill = (e: any, newPill: number) => {
+        console.log(newPill);
         setTypePill(newPill);
     }
     const handleGoHome = () => {
@@ -103,18 +104,22 @@ const Header = () => {
                         //style={{ width: "80%" }}
                         centered
                     >
-                        <LinkTab label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
+                        <LinkTab value={0} label="Bảng tin" component={Link} className={`${typePill === 0 ? "header-main___middle--click-pill" : ""}`} to={`/course/${courseId}`} >
 
                         </LinkTab>
 
                         {member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
-                            <>
-                                <LinkTab label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to={`/exercise/${courseId}`} />
-                                <LinkTab label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
-                            </>
+
+                            <LinkTab value={1} label="Bài tập" component={Link} className={`${typePill === 1 ? "header-main___middle--click-pill" : ""}`} to={`/exercise/${courseId}`} />
+
                         }
-                        <LinkTab label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
-                        <LinkTab label="Số điểm" component={Link} className={`${typePill === 4 ? "header-main___middle--click-pill" : ""}`} to={`/grade/${courseId}`} />
+                        {member && member.currentRole && member.currentRole.role !== TYPEROLE.STUDENT &&
+
+                            <LinkTab value={2} label="Thang Điểm" component={Link} className={`${typePill === 2 ? "header-main___middle--click-pill" : ""}`} to={`/structure/${courseId}`} />
+
+                        }
+                        <LinkTab value={3} label="Mọi người" component={Link} className={`${typePill === 3 ? "header-main___middle--click-pill" : ""}`} to={`/member/${courseId}`} />
+                        <LinkTab value={4} label="Số điểm" component={Link} className={`${typePill === 4 ? "header-main___middle--click-pill" : ""}`} to={`/grade/${courseId}`} />
                     </Tabs>
 
                 </div>

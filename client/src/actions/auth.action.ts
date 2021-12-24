@@ -85,7 +85,6 @@ export const getUserData = () => async (dispatch: (args: IUserHeader) => (IUserH
       dispatch({ type: USER_INFO_FAIL });
       return;
     }
-
     dispatch({
       type: USER_INFO_SUCCESS,
       payload: result.data.payload,

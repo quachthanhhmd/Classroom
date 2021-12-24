@@ -382,7 +382,7 @@ export class MemberService {
      * @returns 
      */
     public isPermitToCRUD = async (courseId: number, userId: number): Promise<boolean> => {
-        console.log(courseId, userId);
+
         const member = await Member.findOne({
             where: {
                 [Op.and]: {
@@ -394,14 +394,13 @@ export class MemberService {
                 }
             }
         });
-        console.log(member);
 
         return !!member;
     }
 
     public importAuthMember = async (url: string, courseId: number) => {
         const dataset = await getDataFromExcelUrl(url);
-        console.log(dataset);
+
         const dataSheet: any[] = dataset.data[0].data;
         if (dataSheet.length === 0 ||
             !dataSheet[0].hasOwnProperty("MSSV") || !dataSheet[0].hasOwnProperty("Họ và tên")) { return false; }

@@ -1,6 +1,7 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { NotificationService } from "../services";
+import { serializeNotify } from "./../interfaces/notification.interface";
 
 import { IAuthorizeRequest, IResponse } from "./../interfaces";
 
@@ -36,6 +37,21 @@ export class NotificationController {
         } catch (err) {
             console.log(err);
 
+            return res.composer.otherException(err);
+        }
+    }
+
+    public getUserNotification = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const userId = <number> req.currentUser?.id;
+
+            const notifyList = await this._notificationService.getAllNotificationUser(userId);
+
+            return res.composer.success(notifyList.map(serializeNotify));
+        } catch (err) {
             return res.composer.otherException(err);
         }
     }

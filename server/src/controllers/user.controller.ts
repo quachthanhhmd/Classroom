@@ -22,9 +22,9 @@ export class UserController {
 
             const user = await this._userService.getInforById(id);
             if (!user) return res.composer.notFound();
-            const notificationList = await this._notificationService.getAllNotificationUser(user.id);
+            // const notificationList = await this._notificationService.getAllNotificationUser(user.id);
 
-            return res.composer.success(serializeUserDetail({user, notificationList}));
+            return res.composer.success(serializeUserDetail({user}));
         } catch (err) {
             console.error(err);
             res.composer.otherException(err);

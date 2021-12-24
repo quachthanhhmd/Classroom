@@ -8,7 +8,8 @@ import exerciseApi from '../../api/exercise.api';
 import submissionApi from '../../api/submission.api';
 import CircularLoading from '../../components/Loading';
 import { uploadFile } from '../../configs/firebase';
-import { SubmissionType } from '../../constants';
+import { Socket } from '../../configs/websocket';
+import { ExerciseState, SubmissionType } from '../../constants';
 import { AppState } from '../../reducers';
 import styles from './index.module.scss';
 import PointStructureColOption from './PointStructureColOption';
@@ -20,38 +21,7 @@ export interface IPointStructure {
     isFinalized?: boolean;
 }
 
-const data = [
-    {
-        name: "bai tap 1",
-        point: 1,
-        code: "as",
-        isFinalized: true
-    },
-    {
-        name: "bai tap 1",
-        point: 1,
-        code: "as",
-        isFinalized: true
-    },
-    {
-        name: "bai tap 1",
-        point: 1,
-        code: "as",
-        isFinalized: true
-    },
-    {
-        name: "bai tap 1",
-        point: 1,
-        code: "as",
-        isFinalized: true
-    },
-    {
-        name: "bai tap 1",
-        point: 1,
-        code: "as",
-        isFinalized: true
-    }
-]
+
 
 interface IExerciseSummary {
     id: number,
@@ -77,7 +47,7 @@ const GradeBoard = (props: Props) => {
     const [exerciseList, setExerciseList] = useState<IExerciseSummary[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const course = useSelector((state: AppState) => state!.course);
-
+    const auth = useSelector((state: AppState) => state!.auth);
     const pointStructures = course.course?.exerciseTypeList;
 
     useEffect(() => {
@@ -86,7 +56,6 @@ const GradeBoard = (props: Props) => {
                 const result = await courseApi.getStudentList(courseId);
 
                 if (!result || result.status !== 200) throw new Error();
-                console.log(result.data.payload);
                 setStudentList(result.data.payload);
 
                 if (result.data.payload.length > 0) {
@@ -105,7 +74,21 @@ const GradeBoard = (props: Props) => {
         getAuthStudent(+courseId);
     }, [])
 
+
+
     const onUpdateGradeOnBoard = async (userId: number, exerciseId: number, score: number) => {
+        const data = {
+            id: 0,
+            content: "Đã có một cột điểm được cập nhât, xem ngay.",
+            isRead: false,
+            createdAt: new Date(),
+            uri: `/grade/${courseId}`,
+            info: {
+                avatarUrl: auth.user?.avatarUrl,
+                name: `${auth.user?.firstName} ${auth.user?.lastName}`
+            }
+        }
+        Socket.emit("notify-one-exercise", { data: data, userId });
 
         try {
             setIsLoading(true);
@@ -118,13 +101,17 @@ const GradeBoard = (props: Props) => {
                 if (item.user.userId === res.data.payload.userId) {
 
                     item.exerciseList = item.exerciseList.map((exercise) => {
+                        let checkUpdate = false;
                         const exerciseSubmitList = exercise.submissionList.map((submission) => {
                             if (submission.id === res.data.payload.id) {
                                 submission.score = score;
+                                checkUpdate = true;
                             }
                             return submission;
                         });
-
+                        if (!checkUpdate) {
+                            exerciseSubmitList.push(res.data.payload)
+                        }
                         exercise.submissionList = exerciseSubmitList;
 
                         return exercise;
@@ -140,21 +127,35 @@ const GradeBoard = (props: Props) => {
             dispatch(showErrorNotify("Cập nhật điểm thất bại, vui lòng thử lại sau"));
         }
     }
-    // const onExportPointGrading = (pointStructure: any) => {
-    //     onExportGradingForPointStructure(pointStructure);
-    //   };
 
-      const onToggleFinalizePoint = async (exerciseId: number) => {
-     
-            try {   
-                const res = await exerciseApi.updateExercise(+courseId, exerciseId, {state: "completed"});
-                if (!res || res.status !== 200) throw new Error();
+    const onToggleFinalizePoint = async (exerciseId: number, state: string) => {
 
-                dispatch(showSuccessNotify("Trả bài thành công"));
-            } catch(err) {
-                dispatch(showErrorNotify("Cập nhật thất bại, vui lòng thử lại sau"));
+        try {
+            if (state !== "completed") {
+                const data = {
+                    id: 0,
+                    content: "Đã có một cột điểm được trả, xem ngay.",
+                    isRead: false,
+                    createdAt: new Date(),
+                    uri: `/grade/${courseId}`,
+                    info: {
+                        avatarUrl: auth.user?.avatarUrl,
+                        name: `${auth.user?.firstName} ${auth.user?.lastName}`
+                    }
+                }
+                console.log( studentList.map((item) => item.user.userId));
+                Socket.emit("notify-exercise-final", { data: data, studentList: studentList.map((item) => item.user.userId) });
             }
-      };
+
+            const res = await exerciseApi.updateExercise(+courseId, exerciseId, { state:  state === ExerciseState.COMPLETED ? ExerciseState.SPENDING : ExerciseState.COMPLETED});
+            if (!res || res.status !== 200) throw new Error();
+
+            window.location.reload();
+            dispatch(showSuccessNotify("Trả bài thành công"));
+        } catch (err) {
+            dispatch(showErrorNotify("Cập nhật thất bại, vui lòng thử lại sau"));
+        }
+    };
 
     const pointOfStructure = (item: IExerciseSummary) => {
         if (!pointStructures || exerciseList.length === 0) return "";
@@ -193,9 +194,9 @@ const GradeBoard = (props: Props) => {
 
         try {
             const url = await uploadFile("excel-server-upload/import-exercise", file);
-   
+
             const res = await exerciseApi.importExercise(+courseId, exerciseId, { url });
-   
+
             if (!res || res.status !== 200) throw new Error()
             window.location.reload()
         } catch (err) {
@@ -204,7 +205,7 @@ const GradeBoard = (props: Props) => {
         }
     }
 
-    const onExportExerciseGrade = async ( exerciseId: number) => {
+    const onExportExerciseGrade = async (exerciseId: number) => {
         try {
             const res = await exerciseApi.exportExercise(+courseId, exerciseId);
             if (!res || res.status !== 200) throw new Error();
@@ -332,7 +333,7 @@ const GradeBoard = (props: Props) => {
                                 <span
                                     className={`${styles.mark} ${styles['mark--cursor']}`}
                                     onClick={markClick}
-                            >
+                                >
                                     {item.submissionList.length === 0 ? 'Chưa chấm điểm' : item.submissionList[0].score}
                                 </span>
                                 <div className={`${styles.input} ${styles['input--hide']}`}>

@@ -24,6 +24,12 @@ class NotificationRoute {
             validate(this._notificationValidation.updateNotification),
             this._notificationController.updateNotification
         )
+
+        this.router.get(
+            "/",
+            this._authenticate.authenticate(),
+            this._notificationController.getUserNotification
+        )
     }
 }
 

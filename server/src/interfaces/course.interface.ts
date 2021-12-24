@@ -79,6 +79,7 @@ export const serializeCourseDetail = (model: any) => {
         studentExist: model.studentExist,
         studentLimit: model.studentLimit,
         exerciseTypeList: model.exerciseTypeList,
+        ownerId: model.ownerId,
         topicList: model.topicList,
     }
 }
@@ -109,30 +110,12 @@ const serializeStudentAuth = (model: any, gradeList: any[]) => {
                 state: exercise.state,
                 title: exercise.title,
                 typeId: exercise.typeId,
-                submissionList: exercise.submissionList.map((submission) => {
-                    return {
-                        id: submission.id,
-                        score: submission.score
-                    }
+                submissionList: exercise.submissionList.filter((submission) => {
+                    if (submission.userId === model.user.id) return true;
+
+                    return false;
                 })
             }
         }) : [],
     }
 }
-
-// export const serializeGradeDetail = (
-//     exerciseList: any[], exerciseTypeList: any[], submissionList: any[],  totalScore: number) => {
-//     return {
-//         totalScore,
-//         submissionList: exerciseList.map((exercise) => {
-//             const typeName = exerciseTypeList.filter((item) => item.id === exercise.typeId)[0];
-
-//             return {
-//                 exerciseId: exercise.id,
-//                 title: exercise.title,
-//                 typeName,
-//                 score: 
-//             }
-//         })
-//     }
-// }

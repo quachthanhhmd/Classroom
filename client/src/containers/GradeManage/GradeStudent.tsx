@@ -18,7 +18,6 @@ const GradeStudent = () => {
                 const res = await courseApi.getStudentGrade(+courseId);
                 setIsLoading(false);
                 if (!res || res.status !== 200) throw new Error();
-                console.log(res.data.payload);
                 setScoreList(res.data.payload);
 
             } catch (err) {

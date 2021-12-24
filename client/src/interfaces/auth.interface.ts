@@ -15,7 +15,6 @@ export interface IUserSummary {
     gender: string,
     email: string,
     avatarUrl?: string,
-    notifyList: INotification[]
 }
 
 export interface IUserHeader {
@@ -69,4 +68,4 @@ export interface ILogoutType {
     payload?: null,
 }
 
-export type IAuthenAction = ISignInType | IUserHeader | ISignUpType | ILogoutType | ILoginOAuthType | INotificationState;
+export type IAuthenAction = ISignInType | IUserHeader | ISignUpType | ILogoutType | ILoginOAuthType;
