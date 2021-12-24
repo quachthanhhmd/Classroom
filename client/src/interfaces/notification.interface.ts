@@ -14,3 +14,12 @@ export interface INotificationState {
     type: string,
     payload?: number,
 }
+
+export interface ICreateNotification {
+    content: string,
+    uri: string
+    isRead?: boolean,
+    userId?: number,
+    refType: string,
+    refId: number
+}

@@ -9,6 +9,7 @@ import attachmentApi from "../../api/attachment.api";
 import commentApi from "../../api/comment.api";
 import exerciseApi from '../../api/exercise.api';
 import submissionApi from "../../api/submission.api";
+import Comment from "../../components/Comment";
 import CircularLoading from '../../components/Loading';
 import ContentPost from "../../components/Post/ContentPost";
 import { uploadBulk } from "../../configs/firebase";
@@ -54,7 +55,7 @@ const PostDetail = () => {
                 const res = await exerciseApi.getOneExercise(courseId, postId);
                 setIsLoading(false);
                 if (!res || res.status !== 200) return;
-    
+
                 setExercise(res.data.payload);
             } catch (err) {
 
@@ -239,6 +240,7 @@ const PostDetail = () => {
     const handleToSubmission = () => {
         history.push(`/course/${courseId}/post/${postId}/submission`);
     }
+    console.log(submission)
     return (
         <>
             {(exercise && !isLoading) ?
@@ -377,6 +379,16 @@ const PostDetail = () => {
                                             dropzoneText="Kéo thả vào để tải tệp lên"
                                         />
 
+                                    </CardContent>
+                                </Card>
+                                <Card style={{ marginTop: "1rem" }}>
+                                    <CardHeader
+                                        title="Phản hồi về Phúc khảo"
+                                    />
+                                    <CardContent>
+                                        {
+                                            submission && submission.commentList.map((comment, index) => <Comment comment={comment} index={index} />)
+                                        }
                                     </CardContent>
                                 </Card>
                             </Grid>

@@ -25,4 +25,17 @@ export class NotificationValidation {
             }
         })
     }
+
+    public createNotification = () => {
+        return Joi.object().keys({
+            body: {
+                content: Joi.string().required(),
+                uri: Joi.string().required(),
+                isRead: Joi.boolean().default(false),
+                userId: Joi.number().required(),
+                refType: Joi.string().required(),
+                refId: Joi.number().required(),
+            }
+        })
+    }
 }

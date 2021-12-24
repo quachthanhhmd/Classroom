@@ -6,10 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router";
 import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import commentApi from "../../api/comment.api";
+import notificationApi from "../../api/notification.api";
 import submissionApi from "../../api/submission.api";
 import Comment from "../../components/Comment";
 import CircularLoading from "../../components/Loading";
-import { ReferenceType, SubmissionType } from "../../constants";
+import { Socket } from "../../configs/websocket";
+import { NotificationType, ReferenceType, ReviewResponse, ReviewResponseUri, SubmissionType } from "../../constants";
 import { ISubmissionResponse, ISubmissionSummary } from "../../interfaces";
 import { SCORED_FAIL, SCORED_SUCCESS, SubmissionMessage } from "../../messages";
 import { AppState } from "../../reducers";
@@ -198,12 +200,32 @@ const Marking = () => {
     const handleSubmitComment = async () => {
 
         if (!submissionDetail || !comment) return;
-
+        const data = {
+            id: 0,
+            content: ReviewResponse(`${auth.user?.firstName} ${auth.user?.lastName}`),
+            isRead: false,
+            createdAt: new Date(),
+            uri: ReviewResponseUri(courseId, postId),
+            info: {
+                avatarUrl: auth.user?.avatarUrl,
+                name: `${auth.user?.firstName} ${auth.user?.lastName}`
+            }
+        }
+        Socket.emit("notify-one-exercise", ({data, userId: submissionDetail.userId}))
         try {
             const res = await commentApi.createNewComment({
                 refType: ReferenceType.SUBMISSION,
                 refId: submissionDetail.id,
                 content: comment,
+            })
+
+            await notificationApi.createNotification({
+                content: ReviewResponse(`${auth.user?.firstName} ${auth.user?.lastName}`),
+                isRead: false,
+                uri: ReviewResponseUri(courseId, postId),
+                refType: NotificationType.COURSE,
+                userId: submissionDetail.userId,
+                refId: +courseId
             })
 
             if (!res || res.status !== 200) throw new Error();

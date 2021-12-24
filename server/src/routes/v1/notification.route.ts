@@ -30,6 +30,13 @@ class NotificationRoute {
             this._authenticate.authenticate(),
             this._notificationController.getUserNotification
         )
+
+        this.router.post(
+            "/",
+            this._authenticate.authenticate(),
+            validate(this._notificationValidation.createNotification),
+            this._notificationController.createNewNotification
+        )
     }
 }
 

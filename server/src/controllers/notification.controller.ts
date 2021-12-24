@@ -1,9 +1,8 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
 import { NotificationService } from "../services";
-import { serializeNotify } from "./../interfaces/notification.interface";
 
-import { IAuthorizeRequest, IResponse } from "./../interfaces";
+import { serializeNotify, IAuthorizeRequest, ICreateNotification, IResponse } from "./../interfaces";
 
 @injectable()
 export class NotificationController {
@@ -11,6 +10,21 @@ export class NotificationController {
         @inject("NotificationService") private readonly _notificationService: NotificationService
 
     ) { }
+
+    public createNewNotification = async (
+        req: IAuthorizeRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const body: Required<ICreateNotification> = req.body;
+
+            const newNotification = await this._notificationService.createOneNotification(body);
+
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
 
     public getAllNotificationUser = async (
         req: IAuthorizeRequest,
@@ -24,7 +38,7 @@ export class NotificationController {
         }
     }
 
-    public updateNotification = async(
+    public updateNotification = async (
         req: IAuthorizeRequest,
         res: IResponse
     ): Promise<void> => {

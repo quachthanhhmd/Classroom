@@ -52,7 +52,7 @@ const GradeStudent = (props: IProps) => {
                 content: `${user?.firstName} ${user?.lastName} đã yêu cầu phúc khảo điểm số.`,
                 isRead: false,
                 createdAt: new Date(),
-                uri: `/course/${courseId}/post/${selectSubmission.id}/submission`,
+                uri: `/course/${courseId}/post/${selectSubmission.id}/marking?userId=${user?.id}`,
                 info: {
                     avatarUrl: user?.avatarUrl,
                     name: `${user?.firstName} ${user?.lastName}`
