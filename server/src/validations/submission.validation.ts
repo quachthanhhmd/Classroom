@@ -106,4 +106,23 @@ export class SubmissionValidation {
             }
         })
     }
+
+    public reviewGrade = () => {
+        return Joi.object().keys({
+            params: {
+                courseId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                ),
+                submissionId: Joi.alternatives(
+                    Joi.string(),
+                    Joi.number(),
+                )
+            },
+            body: {
+                grade: Joi.number().required(),
+                note: Joi.string(),
+            }
+        })
+    }
 }

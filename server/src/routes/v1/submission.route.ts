@@ -67,6 +67,13 @@ class SubmissionRoute {
             this._controller.updateScore
         )
 
+        this.router.post(
+            "/:submissionId/course/:courseId/review",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.STUDENT),
+            validate(this._validation.reviewGrade),
+            this._controller.reviewGrade
+        )
     }
 }
 

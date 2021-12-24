@@ -1,15 +1,31 @@
 import { Card, Divider, TableBody, Table, TableContainer, Paper, TableHead, TableRow, TableCell, IconButton, Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import courseApi from '../../api/course.api';
-import CircularLoading from '../../components/Loading';
-import { IGradeCourse } from '../../interfaces';
-import styles from "./index.module.scss";
+import { showErrorNotify, showSuccessNotify } from '../../../actions/notification.action';
+import courseApi from '../../../api/course.api';
+import submissionApi from '../../../api/submission.api';
+import CircularLoading from '../../../components/Loading';
+import { Socket } from '../../../configs/websocket';
+import { ICourseInfo, IGradeCourse, IReviewGrade, IUserSummary } from '../../../interfaces';
+import { AppState } from '../../../reducers';
+import styles from "../index.module.scss";
+import ReviewGrade from './ReviewGrade';
 
-const GradeStudent = () => {
+interface IProps {
+    course: ICourseInfo,
+    user: IUserSummary,
+}
+
+const GradeStudent = (props: IProps) => {
+    const { course, user } = props;
     const { courseId } = useParams<{ courseId: string }>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [scoreList, setScoreList] = useState<IGradeCourse>();
+    const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+    const [selectSubmission, setSelectSubmission] = useState<any>(null);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const getGradeStudent = async () => {
@@ -27,11 +43,43 @@ const GradeStudent = () => {
         getGradeStudent();
     }, [])
 
+    const onSubmitReviewGrade = async (data: IReviewGrade) => {
+
+        try {
+
+            const socketData = {
+                id: 0,
+                content: `${user?.firstName} ${user?.lastName} đã yêu cầu phúc khảo điểm số.`,
+                isRead: false,
+                createdAt: new Date(),
+                uri: `/course/${courseId}/post/${selectSubmission.id}/submission`,
+                info: {
+                    avatarUrl: user?.avatarUrl,
+                    name: `${user?.firstName} ${user?.lastName}`
+                }
+            }
+            Socket.emit("notify-one-exercise", ({data: socketData, userId: course.ownerId}));
+
+            if (selectSubmission.submissionId === 0) throw new Error();
+            setIsLoading(true);
+            const res = await submissionApi.reviewGrade(+courseId, selectSubmission.submissionId, data);
+            setIsLoading(false);
+            if (!res || res.status !== 200) throw new Error();
+
+            dispatch(showSuccessNotify("Gửi phản hồi thành công, đơn của bạn sẽ được xem xét."))
+
+        } catch (err) {
+            dispatch(showErrorNotify
+                ("Cập nhật thất bại, vui lòng thử lại sau."));
+        }
+    }
+
     return (
         <>
             {
                 !isLoading ?
                     <Card className={styles.student}>
+                        <ReviewGrade isOpenModal={isOpenModal} setIsOpenModal={() => setIsOpenModal(false)} onSubmitReviewGrade={onSubmitReviewGrade} />
                         <div className={styles.student___header}>
                             Thông tin điểm số
                         </div>
@@ -63,7 +111,10 @@ const GradeStudent = () => {
                                                         <TableCell align="left">{submission.score}</TableCell>
                                                         <TableCell align="left"></TableCell>
                                                         <TableCell align="left">
-                                                            <Button style={{ fontSize: "0.8rem" }}>
+                                                            <Button style={{ fontSize: "0.8rem" }} onClick={() => {
+                                                                setSelectSubmission(submission);
+                                                                setIsOpenModal(true);
+                                                            }}>
                                                                 Phúc khảo
                                                             </Button>
                                                         </TableCell>

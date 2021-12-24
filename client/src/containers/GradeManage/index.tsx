@@ -9,9 +9,9 @@ import memberApi from '../../api/member.api';
 import { downloadFile, uploadFile } from "../../configs/firebase";
 import { TYPEROLE } from '../../constants';
 import { AppState } from '../../reducers';
-import GradeBoard from "./GradeBoard";
-import GradeStudent from './GradeStudent';
-import GradingOption from "./GradingOption";
+import GradeBoard from "./Teacher/GradeBoard";
+import GradeStudent from './Student/GradeStudent';
+import GradingOption from "./Teacher/GradingOption";
 import styles from "./index.module.scss";
 
 
@@ -100,7 +100,8 @@ const GradeManage = () => {
                         />
                     </>
                     :
-                    <GradeStudent />
+                        course.course && auth.user &&
+                        <GradeStudent course={course.course} user={auth.user} />
                     :
                     <></>
                 }

@@ -56,7 +56,7 @@ export const socketServer = (httpServer: http.Server) => {
         });
 
         sk.on("notify-one-exercise", ({ data, userId }) => {
-            console.log("Update notify: ", data);
+            console.log(`Update notify ${userId}: `, data);
 
             let socketReceiver: string = "";
 

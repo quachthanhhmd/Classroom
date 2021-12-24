@@ -100,6 +100,22 @@ export class CourseService {
 
         return course?.code;
     }
+
+    public getOwnerId = async (courseId: number) : Promise<number | null> => {
+        console.log("course ne", courseId);
+        const course = await Course.findOne({
+            where: {
+                id: courseId
+            },
+            raw: false,
+            nest: true,
+        });
+        console.log(course);
+        if (!course) return null;
+
+        return course.ownerId;
+    }
+
     /**
      * Check wonder if course is own user or not
      * @param {number} courseId 

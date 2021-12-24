@@ -171,7 +171,7 @@ const courseRouteList = [
     },
     {
         path: ROUTES.mark,
-        exact: true,
+        exact: false,
         auth: true,
         main: () => <Marking />
     },

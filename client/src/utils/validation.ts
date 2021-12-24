@@ -95,3 +95,8 @@ export const CreateExerciseValidate = yup.object({
     typeId: yup.number().required("Chọn cấu trúc điểm của bài này"),
     deadline: yup.date(),
 })
+
+export const ReviewGradeValidate = yup.object({
+    grade: yup.number().required("Hãy nhập điểm bạn mong muốn.").min(0, "Điểm số phải lớn hơn 0").max(10, "Điểm môn học không được lớn hơn 10"),
+    note: yup.string(),
+})

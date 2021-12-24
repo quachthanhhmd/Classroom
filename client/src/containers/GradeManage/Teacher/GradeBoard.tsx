@@ -2,16 +2,16 @@ import { Avatar } from '@material-ui/core';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { showErrorNotify, showSuccessNotify } from '../../actions/notification.action';
-import courseApi from '../../api/course.api';
-import exerciseApi from '../../api/exercise.api';
-import submissionApi from '../../api/submission.api';
-import CircularLoading from '../../components/Loading';
-import { uploadFile } from '../../configs/firebase';
-import { Socket } from '../../configs/websocket';
-import { ExerciseState, SubmissionType } from '../../constants';
-import { AppState } from '../../reducers';
-import styles from './index.module.scss';
+import { showErrorNotify, showSuccessNotify } from '../../../actions/notification.action';
+import courseApi from '../../../api/course.api';
+import exerciseApi from '../../../api/exercise.api';
+import submissionApi from '../../../api/submission.api';
+import CircularLoading from '../../../components/Loading';
+import { uploadFile } from '../../../configs/firebase';
+import { Socket } from '../../../configs/websocket';
+import { ExerciseState, SubmissionType } from '../../../constants';
+import { AppState } from '../../../reducers';
+import styles from '../index.module.scss';
 import PointStructureColOption from './PointStructureColOption';
 
 export interface IPointStructure {

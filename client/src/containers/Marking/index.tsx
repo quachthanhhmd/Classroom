@@ -3,11 +3,12 @@ import { AttachFile, CloudDownload, KeyboardArrowLeft, KeyboardArrowRight, Send 
 import React, { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router";
+import { useHistory, useParams } from "react-router";
 import { showErrorNotify, showSuccessNotify } from "../../actions/notification.action";
 import commentApi from "../../api/comment.api";
 import submissionApi from "../../api/submission.api";
 import Comment from "../../components/Comment";
+import CircularLoading from "../../components/Loading";
 import { ReferenceType, SubmissionType } from "../../constants";
 import { ISubmissionResponse, ISubmissionSummary } from "../../interfaces";
 import { SCORED_FAIL, SCORED_SUCCESS, SubmissionMessage } from "../../messages";
@@ -43,8 +44,10 @@ const StudentItem = (props: { student: ISubmissionSummary }) => {
 }
 
 const Marking = () => {
+
     const { postId, courseId } = useParams<{ courseId: string, postId: string }>();
     const dispatch = useDispatch();
+    const history = useHistory();
     const auth = useSelector((state: AppState) => state.auth);
     const [comment, setComment] = useState<string>("");
 
@@ -52,6 +55,7 @@ const Marking = () => {
     const [submissionDetail, setSubmissionDetail] = useState<ISubmissionResponse | null>(null);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isNotFound, setIsNotFound] = useState<boolean>(false);
     const [studentList, setStudentList] = useState<ISubmissionSummary[]>([]);
 
     const [score, setScore] = useState<string>("");
@@ -67,8 +71,30 @@ const Marking = () => {
                 if (!res || res.status !== 200) return;
 
                 setStudentList(res.data.payload);
-                if (res.data.payload.length > 0)
+
+                const studentListSubmission = res.data.payload;
+                let queryParams = new URLSearchParams(window.location.search);
+
+                const userId = queryParams.get("userId");
+                if (!userId) {
                     setSubmissionView(0);
+                }
+                else {
+                    let checkExist = false;
+
+                    for (let i = 0; i < studentListSubmission.length; i++) {
+                        if (studentListSubmission[i].user.id === Number(userId)) {
+                            setSubmissionView(i);
+                            checkExist = true;
+                            break;
+                        }
+                    }
+                    console.log(checkExist);
+                    if (!checkExist) {
+                        setIsNotFound(true);
+                    }
+                }
+
             } catch (err) {
 
             }
@@ -83,26 +109,27 @@ const Marking = () => {
 
         const getSubmissionDetail = async (id: number) => {
             try {
+                setIsLoading(true);
                 const res = await submissionApi.getSubmissionDetail(+courseId, id);
-
+                setIsLoading(false);
                 if (!res || res.status !== 200) return;
                 setSubmissionDetail(res.data.payload);
-
+                setScore(String(res.data.payload.score));
             } catch (err) {
 
             }
         }
-
+        console.log("haha", submissionView, studentList.length);
         if (studentList.length !== 0) {
-            if (!submissionDetail || (submissionView !== submissionDetail.id)) {
-                if (submissionView === -1) {
-                    getSubmissionDetail(studentList[0].id);
-                }
-                else {
-
-                    getSubmissionDetail(studentList[submissionView].id);
-                }
+            //if (!submissionDetail) {
+            if (submissionView === -1) {
+                getSubmissionDetail(studentList[0].id);
             }
+            else {
+
+                getSubmissionDetail(studentList[submissionView].id);
+            }
+            //}
             setComment("");
         }
     }, [submissionView])
@@ -112,8 +139,9 @@ const Marking = () => {
         if (!submissionDetail || typeof submissionDetail.score === "undefined") return;
 
         try {
+            setIsLoading(true);
             const res = await submissionApi.updateScore(+courseId, submissionDetail.userId, submissionDetail.exerciseId, { type: SubmissionType.SCORED, score: submissionDetail.score });
-
+            setIsLoading(false);
             if (!res || res.status !== 200) throw new Error();
 
             dispatch(showSuccessNotify(SCORED_SUCCESS));
@@ -125,7 +153,7 @@ const Marking = () => {
 
     const handleChangeScore = (score: string) => {
 
-        const setScore = (grade: number | undefined) => {
+        const setScoreValue = (grade: number | undefined) => {
             const newSubmission: ISubmissionResponse = { ...submissionDetail! };
             newSubmission.score = grade;
 
@@ -137,22 +165,33 @@ const Marking = () => {
             setStudentList(newStudentList);
         }
         if (score === "") {
-            setScore(undefined);
+            setScoreValue(undefined);
             return;
         }
-        if (Number(score) && Number(score) <= 10 && Number(score) >= 0 && submissionDetail) {
-            setScore(Number(score));
+        console.log(!isNaN(Number(score)));
+        if (!isNaN(Number(score)) && Number(score) <= 10 && Number(score) >= 0 && submissionDetail) {
+            setScoreValue(Number(score));
         }
+    }
+
+    const replaceHistory = (userId: number) => {
+        let queryParams = new URLSearchParams(window.location.search);
+        queryParams.set('userId', String(userId));
+        console.log(queryParams);
+        history.replace(`/course/${courseId}/post/${postId}/marking?${queryParams}`)
     }
     const handleArrowLeft = () => {
         if (submissionView === 0) return;
+        replaceHistory(studentList[submissionView - 1].user.id);
         setSubmissionView(submissionView - 1);
+
     }
 
     const handleArrowRight = () => {
         if (submissionView === studentList.length - 1) {
             return;
         }
+        replaceHistory(studentList[submissionView + 1].user.id);
         setSubmissionView(submissionView + 1);
     }
 
@@ -185,7 +224,7 @@ const Marking = () => {
                     Chấm điểm | EClassroom
                 </title>
             </Helmet>
-            {submissionDetail &&
+            {!isNotFound ? (submissionDetail &&
                 <Card className="mark">
                     <Grid className="mark___title" container spacing={2}>
                         <Grid item xs={6}>
@@ -239,12 +278,13 @@ const Marking = () => {
                                 <Button
                                     variant="contained"
                                     color="primary"
+
                                     className="mark___submit--button"
-                                    style={{ marginRight: "0.6rem" }}
+                                    style={{ marginRight: "0.6rem auto", display: "flex" }}
                                     onClick={handleReturnSubmission}
                                     disabled={submissionDetail && submissionDetail.score ? false : true}
                                 >
-                                    Trả Bài
+                                    Chấm điểm
                                 </Button>
                                 {/* <Button
                                     variant="contained"
@@ -258,129 +298,138 @@ const Marking = () => {
                             </CardContent>
                         </Grid>
                     </Grid>
+                    {
+                        !isLoading ?
+                            <Grid container spacing={2} style={{ height: "100%", paddingBottom: "1rem" }} >
+                                <Grid item xs={9}>
 
-                    <Grid container spacing={2} style={{ height: "100%", paddingBottom: "1rem" }} >
-                        <Grid item xs={9}>
-
-                            <div className="mark___download">
-                                <div className="mark___download--text" style={{ marginTop: "-4rem" }}>
-                                    Không thể xem trước, vui lòng tải về máy.
-                                </div>
-                                <div style={{ marginTop: "1rem" }}>
-                                    <Button variant="contained" color="secondary">Tải về tất cả</Button>
-                                </div>
-                            </div>
-
-
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Card className="mark___manage">
-                                <CardContent>
-                                    <Typography style={{ fontSize: "1.2rem" }}>
-                                        Tệp
-                                    </Typography>
-                                    <Typography style={{ fontSize: "0.8rem", opacity: "0.7" }}>
-                                        {/* Đã nộp vào 8 thg 12, 17:54 */}
-                                        {submissionDetail?.updatedAt}
-                                    </Typography>
-                                    {
-                                        submissionDetail && submissionDetail.attachmentList && submissionDetail.attachmentList.map((attachment, index) => {
-                                            return (
-                                                <Button
-                                                    className="mark___preview___manager"
-
-                                                    startIcon={
-                                                        <AttachFile style={{ fontSize: "1.7rem" }} />
-                                                    }
-                                                    fullWidth
-                                                >
-                                                    <div className="mark___preview___manager___content">
-                                                        <div className="mark___preview___manager___content--title">
-                                                            {attachment.name}
-                                                        </div>
-                                                        <div className="mark___preview___manager___content--action">
-                                                            <IconButton
-                                                                style={{ marginRight: "1rem" }}
-                                                                onClick={() => {
-                                                                    openInNewTab(attachment.url);
-                                                                }}
-                                                            >
-                                                                <CloudDownload />
-                                                            </IconButton>
-                                                        </div>
-                                                    </div>
-                                                </Button>
-                                            )
-                                        })
-                                    }
+                                    <div className="mark___download">
+                                        <div className="mark___download--text" style={{ marginTop: "-4rem" }}>
+                                            Không thể xem trước, vui lòng tải về máy.
+                                        </div>
+                                        <div style={{ marginTop: "1rem" }}>
+                                            <Button variant="contained" color="secondary">Tải về tất cả</Button>
+                                        </div>
+                                    </div>
 
 
-                                </CardContent>
-                                <Divider />
-                                <CardContent>
-                                    <Typography style={{ fontSize: "1rem" }}>
-                                        Điểm
-                                    </Typography>
-                                    <TextField
-                                        fullWidth
-                                        label="Điểm số"
-                                        id="outlined-start-adornment"
-                                        type="number"
-                                        value={score}
-                                        onChange={(e) => {
-                                            if (e.target.value === "" || (Number(e.target.value) && Number(e.target.value) <= 10)) {
-                                                setScore(e.target.value);
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Card className="mark___manage">
+                                        <CardContent>
+                                            <Typography style={{ fontSize: "1.2rem" }}>
+                                                Tệp
+                                            </Typography>
+                                            <Typography style={{ fontSize: "0.8rem", opacity: "0.7" }}>
+                                                {/* Đã nộp vào 8 thg 12, 17:54 */}
+                                                {submissionDetail?.updatedAt}
+                                            </Typography>
+                                            {
+                                                submissionDetail && submissionDetail.attachmentList && submissionDetail.attachmentList.map((attachment, index) => {
+                                                    return (
+                                                        <Button
+                                                            className="mark___preview___manager"
+
+                                                            startIcon={
+                                                                <AttachFile style={{ fontSize: "1.7rem" }} />
+                                                            }
+                                                            fullWidth
+                                                        >
+                                                            <div className="mark___preview___manager___content">
+                                                                <div className="mark___preview___manager___content--title">
+                                                                    {attachment.name}
+                                                                </div>
+                                                                <div className="mark___preview___manager___content--action">
+                                                                    <IconButton
+                                                                        style={{ marginRight: "1rem" }}
+                                                                        onClick={() => {
+                                                                            openInNewTab(attachment.url);
+                                                                        }}
+                                                                    >
+                                                                        <CloudDownload />
+                                                                    </IconButton>
+                                                                </div>
+                                                            </div>
+                                                        </Button>
+                                                    )
+                                                })
                                             }
 
-                                            handleChangeScore(e.target.value)
-                                        }}
-                                        InputProps={{
-                                            inputProps: { min: 0, max: 10 },
-                                            endAdornment: <InputAdornment position="end" style={{ fontSize: "1.2rem" }}>/10</InputAdornment>,
 
-                                        }}
-                                    />
-                                </CardContent>
-                                <Divider />
+                                        </CardContent>
+                                        <Divider />
+                                        <CardContent>
+                                            <Typography style={{ fontSize: "1rem" }}>
+                                                Điểm
+                                            </Typography>
+                                            <TextField
+                                                fullWidth
+                                                label="Điểm số"
+                                                id="outlined-start-adornment"
+                                                type="number"
+                                                value={score}
+                                                onChange={(e) => {
+                                                    if (e.target.value === "" || (!isNaN(Number(e.target.value)) && Number(e.target.value) >= 0 && Number(e.target.value) <= 10)) {
+                                                        setScore(e.target.value);
+                                                    }
 
-                                <CardContent>
-                                    {
-                                        submissionDetail && submissionDetail.commentList && submissionDetail.commentList.map((comment, index) => (
-                                            <Comment comment={comment} index={index} />
-                                        ))
-                                    }
-                                </CardContent>
-                                <CardHeader
-                                    avatar={
-                                        <Avatar src={auth && auth.user?.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} aria-label="recipe" alt="avt-post">
-                                            R
-                                        </Avatar>
-                                    }
-                                    action={
-                                        <IconButton
-                                            onClick={
-                                                handleSubmitComment
-                                            } >
-                                            <Send />
-                                        </IconButton>
-                                    }
-                                    title={
-                                        <TextField
-                                            fullWidth
-                                            label="nhận xét riêng tự"
-                                            placeholder="Thêm nhận về bài tập"
-                                            value={comment}
-                                            onChange={(e) => {
-                                                setComment(e.target.value);
-                                            }}
-                                        />
-                                    }
-                                >
-                                </CardHeader>
-                            </Card>
-                        </Grid>
-                    </Grid>
-                </Card >
+                                                    handleChangeScore(e.target.value)
+                                                }}
+                                                InputProps={{
+                                                    inputProps: { min: 0, max: 10 },
+                                                    endAdornment: <InputAdornment position="end" style={{ fontSize: "1.2rem" }}>/10</InputAdornment>,
+
+                                                }}
+                                            />
+                                        </CardContent>
+                                        <Divider />
+
+                                        <CardContent>
+                                            {
+                                                submissionDetail && submissionDetail.commentList && submissionDetail.commentList.map((comment, index) => (
+                                                    <Comment comment={comment} index={index} />
+                                                ))
+                                            }
+                                        </CardContent>
+                                        <CardHeader
+                                            avatar={
+                                                <Avatar src={auth && auth.user?.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} aria-label="recipe" alt="avt-post">
+                                                    R
+                                                </Avatar>
+                                            }
+                                            action={
+                                                <IconButton
+                                                    onClick={
+                                                        handleSubmitComment
+                                                    } >
+                                                    <Send />
+                                                </IconButton>
+                                            }
+                                            title={
+                                                <TextField
+                                                    fullWidth
+                                                    label="nhận xét riêng tự"
+                                                    placeholder="Thêm nhận về bài tập"
+                                                    value={comment}
+                                                    onChange={(e) => {
+                                                        setComment(e.target.value);
+                                                    }}
+                                                />
+                                            }
+                                        >
+                                        </CardHeader>
+                                    </Card>
+                                </Grid>
+                            </Grid>
+                            :
+                            <CircularLoading />
+                    }
+
+                </Card >)
+                :
+                <h2 style={{ textAlign: 'center' }}>
+                    Không tồn tại học sinh này
+                </h2>
             }
         </>
     )

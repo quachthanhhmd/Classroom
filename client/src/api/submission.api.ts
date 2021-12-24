@@ -1,5 +1,5 @@
 import { SubmissionType } from "../constants";
-import { ICreateSubmission, IHttpFormat, ISubmissionResponse, ISubmissionSummary } from "../interfaces";
+import { ICreateSubmission, IHttpFormat, IReviewGrade, ISubmissionResponse, ISubmissionSummary } from "../interfaces";
 import axiosClient from "./axios.client";
 
 const submissionApi = {
@@ -26,6 +26,10 @@ const submissionApi = {
     updateScore: (courseId: number, userId: number, exerciseId: number, data: {type?: SubmissionType, score?: number}) => {
         const url = `/v1/submission/course/${courseId}/exercise/${exerciseId}/user/${userId}/score`;
         return axiosClient.patch<IHttpFormat<ISubmissionResponse>>(url, data);
+    },
+    reviewGrade: (courseId: number, submissionId: number, data: IReviewGrade) =>{
+        const url = `/v1/submission/${submissionId}/course/${courseId}/review`;
+        return axiosClient.post<IHttpFormat<null>>(url, data);
     }
 }
 

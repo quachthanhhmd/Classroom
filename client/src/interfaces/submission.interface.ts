@@ -6,6 +6,11 @@ export interface ICreateSubmission {
     attachmentList: ICreateAttachment[]
 }
 
+export interface IReviewGrade {
+    grade: number,
+    note: string,
+}
+
 export interface ISubmissionResponse {
     id: number,
     type: string,

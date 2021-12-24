@@ -1,9 +1,12 @@
 import { inject, injectable } from "inversify";
-import { UpdateScore } from "../constants";
+import { reviewGradeMessage, uriReviewGrade, UpdateScore } from "../constants";
 import { serializeSubmissionList, IAuthorizeRequest, IResponse } from "../interfaces";
 import { ExerciseType, NotificationType, ReferenceType, SubmissionType } from "../models";
-import { AttachmentService, CommentService,
-    ExerciseService, NotificationService, SubmissionService } from "../services";
+import {
+    AttachmentService, CommentService,
+    CourseService,
+    ExerciseService, NotificationService, SubmissionService
+} from "../services";
 import { serializeSubmissionDetail } from "./../interfaces/submission.interface";
 import { ExerciseState } from "./../models/exercise.model";
 
@@ -14,7 +17,8 @@ export class SubmissionController {
         @inject("AttachmentService") private readonly _attachmentService: AttachmentService,
         @inject("CommentService") private readonly _commentService: CommentService,
         @inject("ExerciseService") private readonly _exerciseService: ExerciseService,
-        @inject("NotificationService") private readonly _notificationService: NotificationService
+        @inject("NotificationService") private readonly _notificationService: NotificationService,
+        @inject("CourseService") private readonly _courseService: CourseService
     ) { }
 
     public getAllSubmission = async (
@@ -163,6 +167,46 @@ export class SubmissionController {
         } catch (err) {
             console.log(err);
 
+            return res.composer.otherException(err);
+        }
+    }
+
+    public reviewGrade = async (
+        req: IAuthorizeRequest,
+        res: IResponse,
+    ): Promise<void> => {
+        try {
+            const submissionId = +req.params.submissionId;
+            const courseId = +req.params.courseId;
+            const userId = <number> req.currentUser?.id;
+            const body = req.body;
+
+            const ownerId = await this._courseService.getOwnerId(courseId);
+
+            if (ownerId === null) return res.composer.notFound();
+
+            const submissionExist = await this._submissionService.findSubmissionById(submissionId);
+
+            if (!submissionExist) return res.composer.notFound();
+            if (submissionExist.userId !== userId) return res.composer.forbidden();
+
+            const newComment = await this._commentService.createComment(userId, {
+                content: `Điểm mong muốn: ${body.grade}\n Ghi chú: ${body.note}`,
+                refType: ReferenceType.SUBMISSION,
+                refId: submissionId
+            })
+
+            await this._notificationService.createOneNotification({
+                content: reviewGradeMessage(`${req.currentUser?.firstName} ${req.currentUser?.lastName}`),
+                uri: uriReviewGrade(courseId, submissionExist.exerciseId, userId),
+                refType: NotificationType.COURSE,
+                refId: courseId,
+                userId: ownerId,
+                isRead: false,
+            })
+
+            return res.composer.success();
+        } catch (err) {
             return res.composer.otherException(err);
         }
     }

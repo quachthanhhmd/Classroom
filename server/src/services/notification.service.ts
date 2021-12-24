@@ -24,6 +24,13 @@ export class NotificationService {
         await Notification.bulkCreate(standardData);
     }
 
+    public createOneNotification = async (data: Required<ICreateNotification>) => {
+
+        return Notification.create({
+            ...data
+        })
+
+    }
     public getAllNotificationUser = async (userId: number): Promise<any[]> => {
         const notificationList = await Notification.findAll({
             where: {
