@@ -36,7 +36,7 @@ export class NotificationService {
             where: {
                 userId
             },
-            order: [["createdAt", "ASC"]],
+            order: [["createdAt", "DESC"]],
             raw: false,
             nest: true,
         });

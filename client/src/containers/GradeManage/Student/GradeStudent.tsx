@@ -7,6 +7,7 @@ import courseApi from '../../../api/course.api';
 import submissionApi from '../../../api/submission.api';
 import CircularLoading from '../../../components/Loading';
 import { Socket } from '../../../configs/websocket';
+import { TeacherReview, TeacherReviewUri } from '../../../constants';
 import { ICourseInfo, IGradeCourse, IReviewGrade, IUserSummary } from '../../../interfaces';
 import { AppState } from '../../../reducers';
 import styles from "../index.module.scss";
@@ -52,13 +53,13 @@ const GradeStudent = (props: IProps) => {
                 content: `${user?.firstName} ${user?.lastName} đã yêu cầu phúc khảo điểm số.`,
                 isRead: false,
                 createdAt: new Date(),
-                uri: `/course/${courseId}/post/${selectSubmission.id}/marking?userId=${user?.id}`,
+                uri: TeacherReviewUri(+courseId, selectSubmission.id, user?.id),
                 info: {
                     avatarUrl: user?.avatarUrl,
                     name: `${user?.firstName} ${user?.lastName}`
                 }
             }
-            Socket.emit("notify-one-exercise", ({data: socketData, userId: course.ownerId}));
+            Socket.emit("notify-one-exercise", ({ data: socketData, userId: course.ownerId }));
 
             if (selectSubmission.submissionId === 0) throw new Error();
             setIsLoading(true);

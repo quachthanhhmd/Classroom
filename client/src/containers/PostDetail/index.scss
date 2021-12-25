@@ -8,6 +8,13 @@
     &___title {
         color: blue;
     }
+
+    &___submission-comment {
+        max-height: 15rem;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        overflow-y: scroll;
+    }
 }
 
 

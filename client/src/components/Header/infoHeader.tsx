@@ -11,6 +11,7 @@ import { getDateFormat } from '../../utils/converter';
 import Profile from "../Profile";
 import env from "../../configs/env";
 import { Socket } from "../../configs/websocket";
+import "./index.scss";
 
 const TYPE_MODAL_COURSE = "TYPE_MODAL_COURSE";
 const TYPE_MODAL_INFO = "TYPE_MODE_INFO";
@@ -29,7 +30,7 @@ const NotifyItem = (props: { notify: INotification, updateNotification: (id: num
 
 
     return (
-        <div className="notification" style={{ height: "4.5rem" }} onClick={() => handleUpdate(notify.id, notify.uri)}>
+        <div className={`notification ${!notify.isRead ? " notify-read" : ""}`} style={{ height: "4.5rem" }} onClick={() => handleUpdate(notify.id, notify.uri)} >
             <div className="notification___avatar">
                 <Avatar src={notify.info.avatarUrl ? notify.info.avatarUrl : "/none-avt.png"} style={{ width: "4rem", height: "4rem" }} />
             </div>
@@ -117,7 +118,7 @@ const InfoHeader = () => {
             const notify: INotification = data;
             const newList = [...notifyList];
 
-            setNotifyList([...newList, notify]);
+            setNotifyList([notify, ...newList]);
 
             //}
         })

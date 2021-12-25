@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { ICommentResponse } from "../../interfaces";
 import { AppState } from "../../reducers";
 import Comment from "../Comment";
+import CreateComment from "../Comment/CreateComment";
 
 
 interface IProps {
@@ -21,16 +22,14 @@ const ContentPost = (props: IProps) => {
 
     const auth = useSelector((state: AppState) => state.auth);
 
-    const [comment, setComment] = useState<string>("");
     const [isShowAll, setIsShowAll] = useState<boolean>(isHiddenComment);
 
 
-    const handleSubmitComment = () => {
+    const handleSubmitComment = (comment: string) => {
         if (!comment) return;
 
         clickCreateComment(comment, auth.user!.id);
 
-        setComment("");
     }
 
 
@@ -87,30 +86,8 @@ const ContentPost = (props: IProps) => {
                 }
             </CardContent>
             <Divider />
-            <CardHeader
-                avatar={
-                    <Avatar src={auth && auth.user?.avatarUrl ? auth.user.avatarUrl : "/none-avt.png"} aria-label="recipe" alt="avt-post">
-                        R
-                    </Avatar>
-                }
-                action={
-                    <IconButton onClick={handleSubmitComment}>
-                        <Send />
-                    </IconButton>
-                }
-                title={
-                    <TextField
-                        fullWidth
-                        label="Bình luận về chủ đề"
-                        placeholder="Thêm nhận xét cho lớp học"
-                        value={comment}
-                        onChange={(e) => {
-                            setComment(e.target.value);
-                        }}
-                    />
-                }
-            >
-            </CardHeader>
+            <CreateComment avatar={auth.user?.avatarUrl} onSubmitComment={handleSubmitComment} />
+         
         </>
     )
 }

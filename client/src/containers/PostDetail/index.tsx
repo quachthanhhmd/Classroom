@@ -8,12 +8,15 @@ import { showErrorNotify, showSuccessNotify } from "../../actions/notification.a
 import attachmentApi from "../../api/attachment.api";
 import commentApi from "../../api/comment.api";
 import exerciseApi from '../../api/exercise.api';
+import notificationApi from "../../api/notification.api";
 import submissionApi from "../../api/submission.api";
 import Comment from "../../components/Comment";
+import CreateComment from "../../components/Comment/CreateComment";
 import CircularLoading from '../../components/Loading';
 import ContentPost from "../../components/Post/ContentPost";
 import { uploadBulk } from "../../configs/firebase";
-import { FolderName, ReferenceType, SubmissionType, TYPEROLE } from "../../constants";
+import { Socket } from "../../configs/websocket";
+import { FolderName, NotificationType, ReferenceType, ReviewResponse, ReviewResponseUri, SubmissionType, TeacherReview, TeacherReviewUri, TYPEROLE } from "../../constants";
 import { IComment, ICreateSubmission, IExerciseDetail, ISubmissionResponse } from '../../interfaces';
 import { ICreateAttachment } from "../../interfaces/attachment.interface";
 import { UPDATE_SUCCESS } from "../../messages";
@@ -36,18 +39,13 @@ const PostDetail = () => {
 
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
+
     const dispatch = useDispatch();
-    const member = useSelector((state: AppState) => state.member)
+    const member = useSelector((state: AppState) => state.member);
+    const auth = useSelector((state: AppState) => state!.auth);
+    const course = useSelector((state: AppState) => state!.course);
 
     useEffect(() => {
-        async function getSubmission() {
-            const res = await submissionApi.getSubmission(+courseId, +postId);
-
-            if (!res || res.status !== 200) return;
-
-            if (res.data.payload)
-                updateSpendingFileState(res.data.payload);
-        }
 
         async function getExercise(courseId: number, postId: number) {
             setIsLoading(true);
@@ -63,11 +61,23 @@ const PostDetail = () => {
         }
 
         getExercise(+courseId, +postId);
+
+    }, [])
+
+    useEffect(() => {
+        async function getSubmission() {
+            const res = await submissionApi.getSubmission(+courseId, +postId);
+
+            if (!res || res.status !== 200) return;
+
+            if (res.data.payload)
+                updateSpendingFileState(res.data.payload);
+        }
+
         if (member && member.currentRole?.role === TYPEROLE.STUDENT) {
             getSubmission();
         }
-    }, [])
-
+    }, [member, member.currentRole?.role])
 
     const handleUpdateStatusSubmission = async (state: SubmissionType) => {
         if (!submission) return;
@@ -240,7 +250,51 @@ const PostDetail = () => {
     const handleToSubmission = () => {
         history.push(`/course/${courseId}/post/${postId}/submission`);
     }
-    console.log(submission)
+
+    const handleSubmitComment = async (comment: string) => {
+
+        if (!submission || !course || !course.course) return;
+
+        const data = {
+            id: 0,
+            content: TeacherReview(`${auth.user?.firstName} ${auth.user?.lastName}`),
+            isRead: false,
+            createdAt: new Date(),
+            uri: TeacherReviewUri(+courseId, submission.exerciseId, auth!.user!.id),
+            info: {
+                avatarUrl: auth.user?.avatarUrl,
+                name: `${auth.user?.firstName} ${auth.user?.lastName}`
+            }
+        }
+        Socket.emit("notify-one-exercise", ({ data, userId: course.course?.ownerId }))
+
+        try {
+            setIsLoading(true);
+            const res = await commentApi.createNewComment({
+                refType: ReferenceType.SUBMISSION,
+                refId: submission.id,
+                content: comment,
+            })
+
+            await notificationApi.createNotification({
+                content: TeacherReview(`${auth.user?.firstName} ${auth.user?.lastName}`),
+                isRead: false,
+                uri: TeacherReviewUri(+courseId, submission.exerciseId, +postId),
+                refType: NotificationType.COURSE,
+                userId: course.course!.ownerId,
+                refId: +courseId
+            })
+
+            setIsLoading(false);
+
+            if (!res || res.status !== 200) throw new Error();
+
+            submission.commentList.push(res.data.payload);
+            setSubmission({ ...submission });
+        } catch (err) {
+
+        }
+    }
     return (
         <>
             {(exercise && !isLoading) ?
@@ -383,13 +437,15 @@ const PostDetail = () => {
                                 </Card>
                                 <Card style={{ marginTop: "1rem" }}>
                                     <CardHeader
-                                        title="Phản hồi về Phúc khảo"
+                                        title="Phản hồi & Phúc khảo"
                                     />
-                                    <CardContent>
+                                    <CardContent className="post-detail___submission-comment">
                                         {
                                             submission && submission.commentList.map((comment, index) => <Comment comment={comment} index={index} />)
                                         }
                                     </CardContent>
+                                    <Divider />
+                                    <CreateComment avatar={auth?.user?.avatarUrl} onSubmitComment={handleSubmitComment} />
                                 </Card>
                             </Grid>
 

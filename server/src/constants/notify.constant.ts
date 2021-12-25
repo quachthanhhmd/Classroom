@@ -8,5 +8,5 @@ export const reviewGradeMessage = (name: string) => {
 }
 
 export const uriReviewGrade = (courseId: number, exerciseId: number, userId: number) => {
-    return `/course/${courseId}/post/${exerciseId}/submission`;
+    return `/course/${courseId}/post/${exerciseId}/marking?userId=${userId}`;
 }
