@@ -40,6 +40,23 @@ class AuthRoutes {
         );
 
         this.router.post(
+            "/forgot-password",
+            validate(this._authValidation.ForgotPassword),
+            this._authController.sendEmailForgotPassword
+        )
+
+        this.router.post(
+            "/check-forgot",
+            validate(this._authValidation.CheckForgot),
+            this._authController.checkForgotPassword
+        )
+
+        this.router.post(
+            "/reset-password",
+            validate(this._authValidation.ResetPassword),
+            this._authController.resetPassword
+        )
+        this.router.post(
             "/logout",
             validate(this._authValidation.Logout),
             this._authController.logout,

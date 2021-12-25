@@ -8,7 +8,6 @@ import {
     IRefreshToken,
     ILoginOAuth
 } from "../interfaces";
-
 const authApi = {
     signIn: (body: ISigninInput) => {
         const url = "/v1/auth/signin";
@@ -33,6 +32,18 @@ const authApi = {
     loginOAuth: (body: ILoginOAuth) => {
         const url = `/v1/auth/login-oauth`;
         return axiosClient.post<IHttpFormat<ISigninRespone>>(url, body);
+    },
+    forgotPassword: (email: string) => {
+        const url = `/v1/auth/forgot-password`;
+        return axiosClient.post<IHttpFormat<null>>(url, {email});
+    },
+    resetPassword: (email: string, password: string) => {
+        const url = `/v1/auth/reset-password`;
+        return axiosClient.post<IHttpFormat<null>>(url, {email, password});
+    },
+    checkTokenForgot: (email: string, token: string) => {
+        const url = `/v1/auth/check-forgot`;
+        return axiosClient.post<IHttpFormat<null>>(url, {email, token})
     }
 };
 

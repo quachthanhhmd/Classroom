@@ -100,3 +100,19 @@ export const ReviewGradeValidate = yup.object({
     grade: yup.number().required("Hãy nhập điểm bạn mong muốn.").min(0, "Điểm số phải lớn hơn 0").max(10, "Điểm môn học không được lớn hơn 10"),
     note: yup.string(),
 })
+
+export const EmailValidate = yup.object({
+    email: yup.string().required("Vui lòng nhập email của bạn để lấy lại mật khẩu").email("Bạn phải nhập email!")
+})
+
+export const ResetPassword = yup.object({
+    password: yup
+    .string()
+    .required("Nhập mật khẩu")
+    .matches(
+        /^(?=.*[A-Z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+        "Mật khẩu phải bao gồm ít nhất 8 ký tự, 1 chữ hoa, 1 chữ thường và số",
+    ),
+    passwordConfirmation: yup.string()
+    .oneOf([yup.ref('password'), null], 'Mật khẩu nhập lại không khớp')
+})

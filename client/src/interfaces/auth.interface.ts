@@ -2,6 +2,16 @@ import { IOAuthRequest, INotification } from './';
 import { INotificationState } from './notification.interface';
 import { IRefreshToken, ITokenResponse } from './token.interface';
 
+
+export enum AuthType {
+    LOGIN = "login",
+    REGISTER = "register",
+    FORGOT = "forgot",
+    RESET = "reset",
+    NONE = "none"
+}
+
+
 export interface ISigninInput {
     email: string,
     password: string,

@@ -1,5 +1,6 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
+import { sendMailForgotPassword } from "../config/nodemailer";
 import { INCORRECT_LOGIN, TYPETOKEN, USER_EXIST } from "../constants";
 import { AuthService, NotificationService, TokenService, UserService } from "../services";
 import { UNAUTHENTICATED } from "./../constants/message/auth.message";
@@ -104,6 +105,69 @@ export class AuthController {
             );
         } catch (err) {
             res.composer.otherException(err);
+        }
+    }
+
+    public sendEmailForgotPassword = async (
+        req: IRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const { email } = req.body;
+
+            const user = await this._userService.findUserbyEmail(email);
+
+            if (!user) return res.composer.notFound();
+
+            const newToken = await this._tokenService.generateTokenVerify(user.id, TYPETOKEN.VERIFY_EMAIL);
+
+            sendMailForgotPassword(req, user.email, newToken);
+
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public checkForgotPassword = async (
+        req: IRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const { email, token } = req.body;
+
+            const user = await this._userService.findUserbyEmail(email);
+            if (!user) return res.composer.notFound();
+
+            const TokenAuth = await this._tokenService.verifyToken(token, TYPETOKEN.VERIFY_EMAIL);
+
+            if (!TokenAuth || TokenAuth.userId !== user.id) {
+                return res.composer.forbidden();
+            }
+
+            return res.composer.success();
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public resetPassword = async (
+        req: IRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const { email, password } = req.body;
+            console.log(email, password);
+            const user = await this._userService.findUserbyEmail(email);
+
+            if (!user) return res.composer.notFound();
+
+            await this._userService.updatePassword(user.id, password);
+
+            return res.composer.success();
+        } catch (err) {
+            console.log(err);
+            return res.composer.otherException(err);
         }
     }
 

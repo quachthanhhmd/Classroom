@@ -66,4 +66,29 @@ export class AuthValidation {
             })
         }
     }
+
+    public ForgotPassword = () => {
+        return Joi.object().keys({
+            body: {
+                email: Joi.string().required(),
+            }
+        })
+    }
+    public CheckForgot = () => {
+        return Joi.object().keys({
+            body: {
+                token: Joi.string().required(),
+                email: Joi.string().required(),
+            }
+        })
+    }
+
+    public ResetPassword = () => {
+        return Joi.object().keys({
+            body: {
+                email: Joi.string().required(),
+                password: Joi.string().custom(this.passwordValidation).required(),
+            }
+        })
+    }
 }
