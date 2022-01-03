@@ -240,7 +240,7 @@ const InfoHeader = () => {
                         }}
                     >
                         {
-                            auth && notifyList ?
+                            auth && notifyList && notifyList.length > 0 ?
                                 <>
                                     {
                                         notifyList.map((notify, index) => (

@@ -56,6 +56,7 @@ export const ProfileValidate = yup.object({
     birthDay: yup.date().required("Nhập ngày sinh của bạn"),
     gender: yup.string().oneOf(["male", "female", "other"]).required(),
     avatarUrl: yup.string(),
+    studentId: yup.string(),
 })
 
 export const CreateCourseValidate = yup.object({

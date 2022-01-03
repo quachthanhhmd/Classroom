@@ -6,6 +6,7 @@ export interface IProfileBody {
     firstName: string,
     lastName: string,
     avatarUrl?: string,
+    studentId?: string,
 }
 
 export interface IProfileState {

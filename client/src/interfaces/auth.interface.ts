@@ -25,6 +25,7 @@ export interface IUserSummary {
     gender: string,
     email: string,
     avatarUrl?: string,
+    studentId?: string,
 }
 
 export interface IUserHeader {

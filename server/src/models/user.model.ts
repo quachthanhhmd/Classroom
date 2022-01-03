@@ -23,6 +23,7 @@ interface IUser {
     isVerified?: boolean,
     isBlocked?: boolean,
     OAuthId?: string,
+    studentId?: string,
 }
 
 interface IUserCreationAttibutes extends Optional<IUser, "id"> { }
@@ -70,6 +71,10 @@ export class User extends Model<IUser, IUserCreationAttibutes> {
     @Default(false)
     @Column(DataType.BOOLEAN)
     isBlocked!: boolean;
+
+    @AllowNull(true)
+    @Column(DataType.TEXT)
+    studentId!: string;
 
     @AllowNull(true)
     @Column(DataType.STRING)

@@ -15,9 +15,10 @@ import {
     IMemberAction,
     IUpdateMemberState
 } from "../interfaces";
+import { NOTIFICATION_FAIL, NOTIFICATION_SUCCESS } from '../constants';
 
 export const upsertStudentId = (courseId: number, studentId: string) =>
-    async (dispatch: (args: IMemberAction) => IMemberAction) => {
+    async (dispatch) => {
         try {
             dispatch({
                 type: UPSERT_STUDENT_ID_REQUEST
@@ -30,9 +31,18 @@ export const upsertStudentId = (courseId: number, studentId: string) =>
                 type: UPSERT_STUDENT_ID_SUCCESS
             })
 
+            dispatch({
+                type: NOTIFICATION_SUCCESS,
+                payload: "Cập nhật mã số sinh viên thành công",
+            })
+
         } catch (err) {
             dispatch({
                 type: UPSERT_STUDENT_ID_FAIL,
+            })
+            dispatch({
+                type: NOTIFICATION_FAIL,
+                payload: "Cập nhật mã số sinh viên không thành công",
             })
         }
     }

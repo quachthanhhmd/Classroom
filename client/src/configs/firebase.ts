@@ -87,10 +87,12 @@ const uploadFileAttachment = async (folder: string, file: File) => {
 
 }
 
-const uploadFile = (folder: string, file: any): Promise<string> => {
+const uploadFile = async (folder: string, file: any): Promise<string> => {
+    console.log(file);
     return new Promise((resolve, reject) => {
         const fileName = folder ? `${folder}/${file.name}` : `${file.name}`;
         const storageRef = ref(storage, fileName);
+    
         const uploadTask = uploadBytesResumable(storageRef, file);
 
         uploadTask.on(

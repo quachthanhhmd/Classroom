@@ -21,6 +21,7 @@ const AddIDModal = () => {
     const { courseId } = useParams<IParamType>();
 
     const member = useSelector((state: AppState) => state.member);
+    const auth = useSelector((state: AppState) => state!.auth);
     const dispatch = useDispatch();
 
     const { register, handleSubmit, formState: { errors }, setError, clearErrors } = useForm<ICreateID>({
@@ -66,6 +67,18 @@ const AddIDModal = () => {
         dispatch(upsertStudentId(+courseId, data.studentId));
 
     }
+
+    const handleUseIDExist = () => {
+        if (auth && auth.user && auth.user.studentId) {
+            dispatch(upsertStudentId(+courseId, auth.user.studentId));
+            return;
+        }
+        setError(
+            "studentId", {
+            message: "Bạn chưa thiết lập mã số sinh viên, vui lòng nhập mã mới."
+        })
+    }
+
     return (
         <>
             {isAddId &&
@@ -91,6 +104,11 @@ const AddIDModal = () => {
                             </Box>
                         </DialogContent>
                         <DialogActions>
+                        <Button
+                                onClick={handleUseIDExist}
+                            >
+                                Sử dụng ID hiện tại
+                            </Button>
                             <Button
                                 onClick={handleSubmit(handleCreateID)}
                             >

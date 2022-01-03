@@ -1,5 +1,7 @@
 import userApi from "../api/user.api";
 import {
+    NOTIFICATION_FAIL,
+    NOTIFICATION_SUCCESS,
     UPDATE_PASSWORD_FAIL,
     UPDATE_PASSWORD_REQUEST,
     UPDATE_PASSWORD_SUCCESS,
@@ -9,7 +11,7 @@ import {
 import { IChangePassword, IPasswordState, IProfileBody, IProfileState } from "../interfaces";
 
 export const updateProfile = (data: IProfileBody) =>
-    async (dispatch: (args: IProfileState) => (IProfileState)) => {
+    async (dispatch) => {
         try {
             dispatch({
                 type: UPDATE_PROFILE_REQUEST
@@ -18,11 +20,21 @@ export const updateProfile = (data: IProfileBody) =>
 
             if (result.status !== 200) throw new Error();
 
+           
+
             dispatch({
                 type: UPDATE_PROFILE_SUCCESS,
                 payload: result.data.payload,
             });
+            dispatch({
+                type: NOTIFICATION_SUCCESS,
+                payload: "Cập nhật thông tin thành công"
+            })
         } catch (err) {
+            dispatch({
+                type: NOTIFICATION_FAIL,
+                payload: "Cập nhật thông tin không thành công"
+            })
             dispatch({
                 type: UPDATE_PROFILE_FAIL
             })
@@ -43,8 +55,17 @@ export const updatePassword = (data: IChangePassword) =>
             dispatch({
                 type: UPDATE_PASSWORD_SUCCESS
             })
+            
+            dispatch({
+                type: NOTIFICATION_SUCCESS,
+                payload: "Cập nhật thông tin thành công"
+            })
 
         } catch(err) {
+            dispatch({
+                type: NOTIFICATION_FAIL,
+                payload: "Cập nhật thông tin không thành công"
+            })
             dispatch({
                 type: UPDATE_PASSWORD_FAIL
             })

@@ -5,7 +5,8 @@ import { FindOptions } from "sequelize/types";
 import { comparePasswordHash } from "../config";
 import { MEMBERSTATE } from "../constants";
 import { ICreateUser, IUpdateUser } from "../interfaces";
-import { filterPagination, generateRandomPassword, Course, IPagingParams, IPagingResult, Member, User } from "../models";
+import { filterPagination,
+    generateRandomPassword, Course, IPagingParams, IPagingResult, Member, User } from "../models";
 
 @injectable()
 export class UserService {
@@ -62,7 +63,6 @@ export class UserService {
      */
     public getInforById = async (id: number): Promise<User | null> => {
         return User.findOne({
-            attributes: ["id", "firstName", "lastName", "gender", "birthDay", "email", "avatarUrl"],
             where: {
                 id,
             }

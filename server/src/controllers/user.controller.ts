@@ -56,9 +56,12 @@ export class UserController {
 
             await this._userService.updateProfile(userId, body);
             const userAfterUpdate = await this._userService.findUserById(userId);
+            console.log(userAfterUpdate)
 
             return res.composer.success(serializeUserProfile(userAfterUpdate));
         } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }

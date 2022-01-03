@@ -51,6 +51,7 @@ const ProfileUser = (props: IOpenModal) => {
                 lastName: userProfile?.lastName,
                 birthDay: userProfile?.birthDay,
                 gender: userProfile?.gender,
+                studentId: userProfile?.studentId,
                 //avatarUrl: userProfile?.avatarUrl
             }
         }, [userProfile])
@@ -62,6 +63,7 @@ const ProfileUser = (props: IOpenModal) => {
             lastName: userProfile?.lastName,
             birthDay: userProfile?.birthDay,
             gender: userProfile?.gender,
+            studentId: userProfile?.studentId,
             //avatarUrl: userProfile?.avatarUrl
         });
     }, [auth]);
@@ -108,8 +110,9 @@ const ProfileUser = (props: IOpenModal) => {
     }
 
     const handleUpload = async () => {
-
-        const url = await uploadFile("images", selectedFile!.name);
+     
+        if (!selectedFile) return;
+        const url = await uploadFile("images", selectedFile);
         dispatchProfileAndUpdate({ avatarUrl: url })
         setPreview(url);
       
@@ -207,6 +210,19 @@ const ProfileUser = (props: IOpenModal) => {
                                         {...register("birthDay")}
                                         required
                                     />
+                                     <TextField
+                                        error={Boolean(errors.studentId)}
+                                        fullWidth
+                                        type="text"
+                                        label="Mã số sinh viên"
+                                        InputLabelProps={{ shrink: true, required: true }}
+                                        margin="normal"
+                                        {...register("studentId")}
+                                        required
+                                    />
+                                            <Box>
+                                                {errors.studentId && (<ProfileError message={errors!.studentId.message as string} />)}
+                                            </Box>
                                     <div>
                                         <Button
                                             color="secondary"

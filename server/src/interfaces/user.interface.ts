@@ -18,6 +18,7 @@ export interface IInforUser {
     gender: string,
     birthDay: Date,
     avatarUrl?: string,
+    studentId?: string,
 }
 
 export interface IUpdateUser {
@@ -26,6 +27,7 @@ export interface IUpdateUser {
     gender?: string,
     birthDay?: Date,
     avatarUrl?: string,
+    studentId?: string,
 }
 export interface ILoginOAuth extends IOAuthRequest {
     firstName: string,
@@ -45,6 +47,7 @@ export const serializeUserLogin = (model: any) => {
             gender: model.user.gender,
             birthDay: model.user.birthDay,
             avatarUrl: model.user.avatarUrl,
+            studentId: model.user.studentId,
         },
         // notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
         token: model.token,
@@ -60,6 +63,7 @@ export const serializeUserDetail = (model: any) => {
         gender: model.user.gender,
         birthDay: model.user.birthDay,
         avatarUrl: model.user.avatarUrl,
+        studentId: model.user.studentId,
     }
 
     return body;
@@ -71,5 +75,6 @@ export const serializeUserProfile = (model: any) => {
         birthDay: model.birthDay,
         gender: model.gender,
         avatarUrl: model.avatarUrl,
+        studentId: model.studentId,
     }
 }

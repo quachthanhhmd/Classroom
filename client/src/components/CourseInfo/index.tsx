@@ -53,7 +53,7 @@ const CourseInfo = (props: IPropType) => {
     const { onChange, ...rest } = register("studentLimit");
 
     const handleUpload = async () => {
-        const url: string = await uploadFile("course-images", selectedFile!.name);
+        const url: string = await uploadFile("course-images", selectedFile);
 
         dispatch(updateCourseInfo(+courseId, { avatarUrl: url }));
         setPreview(url);
