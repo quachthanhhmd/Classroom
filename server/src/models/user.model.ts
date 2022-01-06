@@ -24,6 +24,12 @@ interface IUser {
     isBlocked?: boolean,
     OAuthId?: string,
     studentId?: string,
+    type?: string,
+}
+
+export enum UserType {
+    ADMIN = "admin",
+    USER = "user",
 }
 
 interface IUserCreationAttibutes extends Optional<IUser, "id"> { }
@@ -61,6 +67,11 @@ export class User extends Model<IUser, IUserCreationAttibutes> {
     @Default(GENDER.MALE)
     @Column(DataType.ENUM(GENDER.FEMALE, GENDER.MALE, GENDER.OTHER))
     gender!: string;
+
+    @AllowNull(false)
+    @Default(UserType.USER)
+    @Column(DataType.TEXT)
+    type!: string;
 
     @AllowNull(false)
     @Default(false)

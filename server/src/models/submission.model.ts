@@ -19,6 +19,7 @@ export enum SubmissionType {
     COMPLETED = "completed",
 }
 
+
 interface ISubmissionCreationAttributes extends Optional<ISubmission, "id">{}
 
 @Table({
