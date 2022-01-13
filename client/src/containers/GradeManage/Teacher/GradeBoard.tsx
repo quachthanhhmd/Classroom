@@ -74,8 +74,6 @@ const GradeBoard = (props: Props) => {
         getAuthStudent(+courseId);
     }, [])
 
-
-
     const onUpdateGradeOnBoard = async (userId: number, exerciseId: number, score: number) => {
         const data = {
             id: 0,
@@ -257,7 +255,7 @@ const GradeBoard = (props: Props) => {
             <thead>
                 <tr>
                     <th>Thông tin sinh viên</th>
-                    {exerciseList.length > 0 ? (
+                    {exerciseList.length > 0 && (
                         exerciseList.map((item: IExerciseSummary, index: number) => (
                             <th key={`point-structure-${index + 1}`}>
                                 {item.title}
@@ -281,9 +279,8 @@ const GradeBoard = (props: Props) => {
                                 )} */}
                             </th>
                         ))
-                    ) : (
-                        <th>Lớp học không có cấu trúc điểm</th>
-                    )}
+                    )} 
+                   
                     <th>Tổng kết</th>
                 </tr>
             </thead>

@@ -74,7 +74,6 @@ const Feed = () => {
             const res = await courseApi.getAllPost(+courseId);
 
             if (!res || res.status !== 200) return;
-            console.log(res.data.payload);
             setPostList(res.data.payload);
         }
         postList();
@@ -118,14 +117,14 @@ const Feed = () => {
             if (!res || res.status !== 200) throw new Error();
 
             // update feed
-
+           
             const newPostList = postList.map((post) => {
-                if (isPostDetail(post) && post.id === id) {
+                if (isPostDetail(post) && post.id === data.refId) {
+                   
                     post.commentList.push(res.data.payload);
                 }
                 return post;
             });
-
             setPostList(newPostList);
         } catch (err) {
 

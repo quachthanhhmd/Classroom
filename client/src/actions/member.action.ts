@@ -57,10 +57,12 @@ export const getRoleMember = (courseId: number) =>
                 type: GET_ROLE_MEMBER_SUCCESS,
                 payload: result.data.payload,
             })
+         
         } catch (err) {
             dispatch({
                 type: GET_ROLE_MEMBER_FAIL,
             })
+          
         }
     }
 
@@ -76,10 +78,17 @@ export const inviteMemberByEmail = (courseId: number, email: string, role: strin
             dispatch({
                 type: INVITE_MEMBER_SUCCESS,
             })
-
+            dispatch({
+                type: NOTIFICATION_SUCCESS,
+                payload: "Gửi email thành công.",
+            })
         } catch (err) {
             dispatch({
                 type: INVITE_MEMBER_FAIL
+            })
+            dispatch({
+                type: NOTIFICATION_FAIL,
+                payload: "Gửi email thất bại, vui lòng thử lại sau.",
             })
         }
     }

@@ -218,9 +218,6 @@ const GradeStructure = () => {
                 <div className="structure-main">
            
                     <Card className="structure-main___title">
-                        <Typography variant="h4" component="div" className="structure-main___title--class-name">
-                            Lap tring ung dung web - 18 - 3
-                        </Typography>
                         <CardContent>
 
                             <Grid container spacing={2} className="structure-main___content--structure">

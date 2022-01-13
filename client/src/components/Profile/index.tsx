@@ -42,7 +42,7 @@ const ProfileUser = (props: IOpenModal) => {
     const userProfile = auth.user;
 
     const dispatch = useDispatch();
-
+    //console.log(userProfile);
     const { register, handleSubmit, formState: { errors }, reset } = useForm<IProfileBody>({
         resolver: yupResolver(ProfileValidate),
         defaultValues: useMemo(() => {

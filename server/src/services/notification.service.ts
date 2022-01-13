@@ -18,7 +18,7 @@ export class NotificationService {
         const standardData = studentList.map((student) => {
             return {
                 ...data,
-                userId: student.id
+                userId: student.userId
             }
         })
         await Notification.bulkCreate(standardData);

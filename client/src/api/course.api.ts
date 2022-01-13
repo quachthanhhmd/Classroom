@@ -1,4 +1,4 @@
-import { ICourseInfo, ICreateCourse, IHttpFormat, IMemberSummary, IPostResponse, IUserCourse, IGradeCourse } from './../interfaces';
+import { ICourseInfo, ICreateCourse, IHttpFormat, IMemberSummary, IPostResponse, IUserCourse, IGradeCourse, IExerciseTypeDetail } from './../interfaces';
 import { IUpdateCourseInput } from './../interfaces/course.interface';
 import axiosClient from "./axios.client";
 
@@ -51,6 +51,10 @@ const courseApi = {
     getStudentGrade: (courseId: number) => {
         const url = `v1/course/${courseId}/get-one-grade`;
         return axiosClient.get<IHttpFormat<IGradeCourse>>(url);
+    },
+    getExerciseList: (courseId: number) => {
+        const url = `v1/course/${courseId}/`;
+        return axiosClient.get<IHttpFormat<IExerciseTypeDetail[]>>(url);
     }
 }
 

@@ -91,6 +91,14 @@ class CourseRoute {
             validate(this._courseValidation.getCourse()),
             this._courseController.getGradeStudent
         )
+
+        this.router.get(
+            "/:courseId/exercise-type",
+            this._authenticate.authenticate(),
+            this._authenticate.courseAuthentication(TYPEROLE.TEACHER),
+            validate(this._courseValidation.getCourse()),
+            this._courseController.getExerciseType
+        )
     }
 
 }

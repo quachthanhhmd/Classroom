@@ -17,7 +17,6 @@ interface Props {
 
 const Post = (props: Props) => {
     const { post, clickCreateComment } = props;
-
     const handleCreateComment = (content: string, id: number) => {
         clickCreateComment({
             content,

@@ -30,7 +30,7 @@ const NotifyItem = (props: { notify: INotification, updateNotification: (id: num
 
 
     return (
-        <div className={`notification ${!notify.isRead ? " notify-read" : ""}`} style={{ height: "4.5rem" }} onClick={() => handleUpdate(notify.id, notify.uri)} >
+        <div className={`notification ${notify.isRead ? " notify-read" : ""}`} style={{ height: "4.5rem" }} onClick={() => handleUpdate(notify.id, notify.uri)} >
             <div className="notification___avatar">
                 <Avatar src={notify.info.avatarUrl ? notify.info.avatarUrl : "/none-avt.png"} style={{ width: "4rem", height: "4rem" }} />
             </div>
@@ -137,7 +137,7 @@ const InfoHeader = () => {
             try {
                 const res = await notificationApi.getNotificationUser();
                 if (!res || res.status !== 200) throw new Error();
-
+                console.log(res.data.payload);
                 setNotifyList(res.data.payload);
             } catch (err) {
 
@@ -209,7 +209,7 @@ const InfoHeader = () => {
         await dispatch(signOut());
         window.location.href = "/";
     }
-
+    //console.log(notifyList);
     return (
         <div className="info-header">
             <Profile isOpenModal={typeOpen === TYPE_MODAL_INFO && isOpenModal} setIsOpenModal={handleCloseModal} />

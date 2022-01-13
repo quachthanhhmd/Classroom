@@ -8,6 +8,7 @@ import {
 } from "../services";
 import { serializeCourseDetail, serializeFeedDetailList, serializeStudentList, IAuthorizeRequest, IResponse } from "./../interfaces";
 import { ICreateCourse } from "./../interfaces/course.interface";
+import { serializeExerciseTypeDetailList } from "./../interfaces/exercise-type.interface";
 
 @injectable()
 export class CourseController {
@@ -301,6 +302,20 @@ export class CourseController {
                 totalMaxScore,
                 scoreList: scoreList.filter((score) => score.submissionId !== null)
             })
+        } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public getExerciseType = async(
+        req: IAuthorizeRequest, res: IResponse
+    ) : Promise<void> => {
+        try {
+            const courseId = req.params.courseId;
+
+            const exerciseTypeList = await this._exerciseTypeService.findAllExerciseTypeByCourseId(+courseId);
+
+            return res.composer.success(serializeExerciseTypeDetailList(exerciseTypeList));
         } catch (err) {
             return res.composer.otherException(err);
         }

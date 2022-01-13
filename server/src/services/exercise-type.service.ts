@@ -96,4 +96,14 @@ export class ExerciseTypeService {
             }
         })
     }
+
+    public findAllExerciseTypeByCourseId = async (courseId: number) => {
+        return ExerciseType.findAll({
+            where: {
+                courseId
+            },
+            raw: false,
+            nest: false,
+        })
+    }
 }

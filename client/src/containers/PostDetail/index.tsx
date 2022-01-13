@@ -435,18 +435,21 @@ const PostDetail = () => {
 
                                     </CardContent>
                                 </Card>
-                                <Card style={{ marginTop: "1rem" }}>
-                                    <CardHeader
-                                        title="Phản hồi & Phúc khảo"
-                                    />
-                                    <CardContent className="post-detail___submission-comment">
-                                        {
-                                            submission && submission.commentList.map((comment, index) => <Comment comment={comment} index={index} />)
-                                        }
-                                    </CardContent>
-                                    <Divider />
-                                    <CreateComment avatar={auth?.user?.avatarUrl} onSubmitComment={handleSubmitComment} />
-                                </Card>
+                                {
+                                    submission && isSubmitted && <Card style={{ marginTop: "1rem" }}>
+                                        <CardHeader
+                                            title="Phản hồi & Phúc khảo"
+                                        />
+                                        <CardContent className="post-detail___submission-comment">
+                                            {
+                                                submission && submission.commentList.map((comment, index) => <Comment comment={comment} index={index} />)
+                                            }
+                                        </CardContent>
+                                        <Divider />
+                                        <CreateComment avatar={auth?.user?.avatarUrl} onSubmitComment={handleSubmitComment} />
+                                    </Card>
+                                }
+
                             </Grid>
 
                             :
