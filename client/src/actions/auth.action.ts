@@ -12,7 +12,7 @@ import {
 import {
   ILoginOAuth, INotification, IPayload, ISigninInput, ISignUpInput, IUserHeader, IUserSummary
 } from "../interfaces";
-import { LOGIN_FAIL, LOGIN_SUCCESS, SIGNUP_SUCCESS, UN_VERIFY } from '../messages';
+import { IS_BLOCKED, LOGIN_FAIL, LOGIN_SUCCESS, SIGNUP_SUCCESS, UN_VERIFY } from '../messages';
 import { USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from './../constants';
 import { ILogoutType } from './../interfaces/auth.interface';
 
@@ -32,6 +32,14 @@ export const signIn = (data: ISigninInput) => async (dispatch) => {
       dispatch({
         type: NOTIFICATION_FAIL,
         payload: UN_VERIFY
+      })
+  
+      return;
+    }
+    if (result.data.message === "IS_BLOCKED") {
+      dispatch({
+        type: NOTIFICATION_FAIL,
+        payload: IS_BLOCKED
       })
   
       return;

@@ -85,10 +85,10 @@ function CreateCourse(props: IOpenModal) {
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Create class</DialogTitle>
+                <DialogTitle id="form-dialog-title">Tạo lớp học mới</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Enter some information of course and we will create a classroom for you!
+                        Nhập một vài thông tin để tạo lớp học
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -129,10 +129,10 @@ function CreateCourse(props: IOpenModal) {
                 </DialogContent>
                 <DialogActions>
                     <Button color="primary" onClick={() => handleClose()}>
-                        Cancel
+                        Hủy bỏ
                     </Button>
                     <Button color="primary" onClick={handleCreateCourse}>
-                        Create
+                        Tạo
                     </Button>
                 </DialogActions>
             </Dialog>

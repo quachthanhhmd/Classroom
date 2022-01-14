@@ -61,6 +61,10 @@ export class AuthController {
                 return res.composer.badRequest(INCORRECT_LOGIN);
             }
 
+            if (user.isBlocked) {
+                return res.composer.success(null, "IS_BLOCKED");
+            }
+
             if (!user.isVerified) {
                 return res.composer.success(null, "UN_VERIFY");
             }

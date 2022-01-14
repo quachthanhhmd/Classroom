@@ -57,7 +57,7 @@ const JoinCourse = (props: IOpenModal) => {
                 onClose={handleClose}
                 aria-labelledby="form-dialog-title"
             >
-                <DialogTitle id="form-dialog-title">Join class</DialogTitle>
+                <DialogTitle id="form-dialog-title">Tham gia lớp học</DialogTitle>
                 <form >
                     <DialogContent>
                         <DialogContentText>
