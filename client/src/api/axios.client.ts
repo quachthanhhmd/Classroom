@@ -31,7 +31,6 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config;
   
     if (error.response.status === 401) {
-      console.log(originalRequest);
       if (originalRequest.url === "/v1/auth/refresh-token" || !localStorage.getItem(env.REACT_APP_REFRESH_TOKEN)) {
         localStorage.removeItem(env.REACT_APP_ACCESS_TOKEN);
         localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
@@ -61,6 +60,8 @@ axiosClient.interceptors.response.use(
           localStorage.removeItem(env.REACT_APP_REFRESH_TOKEN);
         });
     }
+    console.log(error);
+    return Promise.reject(error)
   }
 );
 

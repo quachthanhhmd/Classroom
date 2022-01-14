@@ -35,7 +35,7 @@ export class UserValidation {
             body: Joi.object().keys({
                 firstName: Joi.string(),
                 lastName: Joi.string(),
-                birthDay: Joi.date(),
+                birthDay: Joi.string(),
                 gender: Joi.string().valid(GENDER.FEMALE, GENDER.MALE, GENDER.OTHER),
                 avatarUrl: Joi.string(),
             })

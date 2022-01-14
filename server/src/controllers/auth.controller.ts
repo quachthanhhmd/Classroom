@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import "reflect-metadata";
-import { sendMailForgotPassword } from "../config/nodemailer";
+import { sendActivationAccount, sendMailForgotPassword } from "../config/nodemailer";
 import { INCORRECT_LOGIN, TYPETOKEN, USER_EXIST } from "../constants";
 import { AuthService, NotificationService, TokenService, UserService } from "../services";
 import { UNAUTHENTICATED } from "./../constants/message/auth.message";
@@ -22,17 +22,25 @@ export class AuthController {
     ): Promise<void> => {
         try {
 
-            const userBody: ICreateUser = req.body;
+            const userBody = req.body;
 
             const existUser = await this._userService.findUserbyEmail(userBody.email);
             if (existUser) {
                 return res.composer.badRequest(USER_EXIST);
             }
 
+            if (typeof userBody.birthDay === "string") {
+                const birthDay = userBody.birthDay;
+                delete userBody.birthDay;
+                userBody.birthDay = new Date(birthDay);
+            }
+
             const newUser = await this._userService.createUser(userBody);
             if (!newUser) {
                 return res.composer.internalServerError();
             }
+            const tokenSendEmail = await this._tokenService.generateTokenVerify(newUser.id, TYPETOKEN.VERIFY_EMAIL);
+            await sendActivationAccount(req, newUser.email, tokenSendEmail);
 
             return res.composer.success();
         } catch (err) {
@@ -51,6 +59,10 @@ export class AuthController {
 
             if (!user) {
                 return res.composer.badRequest(INCORRECT_LOGIN);
+            }
+
+            if (!user.isVerified) {
+                return res.composer.success(null, "UN_VERIFY");
             }
             // const notificationList = await this._notificationService.getAllNotificationUser(user.id);
 
@@ -167,6 +179,7 @@ export class AuthController {
             return res.composer.success();
         } catch (err) {
             console.log(err);
+
             return res.composer.otherException(err);
         }
     }
@@ -182,6 +195,29 @@ export class AuthController {
 
             return res.composer.success();
         } catch (err) {
+            return res.composer.otherException(err);
+        }
+    }
+
+    public verifyEmail = async (
+        req: IRequest,
+        res: IResponse
+    ): Promise<void> => {
+        try {
+            const token: string = req.body.token;
+
+            const tokenDoc = await this._tokenService.verifyToken(token, TYPETOKEN.VERIFY_EMAIL);
+
+            if (!tokenDoc) {
+                return res.composer.notFound();
+            }
+
+            await this._userService.updateProfile(tokenDoc.id, { isVerified: true });
+
+            return res.composer.success();
+        } catch (err) {
+            console.log(err);
+
             return res.composer.otherException(err);
         }
     }

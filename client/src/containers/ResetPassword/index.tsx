@@ -77,7 +77,8 @@ const ForgotPassword = (props: IProps) => {
                 setIsOpenModal(true);
             }
         }
-        checkTokenForgot();
+        if (!window.location.pathname.includes("verify"))
+             checkTokenForgot();
     }, [history])
 
 

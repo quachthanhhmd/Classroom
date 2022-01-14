@@ -2,7 +2,7 @@
 export interface IProfileBody {
     gender: string,
     password: string,
-    birthDay: Date,
+    birthDay: string,
     firstName: string,
     lastName: string,
     avatarUrl?: string,

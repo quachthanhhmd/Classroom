@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { loginOAuth } from "../../actions";
+import authApi from '../../api/auth.api';
 import CircularLoading from '../../components/Loading';
 import { GoogleButton } from "../../components/LoginSocial";
 import ThemeMode from "../../components/ThemeMode";
 import { signInWithGoogle } from "../../configs/firebase";
+import { NOTIFICATION_FAIL, NOTIFICATION_SUCCESS } from '../../constants';
 import ForgotPassword from '../../containers/ForgotPassword';
 import Login from "../../containers/Login";
 import Register from "../../containers/Register";
@@ -37,13 +39,43 @@ const Authenticate = () => {
         changeToggleMode();
     })
 
+    useEffect(() => {
+        async function verifyAccount() {
+        
+                const uri = new URLSearchParams(window.location.search);
+                const token = uri.get('token');
+                if (token) {
+                    try {
+                        const res = await authApi.verifyAccount(token);
+                        
+                        if (res.status !== 200) throw new Error();
+
+                        dispatch({
+                            type: NOTIFICATION_SUCCESS,
+                            payload: "Xác thực email Thành công, hãy đăng nhập và trải nghiệm nhé!",
+                        })
+                    } catch(err) {
+        
+                        dispatch({
+                            type: NOTIFICATION_FAIL,
+                            payload: "Xác thực email Không thành công, vui lòng thử lại.",
+                        })
+                    }
+                }
+             
+        }
+        if (window.location.pathname.includes("verify")) {
+          verifyAccount();
+        }
+    }, [])
+
 
     useEffect(() => {
         const uri = new URLSearchParams(window.location.search);
         const email = uri.get('email');
         const token = uri.get('token');
 
-        if (email || token) {
+        if ((email || token) && !window.location.pathname.includes("verify")) {
             setAuthType(AuthType.RESET);
         }
     }, [])
@@ -65,7 +97,6 @@ const Authenticate = () => {
 
     const handleSignInWithGoogle = async () => {
         const user = await signInWithGoogle();
-        console.log(user);
         if (!user) return;
         dispatch(loginOAuth(user));
     }

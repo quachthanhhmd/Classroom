@@ -59,7 +59,6 @@ const InfoHeader = () => {
     const [typeOpen, setTypeOpen] = useState<string>("");
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [notifyList, setNotifyList] = useState<INotification[]>([]);
-    const OneSignal = window['OneSignal'] || [];
     // useEffect(() => {
     //   OneSignal.push(()=> {
     //     OneSignal.init(

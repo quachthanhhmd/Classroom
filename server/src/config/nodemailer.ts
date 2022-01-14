@@ -31,14 +31,22 @@ export const sendInviteMember = async (
     const text = `Gửi ${userEmail}, \nĐể vào lớp học, vui lòng nhấn vào link ${urlVerify}\nNếu bạn không muốn vào lớp, hãy bỏ qua email này.`
 
     await sendMail(userEmail, "Mời bạn vào lớp học", text);
+}
+
+export const sendActivationAccount = async (
+    _req: IAuthorizeRequest, userEmail: string, token: string): Promise<void > => {
+
+    const urlVerify = `${env.CLIENT_DOMAIN}/auth/verify?token=${token}`;
+    console.log(urlVerify);
+    const text = `Gửi ${userEmail}, \nĐể kích hoạt tài khoản, vui lòng nhấn vào link ${urlVerify}\nNếu bạn không gửi yêu cầu, hãy bỏ qua email này.`
+
+    await sendMail(userEmail, "Kích hoạt tài khoản", text);
 
 }
 
 export const sendMailForgotPassword = async (
     _req: IAuthorizeRequest, userEmail: string, token: string): Promise<void> => {
         const urlVerify = `${env.CLIENT_DOMAIN}/auth?token=${token}&email=${userEmail}`;
-        console.log(123123);
-        console.log(urlVerify);
         const text = `Gửi ${userEmail}, \nBấm vào ${urlVerify} để lấy lại mật khẩu. Nếu bạn không phải là người gửi, hãy bỏ qua email này.`
 
         await sendMail(userEmail, "Quên mật khẩu", text);

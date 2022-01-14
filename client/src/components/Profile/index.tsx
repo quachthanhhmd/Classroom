@@ -40,9 +40,8 @@ const ProfileUser = (props: IOpenModal) => {
 
     const auth = useSelector((state: AppState) => state.auth);
     const userProfile = auth.user;
-
+    console.log(userProfile);
     const dispatch = useDispatch();
-    //console.log(userProfile);
     const { register, handleSubmit, formState: { errors }, reset } = useForm<IProfileBody>({
         resolver: yupResolver(ProfileValidate),
         defaultValues: useMemo(() => {
@@ -96,16 +95,18 @@ const ProfileUser = (props: IOpenModal) => {
         setSelectedFile(e.target.files[0])
     }
     function dispatchProfileAndUpdate(data: any) {
-        data.birthDay = new Date(data.birthDay).setTime(0);
-
+      
         const newData: any = objectFieldChange(userProfile, data);
-
         if (!Object.keys(newData)) return;
-
+      
         dispatch(updateProfile(newData));
 
+        if (typeof newData.birthDay === "object") {
+            newData.birthDay = newData.birthDay.toLocaleDateString();
+        }
         //change header
         const newHeader = { ...userProfile, ...newData };
+      
         dispatch(updateUserHeader(newHeader));
     }
 
@@ -205,9 +206,11 @@ const ProfileUser = (props: IOpenModal) => {
                                         label="Ngày Sinh"
 
                                         InputLabelProps={{ shrink: true, required: true }}
-                                        inputProps={{ max: new Date() }}
+                                        inputProps={{ max: new Date().toLocaleDateString() }}
                                         margin="normal"
                                         {...register("birthDay")}
+                                        //defaultValue="2019-05-24"
+                                        //inputProps={{ min: "2019-01-24", max: "2020-05-31" }}
                                         required
                                     />
                                      <TextField

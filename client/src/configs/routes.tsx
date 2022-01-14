@@ -33,7 +33,7 @@ type IRoute = {
 
 const RouteConfig = (route: IRoute, index: number, Layout?: any) => {
 
-    const { path, exact, main: Component, auth = false } = route;
+    const { path, exact, main: Component, auth } = route;
     return (
         <Route
             key={index}
@@ -121,7 +121,7 @@ const defaultRouteList = [
     {
         path: ROUTES.auth,
         auth: false,
-        exact: true,
+        exact: false,
         main: () => <AuthenticatePage />,
     },
     {

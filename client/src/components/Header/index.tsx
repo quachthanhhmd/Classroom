@@ -26,11 +26,6 @@ const TYPE_MODAL_JOIN = "TYPE_MODAL_JOIN";
 
 const Header = () => {
     const styleScroll = useScrollHook();
-
-    const dispatch = useDispatch();
-    const history = useHistory();
-    const auth = useSelector((state: AppState) => state!.auth);
-    const user = useSelector((state: AppState) => state!.user);
     const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
     const [isOpenCourse, setIsOpenCourse] = useState<number>(0);
     const [anchorEl, setAnchorEl] = useState(null);

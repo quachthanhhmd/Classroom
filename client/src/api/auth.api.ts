@@ -11,6 +11,7 @@ import {
 const authApi = {
     signIn: (body: ISigninInput) => {
         const url = "/v1/auth/signin";
+
         return axiosClient.post<IHttpFormat<ISigninRespone>>(url, body);
     },
     signUp: (body: ISignUpInput) => {
@@ -44,6 +45,10 @@ const authApi = {
     checkTokenForgot: (email: string, token: string) => {
         const url = `/v1/auth/check-forgot`;
         return axiosClient.post<IHttpFormat<null>>(url, {email, token})
+    },
+    verifyAccount: (token: string) => {
+        const url = `/v1/auth/verify-account`;
+        return axiosClient.post<IHttpFormat<null>>(url, {token});
     }
 };
 

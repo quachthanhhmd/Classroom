@@ -28,6 +28,12 @@ class AuthRoutes {
         );
 
         this.router.post(
+            "/verify-account",
+            validate(this._authValidation.CheckEmailToken),
+            this._authController.verifyEmail
+        )
+
+        this.router.post(
             "/signin",
             validate(this._authValidation.SignInValidation),
             this._authController.signIn

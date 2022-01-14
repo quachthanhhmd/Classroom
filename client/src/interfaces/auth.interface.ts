@@ -1,5 +1,4 @@
-import { IOAuthRequest, INotification } from './';
-import { INotificationState } from './notification.interface';
+import { IOAuthRequest } from './';
 import { IRefreshToken, ITokenResponse } from './token.interface';
 
 
@@ -21,7 +20,7 @@ export interface IUserSummary {
     id: number,
     firstName: string,
     lastName: string,
-    birthDay: Date,
+    birthDay: string,
     gender: string,
     email: string,
     avatarUrl?: string,
@@ -47,7 +46,7 @@ export interface ISignInType {
 export interface ISignUpInput {
     firstName: string,
     lastName: string,
-    birthDay: Date,
+    birthDay: string,
     gender: string,
     email: string,
     password: string,

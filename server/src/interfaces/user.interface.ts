@@ -28,6 +28,7 @@ export interface IUpdateUser {
     birthDay?: Date,
     avatarUrl?: string,
     studentId?: string,
+    isVerified?: boolean
 }
 export interface ILoginOAuth extends IOAuthRequest {
     firstName: string,
@@ -45,13 +46,22 @@ export const serializeUserLogin = (model: any) => {
             firstName: model.user.firstName,
             lastName: model.user.lastName,
             gender: model.user.gender,
-            birthDay: model.user.birthDay,
+            birthDay: serializeBirthDay(model.user.birthDay),
             avatarUrl: model.user.avatarUrl,
             studentId: model.user.studentId,
         },
         // notifyList: model.notificationList ? model.notificationList.map(serializeNotify) : [],
         token: model.token,
     }
+}
+
+const serializeBirthDay = (date: any)  => {
+
+    if (date !== null || date !== undefined || date !== "") {
+        return date;
+    }
+
+    return "";
 }
 
 export const serializeUserDetail = (model: any) => {
@@ -61,7 +71,7 @@ export const serializeUserDetail = (model: any) => {
         firstName: model.user.firstName,
         lastName: model.user.lastName,
         gender: model.user.gender,
-        birthDay: model.user.birthDay,
+        birthDay: serializeBirthDay(model.user.birthDay),
         avatarUrl: model.user.avatarUrl,
         studentId: model.user.studentId,
     }
@@ -72,7 +82,7 @@ export const serializeUserProfile = (model: any) => {
     return {
         firstName: model.firstName,
         lastName: model.lastName,
-        birthDay: model.birthDay,
+        birthDay: serializeBirthDay(model.birthDay),
         gender: model.gender,
         avatarUrl: model.avatarUrl,
         studentId: model.studentId,

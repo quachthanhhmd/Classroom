@@ -290,12 +290,12 @@ export class CourseController {
                     id: item.id,
                     totalScoreType:
                         totalScoreType === 0 || countGradeType === 0 ? 0 :
-                            totalScoreType / (countGradeType * totalMaxScore),
+                            totalScoreType * item.grade / (countGradeType * 10),
                     maxScore: item.grade,
                 }
             })
 
-            const totalScore = typeTotalScoreList.reduce((a, b) => a + b.totalScoreType * b.maxScore, 0);
+            const totalScore = typeTotalScoreList.reduce((a, b) => a + b.totalScoreType, 0);
 
             return res.composer.success({
                 totalScore,
@@ -307,9 +307,9 @@ export class CourseController {
         }
     }
 
-    public getExerciseType = async(
+    public getExerciseType = async (
         req: IAuthorizeRequest, res: IResponse
-    ) : Promise<void> => {
+    ): Promise<void> => {
         try {
             const courseId = req.params.courseId;
 

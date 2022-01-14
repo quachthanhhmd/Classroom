@@ -54,9 +54,13 @@ export class UserController {
             const userId = <number> req.currentUser?.id;
             const body = req.body;
 
+            if (typeof body.birthDay === "string") {
+                const birthDay = body.birthDay;
+                delete body.birthDay;
+                body.birthDay = new Date(birthDay);
+            }
             await this._userService.updateProfile(userId, body);
             const userAfterUpdate = await this._userService.findUserById(userId);
-            console.log(userAfterUpdate)
 
             return res.composer.success(serializeUserProfile(userAfterUpdate));
         } catch (err) {

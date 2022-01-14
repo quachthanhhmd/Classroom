@@ -23,7 +23,7 @@ export class AuthValidation {
                 lastName: Joi.string().required(),
                 email: Joi.string().email().required(),
                 password: Joi.string().custom(this.passwordValidation).required(),
-                birthDay: Joi.date().required(),
+                birthDay: Joi.string().required(),
                 gender: Joi.string().valid(GENDER.FEMALE, GENDER.MALE, GENDER.OTHER),
             })
         }
@@ -88,6 +88,14 @@ export class AuthValidation {
             body: {
                 email: Joi.string().required(),
                 password: Joi.string().custom(this.passwordValidation).required(),
+            }
+        })
+    }
+
+    public CheckEmailToken = () => {
+        return Joi.object().keys({
+            body: {
+                token: Joi.string().required(),
             }
         })
     }

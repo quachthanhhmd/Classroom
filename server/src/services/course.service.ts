@@ -10,6 +10,7 @@ import { getSpecification } from "../utils/excel";
 import { uploadNewFileFromBuffer } from "../utils/firebase";
 import { ExerciseService, FeedService, MemberService } from "./";
 import { IUpdateCourse } from "./../interfaces/course.interface";
+import { ExerciseTypeService } from "./exercise-type.service";
 import { SubmissionService } from "./submission.service";
 
 @injectable()
@@ -17,8 +18,7 @@ export class CourseService {
 
     constructor(
         @inject("MemberService") private readonly _memberService: MemberService,
-        @inject("FeedService") private readonly _feedService: FeedService,
-        @inject("SubmissionService") private readonly _submissionService: SubmissionService,
+        @inject("ExerciseTypeService") private readonly _exerciseTypeService: ExerciseTypeService,
         @inject("ExerciseService") private readonly _exerciseService: ExerciseService) { }
 
     /**
@@ -264,15 +264,47 @@ export class CourseService {
         const gradeList = await Promise.all(memberAuthList.map(async (member) => {
 
             const exerciseList = await this._exerciseService.findAllSubmissionOfUserInCourse(courseId, member.userId);
-            const totalScore = exerciseList.map((exercise) => {
-                if (!exercise?.submissionList || exercise?.submissionList.length === 0) return 0;
+            const exerciseTypeList = await this._exerciseTypeService.findAllExerciseTypeByCourseId(courseId);
 
-                return exercise.submissionList[0].score;
+            const scoreList = exerciseList.map((exercise) => {
+                if (!exercise?.submissionList || exercise?.submissionList.length === 0)
+                return {
+                    score: 0,
+                    typeId: exercise.typeId,
+                }
+
+                return {
+                    score: exercise.submissionList[0].score,
+                    typeId: exercise.typeId,
+                }
             })
+
+            const typeTotalScoreList = exerciseTypeList.map((item) => {
+                let countGradeType = 0;
+
+                const totalScoreType = scoreList.reduce((a, b) => {
+                    if (b.typeId === item.id) {
+                        countGradeType++;
+
+                        return a + b.score;
+                    }
+
+                    return a;
+                }, 0);
+
+                return {
+                    id: item.id,
+                    totalScoreType:
+                        totalScoreType === 0 || countGradeType === 0 ? 0 :
+                            totalScoreType * item.grade / (countGradeType * 10),
+                    maxScore: item.grade,
+                }
+            })
+            const totalScore = typeTotalScoreList.reduce((a, b) => a + b.totalScoreType, 0);
 
             return {
                 id: member.id,
-                totalScore: totalScore.reduce((a, b) => a + b, 0) / countExercise,
+                totalScore
             }
         }))
 

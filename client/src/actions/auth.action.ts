@@ -12,7 +12,7 @@ import {
 import {
   ILoginOAuth, INotification, IPayload, ISigninInput, ISignUpInput, IUserHeader, IUserSummary
 } from "../interfaces";
-import { LOGIN_FAIL, LOGIN_SUCCESS, SIGNUP_SUCCESS } from '../messages';
+import { LOGIN_FAIL, LOGIN_SUCCESS, SIGNUP_SUCCESS, UN_VERIFY } from '../messages';
 import { USER_REGISTER_FAIL, USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS } from './../constants';
 import { ILogoutType } from './../interfaces/auth.interface';
 
@@ -26,7 +26,17 @@ export const signIn = (data: ISigninInput) => async (dispatch) => {
 
     const result = await authApi.signIn(data);
 
-    if (result.status !== 200) throw new Error();
+    if (!result || result.status !== 200) throw new Error();
+
+    if (result.data.message === "UN_VERIFY") {
+      dispatch({
+        type: NOTIFICATION_FAIL,
+        payload: UN_VERIFY
+      })
+  
+      return;
+    }
+
     dispatch({
       type: NOTIFICATION_SUCCESS,
       payload: LOGIN_SUCCESS

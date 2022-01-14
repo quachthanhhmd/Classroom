@@ -51,6 +51,7 @@ export class HttpResponse {
     }
 
     public forbidden(message = `Forbidden`, payload?: any): void {
+
         return this.json(
             HttpResponseStatusCodeEnum.FORBIDDEN,
             message,

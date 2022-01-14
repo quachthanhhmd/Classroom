@@ -220,7 +220,7 @@ const Member = () => {
                             memberInCourse.role === "teacher" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
                         ))}
                     </div>
-                    <div className="member-main___assist">
+                    {/* <div className="member-main___assist">
                         <div className="member-main___assist___header">
                             <div className="member-main___assist___header--title">
                                 Trợ Giảng
@@ -239,7 +239,7 @@ const Member = () => {
                         {course && course.memberList && course.memberList.map((memberInCourse: IMemberSummary) => (
                             memberInCourse.role === "assistant" && <MemberDisplay course={course.course} ownerMember={member?.currentRole} courseId={courseId} userId={auth.user?.id} member={memberInCourse} />
                         ))}
-                    </div>
+                    </div> */}
                     <div className="member-main___student">
                         <div className="member-main___student___header">
                             <div className="member-main___student___header--title">
