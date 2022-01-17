@@ -412,4 +412,15 @@ export class MemberService {
         return true;
     }
 
+    public updateOrCreateMember =  async (userId: number, courseId: number, state?: string, role?: string) => {
+
+        const member = await this.findMemberByUserAndCourseId(userId, courseId);
+        if (!member) {
+            return this.addMember(userId, courseId, role, state);
+        }
+
+        await this.updateMember(userId, courseId);
+
+        return this.findMemberByUserAndCourseId(userId, courseId);
+    }
 }

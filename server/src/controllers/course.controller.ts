@@ -74,7 +74,8 @@ export class CourseController {
                 return res.composer.notFound();
             }
 
-            await this._memberService.upsetMember(<number> userId, course.id, MEMBERSTATE.ACCEPT, TYPEROLE.STUDENT);
+            await this._memberService.updateOrCreateMember(
+                <number> userId, course.id, MEMBERSTATE.ACCEPT, TYPEROLE.STUDENT);
 
             return res.composer.success(serializeCourseDetail(course));
         } catch (err) {

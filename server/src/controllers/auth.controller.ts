@@ -173,7 +173,6 @@ export class AuthController {
     ): Promise<void> => {
         try {
             const { email, password } = req.body;
-            console.log(email, password);
             const user = await this._userService.findUserbyEmail(email);
 
             if (!user) return res.composer.notFound();
@@ -215,8 +214,7 @@ export class AuthController {
             if (!tokenDoc) {
                 return res.composer.notFound();
             }
-
-            await this._userService.updateProfile(tokenDoc.id, { isVerified: true });
+            await this._userService.updateProfile(tokenDoc.userId, { isVerified: true });
 
             return res.composer.success();
         } catch (err) {
